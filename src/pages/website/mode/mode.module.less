@@ -1,0 +1,175 @@
+.layout {
+  margin: -20px;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.development {
+  background-color: rgba(0, 0, 0, .01);
+}
+
+.production {
+}
+
+.workspace,
+.pages,
+.page {
+  height: 100vh;
+  width: 100%;
+}
+
+.pages {
+  position: relative;
+  transition: left 1s;
+
+  .page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+
+    & > div:first-child {
+      height: inherit;
+      overflow: auto;
+
+      .pageContent {
+        height: inherit;
+
+        &.rules {
+          border-left: 1px dashed #2E2F30;
+          border-right: 1px dashed #2E2F30;
+        }
+
+        &.leftAlignment {
+          margin: 0;
+        }
+
+        &.centerAlignment {
+          margin: 0 auto;
+        }
+
+        &.rightAlignment {
+          margin: 0 0 0 auto;
+        }
+      }
+    }
+  }
+}
+
+.addPage,
+.search {
+  display: none;
+}
+
+.devMenu {
+  :global {
+    .ant-menu-submenu-title {
+      padding-left: 10px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+    }
+
+    .ant-menu-item {
+      padding-left: 10px !important;
+
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        border-radius: 2px;
+        opacity: 0.6;
+        transition: opacity 1s ease 0.5s
+      }
+
+      &:hover {
+        img {
+          opacity: 1;
+        }
+      }
+    }
+
+    .ant-menu-sub {
+      background-color: rgba(185, 212, 255, 0.2);
+      position: relative;
+    }
+  }
+
+  .search {
+    padding: 2px 10px !important;
+    height: 36px !important;
+    line-height: 32px !important;
+  }
+
+  .addPage,
+  .search {
+    display: block;
+  }
+
+  .addPage {
+    position: absolute !important;
+    width: auto !important;
+    padding-right: 10px !important;
+    background-color: transparent !important;
+    z-index: 1;
+    top: -40px;
+    left: 130px;
+
+    &:after {
+      border: none !important;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      margin-top: 6px;
+    }
+  }
+}
+
+.devMenuCollapsed {
+  :global {
+    .ant-menu-submenu:first-child {
+      margin-top: 10px;
+    }
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-left: -3px;
+  }
+}
+
+.devSubMenuCollapsed {
+  :global {
+    .ant-menu-item {
+      padding-left: 10px !important;
+
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        border-radius: 2px;
+        opacity: 0.6;
+        transition: opacity 1s ease 0.5s
+      }
+
+      &:hover {
+        img {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.activePage {
+  opacity: 0.8
+}
+
+.setting {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: -8px;
+}
