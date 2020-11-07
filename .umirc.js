@@ -20,7 +20,7 @@ export default defineConfig({
       routes: [
         {
           exact: true,
-          path: '/pages/websites/:id/development',
+          path: '/websites/:id/development',
           component: '@/pages/website/mode/development'
         }
       ]

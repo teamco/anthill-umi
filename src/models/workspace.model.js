@@ -94,11 +94,14 @@ export default dvaModelExtend(commonModel, {
     * setCurrentPage({payload = {}}, {put, call, select}) {
       const {locationPathname, pages} = yield select(state => state.workspaceModel);
       let pageHash = ``;
-      let currentPage = pages[payload.idx] || pages[0];
+      let _currentPage = pages[payload.idx] || pages[0];
 
-      if (currentPage) {
-        if (!currentPage.entityForm.entityKey) {
-          currentPage.entityForm.entityKey = yield call(generateKey);
+      if (_currentPage) {
+        const currentPage = {..._currentPage};
+        const entityForm = Object.create(_currentPage.entityForm);
+        if (!entityForm.entityKey) {
+          entityForm.entityKey = yield call(generateKey);
+          currentPage.entityForm = entityForm;
         }
 
         pageHash = `#/pages/${currentPage.entityForm.entityKey}`;
@@ -106,7 +109,7 @@ export default dvaModelExtend(commonModel, {
 
         yield put({
           type: 'pageModel/setPage',
-          payload: {page: currentPage}
+          payload: {page: {...currentPage}}
         });
 
         yield put({
@@ -119,7 +122,7 @@ export default dvaModelExtend(commonModel, {
           }
         });
 
-        yield put(history.push(`${locationPathname}${pageHash}`));
+        history.push(`${locationPathname}${pageHash}`);
       }
     },
 
@@ -200,19 +203,18 @@ export default dvaModelExtend(commonModel, {
         entityForm: {...payload.values}
       };
 
-      pages.push(page);
-
       yield put({
         type: 'updateState',
         payload: {
           showPageModal: false,
-          pages
+          pages: [...pages, page]
         }
       });
 
+      // Page collection does not updated yet.
       yield put({
         type: 'navigateToPage',
-        payload: {idx: pages.length - 1}
+        payload: {idx: pages.length}
       });
     },
 
