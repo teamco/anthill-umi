@@ -64,7 +64,6 @@ export default dvaModelExtend(commonModel, {
   effects: {
 
     * setPage({payload}, {put, call}) {
-      debugger
       const {entityForm, layout} = payload.page;
 
       const pageAlignment = getStoredValue(entityForm, 'pageAlignment', DEFAULTS);

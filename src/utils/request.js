@@ -45,8 +45,17 @@ const mergeHeaders = () => {
  * @param key
  * @return {*}
  */
-function adaptUrl(url, key) {
+function adaptUrlToParams(url, key) {
   return url.replace(/:id/, key);
+}
+
+/**
+ * @function
+ * @param url
+ * @return {string}
+ */
+function adoptUrlToServer(url) {
+  return `${SERVER_URL}:${SERVER_PORT}/${url}`
 }
 
 /**
@@ -59,12 +68,12 @@ function adaptUrl(url, key) {
  */
 function config({url, method = 'get', headers = {}, ...args}) {
   if (url.match(/:id/)) {
-    url = adaptUrl(url, args.key);
+    url = adaptUrlToParams(url, args.key);
   }
 
   return {
     ...{
-      url: `${SERVER_URL}:${SERVER_PORT}/${url}`,
+      url: adoptUrlToServer(url),
       method,
       responseType: 'json',
       headers: {...mergeHeaders(), ...headers}
@@ -117,5 +126,6 @@ export default {
   xhr,
   config,
   toBase64,
-  isSuccess
+  isSuccess,
+  adoptUrlToServer
 };

@@ -8,6 +8,7 @@ import {
   SettingOutlined
 } from '@ant-design/icons';
 
+import request from '@/utils/request';
 import styles from '@/pages/website/mode/mode.module.less';
 import PagePropertiesModal from '@/pages/website/mode/page/page.properties.modal';
 
@@ -101,7 +102,7 @@ const MenuDevelopment = props => {
   const _widget = widget => (
       <Tooltip title={widget.description}>
         <div onClick={() => onAddWidget(widget)}>
-          <img src={widget.picture.thumb.url}
+          <img src={request.adoptUrlToServer(widget.picture.thumb.url)}
                alt={widget.name}/>
           {widget.name}
         </div>
