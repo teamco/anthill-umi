@@ -3,10 +3,10 @@ import dvaModelExtend from 'dva-model-extend';
 
 import {commonModel} from '@/models/common';
 
-import {getWidgets} from '@/services/widget.service';
 import {generateKey} from '@/services/common.service';
 import PageLayout from '@/pages/website/mode/page/page.layout';
 import Logger from '@/core/modules/Logger';
+import {getAssignedWidgets} from '@/services/website.service';
 
 /**
  * @constant
@@ -79,14 +79,16 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * widgets(_, {put, call}) {
-      const widgets = yield call(getWidgets);
+    * widgets(_, {put, call, select}) {
+      const {websiteKey} = yield select(state => state.workspaceModel);
+      const widgets = yield call(getAssignedWidgets, {key: websiteKey});
+      const assigned = widgets.data.assigned.widgets;
 
       yield put({
         type: 'updateState',
         payload: {
-          widgets: widgets.data,
-          widgetsFiltered: [...widgets.data]
+          widgets: assigned,
+          widgetsFiltered: [...assigned]
         }
       });
     },

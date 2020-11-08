@@ -251,7 +251,7 @@ export default dvaModelExtend(commonModel, {
       }
     },
 
-    * websiteWidgetsQuery({payload}, {put, call, select}) {
+    * websiteWidgetsQuery({payload}, {put, call}) {
       const {data} = yield call(getAssignedWidgets, {key: payload.key});
       const allWidgets = yield call(getWidgets);
 

@@ -6,10 +6,14 @@ import {errorDeleteMsg, errorGetMsg, errorSaveMsg} from '@/utils/message';
 /**
  * @function
  * @export
+ * @param key
  * @return {*}
  */
-export function getWidgets() {
-  const opts = request.config({url: API.widgets.getAllWidgets});
+export function getWidgets({key}) {
+  const opts = request.config({
+    url: API.widgets.getAllWidgets,
+    key
+  });
   return request.xhr(
       opts,
       () => errorGetMsg(i18n.t('menu:widgets')),

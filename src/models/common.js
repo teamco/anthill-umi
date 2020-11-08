@@ -52,6 +52,7 @@ const commonModel = {
         const keys = location.pathname.split('/').filter(_key => !!_key);
         const _id = keys[keys.length - 1] || '';
         const _scope = keys[keys.length - 2];
+        const websiteKey = keys[0] === 'websites' ? keys[1] : null;
 
         let mode = false;
         if (MODES.indexOf(_id) > -1) {
@@ -62,6 +63,7 @@ const commonModel = {
           type: 'updateState',
           payload: {
             mode,
+            websiteKey,
             locationHash: location.hash,
             locationPathname: location.pathname,
             locationQuery: queryString.parse(location.search)
