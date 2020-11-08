@@ -86,7 +86,8 @@
     "errorGet": "Unable to get {{instance}}",
     "errorDelete": "Unable to delete {{instance}}",
     "errorSave": "Unable to create {{instance}}",
-    "errorUpdate": "Unable to update {{instance}}"
+    "errorUpdate": "Unable to update {{instance}}",
+    "noData": "No Data"
   },
   "empty": {
     "title": "No data",
