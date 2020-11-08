@@ -59,21 +59,22 @@ const MenuDevelopment = props => {
    * @private
    */
   const _page = (page, idx) => (
-    <Tooltip title={page.entityForm.description}>
-      <div onClick={() => onNavigateToPage(idx)}
-           style={{position: 'relative'}}>
-        <LayoutOutlined/>
+    <div onClick={() => onNavigateToPage(idx)}
+         style={{position: 'relative'}}>
+      <LayoutOutlined/>
+      <Tooltip title={page.entityForm.description}
+               placement={'right'}>
         {page.entityForm.name}
-        <div className={styles.setting}>
-          <SettingOutlined key={'setting'}
-                           onClick={e => {
-                             e.preventDefault();
-                             e.stopPropagation();
-                             onPageSettingModal(onUpdatePageSetting, page);
-                           }}/>
-        </div>
+      </Tooltip>
+      <div className={styles.setting}>
+        <SettingOutlined key={'setting'}
+                         onClick={e => {
+                           e.preventDefault();
+                           e.stopPropagation();
+                           onPageSettingModal(onUpdatePageSetting, page);
+                         }}/>
       </div>
-    </Tooltip>
+    </div>
   );
 
   /**
@@ -83,14 +84,14 @@ const MenuDevelopment = props => {
    * @private
    */
   const _pageWidget = widget => (
-    <Tooltip title={widget.entityForm.widgetDescription}>
-      <div onClick={() => onScrollToWidget(widget)}>
-        {/*<img src={widget.picture.thumb.url}*/}
-        {/*     alt={widget.name}/>*/}
-
+    <div onClick={() => onScrollToWidget(widget)}>
+      {/*<img src={widget.picture.thumb.url}*/}
+      {/*     alt={widget.name}/>*/}
+      <Tooltip title={widget.entityForm.widgetDescription}
+               placement={'right'}>
         {widget.entityForm.widgetName}
-      </div>
-    </Tooltip>
+      </Tooltip>
+    </div>
   );
 
   /**
@@ -100,13 +101,14 @@ const MenuDevelopment = props => {
    * @private
    */
   const _widget = widget => (
-    <Tooltip title={widget.description}>
-      <div onClick={() => onAddWidget(widget)}>
-        <img src={request.adoptUrlToServer(widget.picture.thumb.url)}
-             alt={widget.name}/>
+    <div onClick={() => onAddWidget(widget)}>
+      <img src={request.adoptUrlToServer(widget.picture.thumb.url)}
+           alt={widget.name}/>
+      <Tooltip title={widget.description}
+               placement={'right'}>
         {widget.name}
-      </div>
-    </Tooltip>
+      </Tooltip>
+    </div>
   );
 
   /**
