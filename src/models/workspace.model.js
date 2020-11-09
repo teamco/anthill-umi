@@ -94,32 +94,34 @@ export default dvaModelExtend(commonModel, {
     },
 
     * setCurrentPage({payload = {}}, {put, call, select}) {
-      const {locationPathname, pages} = yield select(state => state.workspaceModel);
+      const {locationPathname, pages, currentPage} = yield select(state => state.workspaceModel);
       let pageHash = ``;
-      let _currentPage = pages[payload.idx] || pages[0];
+      let _pages = [...pages];
+      let _currentPage = {..._pages[payload.idx]};
 
-      if (_currentPage) {
-        const currentPage = {..._currentPage};
+      if (Object.keys(_currentPage).length) {
         const entityForm = Object.create(_currentPage.entityForm);
         if (!entityForm.entityKey) {
           entityForm.entityKey = yield call(generateKey);
-          currentPage.entityForm = entityForm;
+          _currentPage.entityForm = entityForm;
+          _currentPage.layout = new PageLayout({}, _currentPage);
+
+          _pages[payload.idx] = _currentPage;
         }
 
-        pageHash = `#/pages/${currentPage.entityForm.entityKey}`;
-        currentPage.layout = new PageLayout({}, currentPage);
+        pageHash = `#/pages/${_currentPage.entityForm.entityKey}`;
 
         yield put({
           type: 'pageModel/setPage',
-          payload: {page: {...currentPage}}
+          payload: {page: {..._currentPage}}
         });
 
         yield put({
           type: 'updateState',
           payload: {
-            pages,
-            pagesFiltered: [...pages],
-            currentPage,
+            pages: _pages,
+            pagesFiltered: [..._pages],
+            currentPage: _currentPage,
             pageHash
           }
         });

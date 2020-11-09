@@ -119,7 +119,7 @@ const MenuDevelopment = props => {
    * @private
    */
   const _search = (entities, type) => (
-    <Menu.Item className={styles.search}>
+    <Menu.Item className={styles.search} disabled>
       <Input placeholder={t('website:search')}
              suffix={<SearchOutlined/>}
              allowClear
@@ -135,7 +135,7 @@ const MenuDevelopment = props => {
    * @private
    */
   const _empty = () => (
-    <Menu.Item>
+    <Menu.Item className={styles.emptyDataWrapper} disabled>
       <Empty className={styles.emptyData}
              description={t('msg:noData')}
              image={Empty.PRESENTED_IMAGE_SIMPLE}/>
