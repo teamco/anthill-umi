@@ -48,7 +48,6 @@ export default dvaModelExtend(commonModel, {
     * propertiesModalVisibility({payload}, {put, call, select}) {
       const {contentForm} = yield select(state => state.contentModel);
       const {visible = false, widgetProps, updateForm = false} = payload;
-      const {entityForm = {}} = widgetProps || {};
 
       yield put({
         type: 'updateState',
@@ -60,8 +59,8 @@ export default dvaModelExtend(commonModel, {
       });
 
       if (widgetProps) {
-        const widgetName = entityForm.widgetName || widgetProps.name;
-        const widgetDescription = entityForm.widgetDescription || widgetProps.description;
+        const widgetName = widgetProps.name;
+        const widgetDescription = widgetProps.description;
 
         const model = {
           ...DEFAULTS,
@@ -76,11 +75,13 @@ export default dvaModelExtend(commonModel, {
         const _toEntityForm = yield call(toEntityForm, {model});
 
         yield put({
-          type: 'toForm',
-          payload: {entityForm: _toEntityForm}
+          type: 'updateState',
+          payload: {
+            entityForm: {
+              [widgetProps.key]: {..._toEntityForm}
+            }
+          }
         });
-
-        widgetProps.entityForm = {...model};
       }
 
       yield put({

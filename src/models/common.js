@@ -111,6 +111,7 @@ const commonModel = {
       });
     }
   },
+
   effects: {
 
     * initFormDraft({payload}, {put, select}) {

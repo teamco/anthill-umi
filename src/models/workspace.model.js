@@ -52,11 +52,13 @@ export default dvaModelExtend(commonModel, {
     onSavePage() {
     }
   },
+
   subscriptions: {
     setup({dispatch}) {
       dispatch({type: 'setCurrentPage'});
     }
   },
+
   effects: {
 
     * mode({payload}, {put}) {

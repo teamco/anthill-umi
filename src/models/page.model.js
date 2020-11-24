@@ -161,9 +161,13 @@ export default dvaModelExtend(commonModel, {
     },
 
     * addWidget({payload}, {put, select}) {
+      const {pages} = yield select(state => state.workspaceModel);
       const {page} = yield select(state => state.pageModel);
+      const idx = pages.findIndex(_page => _page.entityForm.entityKey === page.entityForm.entityKey);
+      const _pages = [...pages];
+      const _page = {...page};
 
-      if (!page) {
+      if (!_page) {
         return logger.warn('Unable to get page', page);
       }
 
@@ -176,7 +180,9 @@ export default dvaModelExtend(commonModel, {
         contentKey = generateKey()
       } = payload.widget;
 
-      page.widgets.push({
+      const widgets = [..._page.widgets];
+
+      const widgetProps = {
         name,
         description,
         offset: {
@@ -189,28 +195,35 @@ export default dvaModelExtend(commonModel, {
         },
         key,
         contentKey
-      });
+      };
+
+      widgets.push(widgetProps);
 
       yield put({
         type: 'contentModel/propertiesModalVisibility',
         payload: {
-          widgetProps: page.widgets[page.widgets.length - 1]
+          widgetProps
         }
       });
+
+      _page.widgets = [...widgets];
 
       yield put({
         type: 'setPage',
         payload: {
-          page,
+          page: {..._page},
           store: true
         }
       });
 
+      _pages[idx] = _page;
+
       yield put({
         type: 'workspaceModel/updateState',
         payload: {
-          currentPageWidgets: [...page.widgets],
-          pageWidgetsFiltered: [...page.widgets]
+          currentPageWidgets: [..._page.widgets],
+          pageWidgetsFiltered: [..._page.widgets],
+          pages: _pages
         }
       });
     },

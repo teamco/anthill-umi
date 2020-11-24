@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Empty, Input, Layout, Menu, Tooltip} from 'antd';
 import {
   AppstoreAddOutlined,
@@ -48,8 +48,6 @@ const MenuDevelopment = props => {
     pageWidgetsFiltered = [],
     widgetsFiltered = []
   } = workspaceModel;
-
-  let menuRef = useRef();
 
   /**
    * @constant
@@ -144,7 +142,6 @@ const MenuDevelopment = props => {
 
   return (
     <Sider collapsible
-           ref={menuRef}
            collapsed={collapsedMenu}
            onCollapse={onCollapse}
            theme={'light'}
