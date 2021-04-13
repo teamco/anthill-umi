@@ -1,24 +1,24 @@
-import React, {useEffect} from 'react';
-import {connect} from 'dva';
-import {withTranslation} from 'react-i18next';
-import {history} from 'umi';
-import {Button, Card, Dropdown, Menu} from 'antd';
+import React, { useEffect } from 'react';
+import { connect } from 'dva';
+import { withTranslation } from 'react-i18next';
+import { history } from 'umi';
+import { Button, Card, Dropdown, Menu } from 'antd';
 import {
   DeleteOutlined,
   EditOutlined,
   EllipsisOutlined,
   SettingOutlined,
-  StopOutlined
+  StopOutlined,
 } from '@ant-design/icons';
 
 import classnames from 'classnames';
 
-import {showConfirm} from '@/utils/modals';
+import { showConfirm } from '@/utils/modals';
 import i18n from '@/utils/i18n';
 
-import styles from './widget.module.less';
+import styles from '@/pages/widget/widget.module.less';
 
-const {Meta} = Card;
+const { Meta } = Card;
 
 /**
  * @export
@@ -26,8 +26,7 @@ const {Meta} = Card;
  * @param props
  * @return {JSX.Element}
  */
-const widgets = props => {
-
+const widgets = (props) => {
   const {
     t,
     widgetModel,
@@ -35,15 +34,15 @@ const widgets = props => {
     onDelete,
     onButtonsMetadata,
     onNew,
-    loading
+    loading,
   } = props;
 
   useEffect(() => {
     onButtonsMetadata({
       newBtn: {
         onClick: onNew,
-        loading: loading.effects['widgetModel/handleNew']
-      }
+        loading: loading.effects['widgetModel/handleNew'],
+      },
     });
   }, [widgetModel]);
 
@@ -52,7 +51,7 @@ const widgets = props => {
    * @param key
    * @param siteKey
    */
-  const onMenuClick = ({key, widgetKey}) => {
+  const onMenuClick = ({ key, widgetKey }) => {
     if (key.key === 'delete') {
       showConfirm(() => onDelete(widgetKey), i18n.t('actions:delete'));
     }
@@ -63,97 +62,102 @@ const widgets = props => {
    * @param widgetKey
    * @return {JSX.Element}
    */
-  const menu = widgetKey => {
+  const menu = (widgetKey) => {
     return (
-        <Menu onClick={key => onMenuClick({
-          key,
-          widgetKey
-        })}>
-          <Menu.Item key={'delete'}>
-            <Button danger
-                    icon={<DeleteOutlined/>}
-                    type="text">
-              {t('actions:delete')}
-            </Button>
-          </Menu.Item>
-        </Menu>
+      <Menu
+        onClick={(key) =>
+          onMenuClick({
+            key,
+            widgetKey,
+          })
+        }
+      >
+        <Menu.Item key={'delete'}>
+          <Button danger icon={<DeleteOutlined />} type="text">
+            {t('actions:delete')}
+          </Button>
+        </Menu.Item>
+      </Menu>
     );
   };
 
   return (
-      <div>
-        {widgetModel.widgets.length ?
-            widgetModel.widgets.map((widget, idx) => (
-                    <Card key={idx}
-                          hoverable
-                          className={styles.widgetCard}
-                          actions={[
-                            <SettingOutlined key="setting"/>,
-                            <EditOutlined onClick={() => onEdit(widget.key)}
-                                          key="edit"/>,
-                            <Dropdown overlay={menu(widget.key)}
-                                      placement={'topLeft'}
-                                      trigger={['click']}>
-                              <EllipsisOutlined key="ellipsis"/>
-                            </Dropdown>
-                          ]}
-                          cover={(
-                              <img alt={widget.name}
-                                   src={widget.picture.url}/>
-                          )}>
-                      <Meta className={'site-card-title'}
-                            title={widget.name}
-                            description={widget.description || '...'}/>
-                    </Card>
-                )
-            ) : (
-                <Card key={0}
-                      hoverable
-                      className={classnames(styles.widgetCard, styles.widgetCardEmpty)}
-                      cover={(
-                          <StopOutlined/>
-                      )}>
-                  <Meta className={'site-card-title'}
-                        title={t('empty:title')}
-                        description={t('empty:description', {instance: '$t(instance:widget)'})}/>
-                </Card>
-            )
-        }
-      </div>
+    <div>
+      {widgetModel.widgets.length ? (
+        widgetModel.widgets.map((widget, idx) => (
+          <Card
+            key={idx}
+            hoverable
+            className={styles.widgetCard}
+            actions={[
+              <SettingOutlined key="setting" />,
+              <EditOutlined onClick={() => onEdit(widget.key)} key="edit" />,
+              <Dropdown
+                overlay={menu(widget.key)}
+                placement={'topLeft'}
+                trigger={['click']}
+              >
+                <EllipsisOutlined key="ellipsis" />
+              </Dropdown>,
+            ]}
+            cover={<img alt={widget.name} src={widget.picture.url} />}
+          >
+            <Meta
+              className={'site-card-title'}
+              title={widget.name}
+              description={widget.description || '...'}
+            />
+          </Card>
+        ))
+      ) : (
+        <Card
+          key={0}
+          hoverable
+          className={classnames(styles.widgetCard, styles.widgetCardEmpty)}
+          cover={<StopOutlined />}
+        >
+          <Meta
+            className={'site-card-title'}
+            title={t('empty:title')}
+            description={t('empty:description', {
+              instance: '$t(instance:widget)',
+            })}
+          />
+        </Card>
+      )}
+    </div>
   );
 };
 
-export default connect(({
+export default connect(
+  ({ widgetModel, loading }) => {
+    return {
       widgetModel,
-      loading
-    }) => {
-      return {
-        widgetModel,
-        loading
-      };
+      loading,
+    };
+  },
+  (dispatch) => ({
+    dispatch,
+    onButtonsMetadata(payload) {
+      dispatch({
+        type: 'appModel/activeButtons',
+        payload,
+      });
     },
-    dispatch => ({
-      dispatch,
-      onButtonsMetadata(payload) {
-        dispatch({
-          type: 'appModel/activeButtons',
-          payload
-        });
-      },
-      onEdit(key) {
-        dispatch({
-          type: 'widgetModel/prepareToEdit',
-          payload: {key}
-        });
-      },
-      onDelete(entityKey) {
-        dispatch({
-          type: 'widgetModel/handleDelete',
-          payload: {entityKey}
-        });
-      },
-      onNew() {
-        dispatch(history.push(`/pages/widgets/new`));
-      }
-    })
+    onEdit(key) {
+      dispatch({
+        type: 'widgetModel/prepareToEdit',
+        payload: { key },
+      });
+    },
+    onDelete(entityKey) {
+      dispatch({
+        type: 'widgetModel/handleDelete',
+        payload: { entityKey },
+      });
+    },
+    onNew() {
+      history.push(`/pages/widgets/new`);
+    },
+  }),
 )(withTranslation()(widgets));

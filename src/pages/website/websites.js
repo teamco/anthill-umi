@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
-import {connect} from 'dva';
-import {withTranslation} from 'react-i18next';
-import history from 'umi';
-import {Button, Card, Dropdown, Menu} from 'antd';
+import React, { useEffect } from 'react';
+import { connect } from 'dva';
+import { withTranslation } from 'react-i18next';
+import { history } from 'umi';
+import { Button, Card, Dropdown, Menu, PageHeader } from 'antd';
 import {
   ApiOutlined,
   AppstoreAddOutlined,
@@ -11,16 +11,18 @@ import {
   EllipsisOutlined,
   ProfileOutlined,
   SettingOutlined,
-  StopOutlined
+  StopOutlined,
+  UserSwitchOutlined,
 } from '@ant-design/icons';
 
-import {showConfirm} from '@/utils/modals';
+import { showConfirm } from '@/utils/modals';
 import i18n from '@/utils/i18n';
 
-import styles from './website.module.less';
+import styles from '@/pages/website/website.module.less';
+import Page from '@/components/Page';
 
-const {Meta} = Card;
-const {SubMenu} = Menu;
+const { Meta } = Card;
+const { SubMenu } = Menu;
 
 /**
  * @export
@@ -28,10 +30,10 @@ const {SubMenu} = Menu;
  * @param props
  * @return {JSX.Element}
  */
-const websites = props => {
-
+const websites = (props) => {
   const {
     t,
+    authModel,
     websiteModel,
     onEdit,
     onAssignWidgets,
@@ -39,15 +41,17 @@ const websites = props => {
     onButtonsMetadata,
     onNew,
     onMode,
-    loading
+    loading,
   } = props;
+
+  const { websites } = websiteModel;
 
   useEffect(() => {
     onButtonsMetadata({
       newBtn: {
         onClick: onNew,
-        loading: loading.effects['websiteModel/handleNew']
-      }
+        loading: loading.effects['websiteModel/handleNew'],
+      },
     });
   }, [websiteModel]);
 
@@ -56,7 +60,7 @@ const websites = props => {
    * @param key
    * @param siteKey
    */
-  const onMenuClick = ({key, siteKey}) => {
+  const onMenuClick = ({ key, siteKey }) => {
     if (key.key === 'delete') {
       showConfirm(() => onDelete(siteKey), i18n.t('actions:delete'));
     } else if (key.key === 'assignWidgets') {
@@ -71,36 +75,37 @@ const websites = props => {
    * @param siteKey
    * @return {JSX.Element}
    */
-  const menu = siteKey => {
+  const menu = (siteKey) => {
     return (
-      <Menu className={styles.websiteMenu}
-            onClick={key => onMenuClick({
-              key,
-              siteKey
-            })}>
-        <SubMenu title={(
-          <Button icon={<ProfileOutlined/>}
-                  type="link">
-            {t('website:mode')}
-          </Button>
-        )}>
+      <Menu
+        className={styles.websiteMenu}
+        onClick={(key) =>
+          onMenuClick({
+            key,
+            siteKey,
+          })
+        }
+      >
+        <SubMenu
+          title={
+            <Button icon={<ProfileOutlined />} type="link">
+              {t('website:mode')}
+            </Button>
+          }
+        >
           <Menu.Item key={'development'}>
-            <Button icon={<AppstoreAddOutlined/>}
-                    type="link">
+            <Button icon={<AppstoreAddOutlined />} type="link">
               {t('mode:development')}
             </Button>
           </Menu.Item>
         </SubMenu>
         <Menu.Item key={'assignWidgets'}>
-          <Button icon={<ApiOutlined/>}
-                  type="link">
+          <Button icon={<ApiOutlined />} type="link">
             {t('website:assignWidgets')}
           </Button>
         </Menu.Item>
         <Menu.Item key={'delete'}>
-          <Button danger
-                  icon={<DeleteOutlined/>}
-                  type="link">
+          <Button danger icon={<DeleteOutlined />} type="link">
             {t('actions:delete')}
           </Button>
         </Menu.Item>
@@ -108,86 +113,106 @@ const websites = props => {
     );
   };
 
+  const subTitle = (
+    <>
+      <UserSwitchOutlined style={{ marginRight: 10 }} />
+      {t('actions:manage', { type: t('auth:users') })}
+    </>
+  );
+
+  const { ability } = authModel;
+  const component = 'websites';
+  // const disabled = !ability.can('update', component);
+
   return (
-    <div>
-      {websiteModel.websites.length ?
-        websiteModel.websites.map((site, idx) => (
-            <Card key={idx}
-                  hoverable
-                  className={'site-card'}
-                  actions={[
-                    <SettingOutlined key="setting"/>,
-                    <EditOutlined onClick={() => onEdit(site.key)}
-                                  key="edit"/>,
-                    <Dropdown overlay={menu(site.key)}
-                              placement={'topLeft'}
-                              trigger={['click']}>
-                      <EllipsisOutlined key="ellipsis"/>
-                    </Dropdown>
-                  ]}
-                  cover={(
-                    <img alt={site.name}
-                         src={site.picture.url}/>
-                  )}>
-              <Meta className={'site-card-title'}
-                    title={site.name}
-                    description={site.description}/>
-            </Card>
-          )
-        ) : (
-          <Card key={0}
-                hoverable
-                className={'site-card site-card-empty'}
-                cover={(
-                  <StopOutlined/>
-                )}>
-            <Meta className={'site-card-title'}
-                  title={t('empty:title')}
-                  description={t('empty:description', {instance: '$t(instance:website)'})}/>
+    <Page
+      className={styles.websites}
+      component={component}
+      spinEffects={['authModel/defineAbilities']}
+    >
+      <PageHeader ghost={false} subTitle={subTitle} />
+      {websites.length ? (
+        websites.map((site, idx) => (
+          <Card
+            key={idx}
+            hoverable
+            className={'site-card'}
+            actions={[
+              <SettingOutlined key="setting" />,
+              <EditOutlined onClick={() => onEdit(site.key)} key="edit" />,
+              <Dropdown
+                overlay={menu(site.key)}
+                placement={'topLeft'}
+                trigger={['click']}
+              >
+                <EllipsisOutlined key="ellipsis" />
+              </Dropdown>,
+            ]}
+            cover={<img alt={site.name} src={site.picture.url} />}
+          >
+            <Meta
+              className={'site-card-title'}
+              title={site.name}
+              description={site.description}
+            />
           </Card>
-        )
-      }
-    </div>
+        ))
+      ) : (
+        <Card
+          key={0}
+          hoverable
+          className={'site-card site-card-empty'}
+          cover={<StopOutlined />}
+        >
+          <Meta
+            className={'site-card-title'}
+            title={t('empty:title')}
+            description={t('empty:description', {
+              instance: '$t(instance:website)',
+            })}
+          />
+        </Card>
+      )}
+    </Page>
   );
 };
 
-export default connect(({
-    websiteModel,
-    loading
-  }) => {
+export default connect(
+  ({ websiteModel, authModel, loading }) => {
     return {
       websiteModel,
-      loading
+      authModel,
+      loading,
     };
   },
-  dispatch => ({
+  (dispatch) => ({
     dispatch,
     onButtonsMetadata(payload) {
       dispatch({
         type: 'appModel/activeButtons',
-        payload
+        payload,
       });
     },
     onEdit(key) {
       dispatch({
         type: 'websiteModel/prepareToEdit',
-        payload: {key}
+        payload: { key },
       });
     },
     onDelete(entityKey) {
       dispatch({
         type: 'websiteModel/handleDelete',
-        payload: {entityKey}
+        payload: { entityKey },
       });
     },
     onNew() {
-      dispatch(history.push(`/pages/websites/new`));
+      history.push(`/pages/websites/new`);
     },
     onMode(entityKey, mode) {
-      dispatch(history.push(`/pages/websites/${entityKey}/${mode}`));
+      history.push(`/pages/websites/${entityKey}/${mode}`);
     },
     onAssignWidgets(entityKey) {
-      dispatch(history.push(`/pages/websites/${entityKey}/widgets`));
-    }
-  })
+      history.push(`/pages/websites/${entityKey}/widgets`);
+    },
+  }),
 )(withTranslation()(websites));

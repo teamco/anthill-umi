@@ -3,10 +3,7 @@ const axios = require('axios');
 /**
  * @type {{SERVER_URL, SERVER_PORT}}
  */
-const {
-  SERVER_URL = 'http://localhost',
-  SERVER_PORT = 5000
-} = process.env;
+const { SERVER_URL = 'http://localhost', SERVER_PORT = 5000 } = process.env;
 
 /**
  * @function
@@ -31,7 +28,7 @@ function _csrfToken() {
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json;charset=UTF-8',
   'Access-Control-Allow-Origin': '*',
-  accept: 'application/json'
+  accept: 'application/json',
 };
 
 const mergeHeaders = () => {
@@ -55,7 +52,7 @@ function adaptUrlToParams(url, key) {
  * @return {string}
  */
 function adoptUrlToServer(url) {
-  return `${SERVER_URL}:${SERVER_PORT}/${url}`
+  return `${SERVER_URL}:${SERVER_PORT}/${url}`;
 }
 
 /**
@@ -66,7 +63,7 @@ function adoptUrlToServer(url) {
  * @param [args]
  * @return {{headers, method: string, url: *}}
  */
-function config({url, method = 'get', headers = {}, ...args}) {
+function config({ url, method = 'get', headers = {}, ...args }) {
   if (url.match(/:id/)) {
     url = adaptUrlToParams(url, args.key);
   }
@@ -76,24 +73,10 @@ function config({url, method = 'get', headers = {}, ...args}) {
       url: adoptUrlToServer(url),
       method,
       responseType: 'json',
-      headers: {...mergeHeaders(), ...headers}
+      headers: { ...mergeHeaders(), ...headers },
     },
-    ...args
+    ...args,
   };
-}
-
-/**
- * @function
- * @param file
- * @return {Promise<unknown>}
- */
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
 }
 
 /**
@@ -107,7 +90,6 @@ function xhr(opts, errorMsg, fallbackUrl) {
   return axios(opts).catch(() => {
     errorMsg && errorMsg();
     setTimeout(() => {
-      debugger
       // fallbackUrl && (window.location.href = fallbackUrl);
     }, 2000);
   });
@@ -125,7 +107,6 @@ function isSuccess(status) {
 export default {
   xhr,
   config,
-  toBase64,
   isSuccess,
-  adoptUrlToServer
+  adoptUrlToServer,
 };

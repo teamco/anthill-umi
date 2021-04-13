@@ -6,11 +6,14 @@ const capitalize = require('capitalize-first-letter');
  */
 export function resetMatrix(domElement) {
   const _style = domElement.getAttribute('style');
-  _style && domElement.setAttribute(
+  _style &&
+    domElement.setAttribute(
       'style',
       _style.replace(
-          /matrix\(([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+)\) /g, '')
-  );
+        /matrix\(([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+), ([+\-\d.]+)\) /g,
+        '',
+      ),
+    );
 }
 
 /**
@@ -20,7 +23,6 @@ export function resetMatrix(domElement) {
  * @param {string} type
  */
 export function defineCss(type, domElement, value) {
-
   if (!domElement) {
     return false;
   }
@@ -31,7 +33,6 @@ export function defineCss(type, domElement, value) {
    * @private
    */
   function _updateCss(css) {
-
     // Define css
     let style = {};
 
@@ -42,7 +43,7 @@ export function defineCss(type, domElement, value) {
   }
 
   let _f = domElement.style[type],
-      _wf = domElement.style[`webkit${capitalize(type)}`];
+    _wf = domElement.style[`webkit${capitalize(type)}`];
 
   const _filter = _f.length ? _f : _wf.length ? _wf : 0;
 
@@ -52,8 +53,10 @@ export function defineCss(type, domElement, value) {
   }
 
   let _css = _filter.split(/ /g),
-      _value = [], i = 0, l = _css.length,
-      _updated = false;
+    _value = [],
+    i = 0,
+    l = _css.length,
+    _updated = false;
 
   for (; i < l; i++) {
     let filter = _css[i];

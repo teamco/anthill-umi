@@ -1,16 +1,16 @@
-import React, {useEffect} from 'react';
-import {connect} from 'dva';
-import {history} from 'umi';
-import {withTranslation} from 'react-i18next';
-import {Form} from 'antd';
+import React, { useEffect } from 'react';
+import { connect } from 'dva';
+import { history } from 'umi';
+import { withTranslation } from 'react-i18next';
+import { Form } from 'antd';
 
-import {fillFormEffect} from '@/utils/state';
+import { fillFormEffect } from '@/utils/object';
 import FormComponents from '@/components/Form';
 import Main from '@/components/Main';
-import {buttonsMetadata} from '@/utils/buttons';
+import { buttonsMetadata } from '@/utils/buttons';
 
-const {GenericPanel, EditableTags} = FormComponents;
-const {GeneralPanel} = Main;
+const { GenericPanel, EditableTags } = FormComponents;
+const { GeneralPanel } = Main;
 
 /**
  * @constant
@@ -18,8 +18,7 @@ const {GeneralPanel} = Main;
  * @param props
  * @return {JSX.Element}
  */
-const websiteEdit = props => {
-
+const websiteEdit = (props) => {
   const formRef = React.createRef();
 
   const {
@@ -30,19 +29,18 @@ const websiteEdit = props => {
     onFileRemove,
     onFieldsChange,
     onUpdateTags,
-    websiteModel
+    websiteModel,
   } = props;
 
   useEffect(() => {
     buttonsMetadata({
       model: 'websiteModel',
-      props
+      props,
     });
 
     onStoreForm(formRef);
 
     fillFormEffect(websiteModel, formRef.current);
-
   }, [websiteModel]);
 
   const {
@@ -51,112 +49,118 @@ const websiteEdit = props => {
     previewUrl,
     entityForm,
     tags,
-    timestamp = {}
+    timestamp = {},
   } = websiteModel;
 
   /**
    * @constant
    * @param formValues
    */
-  const onFinish = formValues => {
+  const onFinish = (formValues) => {
     onSave(formValues);
   };
 
   return (
-      <Form layout={'vertical'}
-            ref={formRef}
-            fields={entityForm}
-            onFieldsChange={onFieldsChange}
-            onFinish={onFinish}>
-        <GeneralPanel isEdit={isEdit}
-                      form={formRef}
-                      header={t('panel:general')}
-                      timestamp={timestamp}
-                      upload={{
-                        fileList,
-                        previewUrl,
-                        onFileRemove,
-                        onBeforeUpload
-                      }}/>
-        <GenericPanel header={t('panel:properties')}
-                      name={'properties'}
-                      defaultActiveKey={['properties']}>
-          <div>
-            <EditableTags label={t('form:tags')}
-                          name={'tags'}
-                          onChange={onUpdateTags}
-                          tags={tags}/>
-          </div>
-        </GenericPanel>
-      </Form>
+    <Form
+      layout={'vertical'}
+      ref={formRef}
+      fields={entityForm}
+      onFieldsChange={onFieldsChange}
+      onFinish={onFinish}
+    >
+      <GeneralPanel
+        isEdit={isEdit}
+        form={formRef}
+        header={t('panel:general')}
+        timestamp={timestamp}
+        upload={{
+          fileList,
+          previewUrl,
+          onFileRemove,
+          onBeforeUpload,
+        }}
+      />
+      <GenericPanel
+        header={t('panel:properties')}
+        name={'properties'}
+        defaultActiveKey={['properties']}
+      >
+        <div>
+          <EditableTags
+            label={t('form:tags')}
+            name={'tags'}
+            onChange={onUpdateTags}
+            tags={tags}
+          />
+        </div>
+      </GenericPanel>
+    </Form>
   );
 };
 
-export default connect(({
+export default connect(
+  ({ websiteModel, loading }) => {
+    return {
       websiteModel,
-      loading
-    }) => {
-      return {
-        websiteModel,
-        loading
-      };
+      loading,
+    };
+  },
+  (dispatch) => ({
+    dispatch,
+    onFieldsChange(changedFields, allFields) {
+      dispatch({
+        type: 'websiteModel/updateFields',
+        payload: {
+          changedFields,
+          allFields,
+          model: 'websiteModel',
+        },
+      });
     },
-    dispatch => ({
-      dispatch,
-      onFieldsChange(changedFields, allFields) {
-        dispatch({
-          type: 'websiteModel/updateFields',
-          payload: {
-            changedFields,
-            allFields,
-            model: 'websiteModel'
-          }
-        });
-      },
-      onStoreForm(form) {
-        dispatch({
-          type: 'appModel/storeForm',
-          payload: {
-            form: {...form},
-            model: 'websiteModel'
-          }
-        });
-      },
-      onBeforeUpload(payload) {
-        dispatch({
-          type: 'websiteModel/handleAddFile',
-          payload
-        });
-      },
-      onFileRemove(payload) {
-        dispatch({
-          type: 'websiteModel/handleRemoveFile',
-          payload
-        });
-      },
-      onButtonsMetadata(payload) {
-        dispatch({
-          type: 'appModel/activeButtons',
-          payload
-        });
-      },
-      onSave(payload) {
-        dispatch({
-          type: 'websiteModel/prepareToSave',
-          payload
-        });
-      },
-      onDelete() {
-        dispatch({type: 'websiteModel/handleDelete'});
-      },
-      onClose() {
-        dispatch(history.push(`/pages/websites`));
-      },
-      onUpdateTags(tags) {
-        dispatch({
-          type: 'websiteModel/updateTags',
-          payload: {tags}
-        });
-      }
-    })
+    onStoreForm(form) {
+      dispatch({
+        type: 'appModel/storeForm',
+        payload: {
+          form: { ...form },
+          model: 'websiteModel',
+        },
+      });
+    },
+    onBeforeUpload(payload) {
+      dispatch({
+        type: 'websiteModel/handleAddFile',
+        payload,
+      });
+    },
+    onFileRemove(payload) {
+      dispatch({
+        type: 'websiteModel/handleRemoveFile',
+        payload,
+      });
+    },
+    onButtonsMetadata(payload) {
+      dispatch({
+        type: 'appModel/activeButtons',
+        payload,
+      });
+    },
+    onSave(payload) {
+      dispatch({
+        type: 'websiteModel/prepareToSave',
+        payload,
+      });
+    },
+    onDelete() {
+      dispatch({ type: 'websiteModel/handleDelete' });
+    },
+    onClose() {
+      history.push(`/pages/websites`);
+    },
+    onUpdateTags(tags) {
+      dispatch({
+        type: 'websiteModel/updateTags',
+        payload: { tags },
+      });
+    },
+  }),
 )(withTranslation()(websiteEdit));
