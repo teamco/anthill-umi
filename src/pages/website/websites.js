@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import { withTranslation } from 'react-i18next';
-import { history } from 'umi';
-import { Button, Card, Dropdown, Menu, PageHeader } from 'antd';
+import history from 'umi';
+import { Button, Card, Dropdown, Menu } from 'antd';
 import {
   ApiOutlined,
   AppstoreAddOutlined,
@@ -12,14 +12,12 @@ import {
   ProfileOutlined,
   SettingOutlined,
   StopOutlined,
-  UserSwitchOutlined,
 } from '@ant-design/icons';
 
 import { showConfirm } from '@/utils/modals';
 import i18n from '@/utils/i18n';
 
-import styles from '@/pages/website/website.module.less';
-import Page from '@/components/Page';
+import styles from './website.module.less';
 
 const { Meta } = Card;
 const { SubMenu } = Menu;
@@ -33,7 +31,6 @@ const { SubMenu } = Menu;
 const websites = (props) => {
   const {
     t,
-    authModel,
     websiteModel,
     onEdit,
     onAssignWidgets,
@@ -43,8 +40,6 @@ const websites = (props) => {
     onMode,
     loading,
   } = props;
-
-  const { websites } = websiteModel;
 
   useEffect(() => {
     onButtonsMetadata({
@@ -113,26 +108,10 @@ const websites = (props) => {
     );
   };
 
-  const subTitle = (
-    <>
-      <UserSwitchOutlined style={{ marginRight: 10 }} />
-      {t('actions:manage', { type: t('auth:users') })}
-    </>
-  );
-
-  const { ability } = authModel;
-  const component = 'websites';
-  // const disabled = !ability.can('update', component);
-
   return (
-    <Page
-      className={styles.websites}
-      component={component}
-      spinEffects={['authModel/defineAbilities']}
-    >
-      <PageHeader ghost={false} subTitle={subTitle} />
-      {websites.length ? (
-        websites.map((site, idx) => (
+    <div>
+      {websiteModel.websites.length ? (
+        websiteModel.websites.map((site, idx) => (
           <Card
             key={idx}
             hoverable
@@ -173,15 +152,14 @@ const websites = (props) => {
           />
         </Card>
       )}
-    </Page>
+    </div>
   );
 };
 
 export default connect(
-  ({ websiteModel, authModel, loading }) => {
+  ({ websiteModel, loading }) => {
     return {
       websiteModel,
-      authModel,
       loading,
     };
   },
@@ -206,13 +184,13 @@ export default connect(
       });
     },
     onNew() {
-      history.push(`/pages/websites/new`);
+      dispatch(history.push(`/pages/websites/new`));
     },
     onMode(entityKey, mode) {
-      history.push(`/pages/websites/${entityKey}/${mode}`);
+      dispatch(history.push(`/pages/websites/${entityKey}/${mode}`));
     },
     onAssignWidgets(entityKey) {
-      history.push(`/pages/websites/${entityKey}/widgets`);
+      dispatch(history.push(`/pages/websites/${entityKey}/widgets`));
     },
   }),
 )(withTranslation()(websites));

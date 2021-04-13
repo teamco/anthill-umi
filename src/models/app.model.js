@@ -1,9 +1,9 @@
-/**
- * @type {Function}
- */
+/* global window */
+/* global document */
+/* global location */
 import dvaModelExtend from 'dva-model-extend';
 
-import { commonModel } from '@/models/common.model';
+import { commonModel } from '@/models/common';
 import { menus } from '@/services/menu.service';
 
 /**
@@ -28,6 +28,11 @@ export default dvaModelExtend(commonModel, {
     activeModel: {
       isEdit: false,
       title: '',
+    },
+  },
+  subscriptions: {
+    setup({ dispatch }) {
+      dispatch({ type: 'query' });
     },
   },
   effects: {

@@ -1,9 +1,9 @@
 import dvaModelExtend from 'dva-model-extend';
 import { history } from 'umi';
 
-import { commonModel } from '@/models/common.model';
+import { commonModel } from '@/models/common';
 import i18n from '@/utils/i18n';
-import { fromForm } from '@/utils/object';
+import { fromForm } from '@/utils/state';
 import request from '@/utils/request';
 import { generateKey } from '@/services/common.service';
 
@@ -23,7 +23,11 @@ import {
 export default dvaModelExtend(commonModel, {
   namespace: 'widgetModel',
   state: {
+    fileList: [],
     widgets: [],
+  },
+  subscriptions: {
+    setup({ dispatch }) {},
   },
   effects: {
     *widgetsQuery({ payload }, { put, call, take }) {
@@ -162,6 +166,36 @@ export default dvaModelExtend(commonModel, {
       });
 
       yield take('appModel/activeModel/@@end');
+    },
+
+    *handleAddFile({ payload }, { put, select }) {
+      const { fileList } = yield select((state) => state.widgetModel);
+
+      const previewUrl = URL.createObjectURL(payload.file);
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          previewUrl,
+          fileList: [...fileList, payload.file],
+        },
+      });
+    },
+
+    *handleRemoveFile({ payload }, { put, select }) {
+      const { fileList } = yield select((state) => state.widgetModel);
+
+      const index = fileList.indexOf(payload.file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          previewUrl: null,
+          fileList: newFileList,
+        },
+      });
     },
 
     *prepareToSave({ payload }, { put, select, call }) {

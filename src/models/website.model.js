@@ -1,12 +1,9 @@
-/**
- * @type {Function}
- */
 import dvaModelExtend from 'dva-model-extend';
 import { history } from 'umi';
 
-import { commonModel } from '@/models/common.model';
+import { commonModel } from '@/models/common';
 import i18n from '@/utils/i18n';
-import { fromForm } from '@/utils/object';
+import { fromForm } from '@/utils/state';
 import request from '@/utils/request';
 import { generateKey } from '@/services/common.service';
 
@@ -29,14 +26,19 @@ import { getWidgets } from '@/services/widget.service';
 export default dvaModelExtend(commonModel, {
   namespace: 'websiteModel',
   state: {
+    fileList: [],
     websites: [],
     widgets: [],
     assignedWidgets: [],
   },
+  subscriptions: {
+    setup({ dispatch }) {
+      // dispatch({type: 'websitesQuery'});
+    },
+  },
   effects: {
     *websitesQuery({ payload }, { put, call, take }) {
       const websites = yield call(getWebsites);
-      const { data = [] } = websites || {};
 
       if (payload.global) {
         yield put({
@@ -52,7 +54,7 @@ export default dvaModelExtend(commonModel, {
           payload: {
             isEdit: false,
             model: 'websiteModel',
-            count: data.length,
+            count: websites.data.length,
             title: i18n.t('model:list', { instance: '$t(menu:websites)' }),
           },
         });
@@ -63,7 +65,7 @@ export default dvaModelExtend(commonModel, {
       yield put({
         type: 'updateState',
         payload: {
-          websites: data,
+          websites: websites.data,
         },
       });
     },
@@ -166,6 +168,36 @@ export default dvaModelExtend(commonModel, {
       });
 
       yield take('appModel/activeModel/@@end');
+    },
+
+    *handleAddFile({ payload }, { put, select }) {
+      const { fileList } = yield select((state) => state.websiteModel);
+
+      const previewUrl = URL.createObjectURL(payload.file);
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          previewUrl,
+          fileList: [...fileList, payload.file],
+        },
+      });
+    },
+
+    *handleRemoveFile({ payload }, { put, select }) {
+      const { fileList } = yield select((state) => state.websiteModel);
+
+      const index = fileList.indexOf(payload.file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          previewUrl: null,
+          fileList: newFileList,
+        },
+      });
     },
 
     *prepareToSave({ payload }, { put, select, call }) {

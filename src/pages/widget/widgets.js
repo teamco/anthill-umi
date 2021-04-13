@@ -16,7 +16,7 @@ import classnames from 'classnames';
 import { showConfirm } from '@/utils/modals';
 import i18n from '@/utils/i18n';
 
-import styles from '@/pages/widget/widget.module.less';
+import styles from './widget.module.less';
 
 const { Meta } = Card;
 
@@ -157,7 +157,7 @@ export default connect(
       });
     },
     onNew() {
-      history.push(`/pages/widgets/new`);
+      dispatch(history.push(`/pages/widgets/new`));
     },
   }),
 )(withTranslation()(widgets));

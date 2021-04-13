@@ -4,15 +4,15 @@ import { history } from 'umi';
 import { withTranslation } from 'react-i18next';
 import { Form, InputNumber, Select } from 'antd';
 
-import Main from '@/components/Main';
-import FormComponents, { unitFormatter, unitParser } from '@/components/Form';
-import Widget from '@/components/Widget';
-import FormProperties from '@/components/Widget/properties/form.properties';
+import Main from 'components/Main';
+import FormComponents, { unitFormatter, unitParser } from 'components/Form';
+import Widget from 'components/Widget';
+import FormProperties from 'components/Widget/properties/form.properties';
 
-import { fillFormEffect, fromForm } from '@/utils/object';
-import { buttonsMetadata } from '@/utils/buttons';
+import { fillFormEffect, fromForm } from 'utils/state';
+import { buttonsMetadata } from 'utils/buttons';
 
-import styles from '@/pages/widget/widget.module.less';
+import styles from 'routes/widget/widget.module.less';
 
 const { Option } = Select;
 const { GenericPanel, EditableTags } = FormComponents;

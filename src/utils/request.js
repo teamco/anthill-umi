@@ -81,6 +81,20 @@ function config({ url, method = 'get', headers = {}, ...args }) {
 
 /**
  * @function
+ * @param file
+ * @return {Promise<unknown>}
+ */
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
+/**
+ * @function
  * @param opts
  * @param [errorMsg]
  * @param [fallbackUrl]
@@ -90,6 +104,7 @@ function xhr(opts, errorMsg, fallbackUrl) {
   return axios(opts).catch(() => {
     errorMsg && errorMsg();
     setTimeout(() => {
+      debugger;
       // fallbackUrl && (window.location.href = fallbackUrl);
     }, 2000);
   });
@@ -107,6 +122,7 @@ function isSuccess(status) {
 export default {
   xhr,
   config,
+  toBase64,
   isSuccess,
   adoptUrlToServer,
 };

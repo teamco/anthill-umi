@@ -3,6 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import I18NextXhrBackend from 'i18next-xhr-backend';
 
+import { isDevelopment } from '@/services/common.service';
 import enUS from '@/locales/en-US/translation.json';
 
 const resources = { 'en-US': enUS };
@@ -18,7 +19,7 @@ i18n
   .init({
     fallbackLng: 'en-US',
 
-    debug: false,
+    debug: isDevelopment(),
     keySeparator: false,
     // saveMissing: true, // send not translated keys to endpoint
     resources,
@@ -39,6 +40,7 @@ i18n
     // special options for react-i18next
     react: {
       useSuspense: false,
+      wait: true,
     },
   })
   .then();

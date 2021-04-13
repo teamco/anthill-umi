@@ -4,7 +4,7 @@ import { history } from 'umi';
 import { withTranslation } from 'react-i18next';
 import { Form } from 'antd';
 
-import { fillFormEffect } from '@/utils/object';
+import { fillFormEffect } from '@/utils/state';
 import FormComponents from '@/components/Form';
 import Main from '@/components/Main';
 import { buttonsMetadata } from '@/utils/buttons';
@@ -154,7 +154,7 @@ export default connect(
       dispatch({ type: 'websiteModel/handleDelete' });
     },
     onClose() {
-      history.push(`/pages/websites`);
+      dispatch(history.push(`/pages/websites`));
     },
     onUpdateTags(tags) {
       dispatch({

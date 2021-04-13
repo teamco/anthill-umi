@@ -1,9 +1,7 @@
 import { defineConfig } from 'umi';
-import { routes } from './routes';
 
 export default defineConfig({
   crossorigin: true,
-  routes,
   dva: {
     immer: true,
     hmr: true,
@@ -14,4 +12,18 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  routes: [
+    {
+      exact: false,
+      path: '/',
+      component: '@/layouts/app.layout',
+      routes: [
+        {
+          exact: true,
+          path: '/websites/:id/development',
+          component: '@/pages/website/mode/development',
+        },
+      ],
+    },
+  ],
 });
