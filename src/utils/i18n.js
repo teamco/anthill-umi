@@ -19,7 +19,7 @@ i18n
   .init({
     fallbackLng: 'en-US',
 
-    debug: isDevelopment(),
+    debug: false,
     keySeparator: false,
     // saveMissing: true, // send not translated keys to endpoint
     resources,
@@ -40,7 +40,6 @@ i18n
     // special options for react-i18next
     react: {
       useSuspense: false,
-      wait: true,
     },
   })
   .then();

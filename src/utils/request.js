@@ -136,7 +136,7 @@ function xhr(opts, errorMsg, fallbackUrl) {
       errorMsg && errorMsg(error?.data?.error);
       setTimeout(() => {
         if (fallbackUrl && !pathname.match(new RegExp(fallbackUrl))) {
-          history.replace(`${fallbackUrl}?ref=${encodeURIComponent(pathname)}`);
+          //history.replace(`${fallbackUrl}?ref=${encodeURIComponent(pathname)}`);
         }
       }, 2000);
 
