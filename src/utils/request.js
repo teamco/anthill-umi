@@ -88,6 +88,7 @@ function config({
   responseType = 'json',
   ...args
 }) {
+
   if (url.match(/:(\w+)Key/)) {
     url = adaptUrlToParams(url, args);
   }

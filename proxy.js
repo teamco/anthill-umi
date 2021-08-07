@@ -13,7 +13,7 @@ const railsServer = `${apiConfig.SERVER_URL}:${apiConfig.SERVER_PORT}`;
  * @param api
  * @return {*}
  */
-const proxyOpts = (api) => ({
+const proxyOpts = api => ({
   target: api,
   changeOrigin: true,
   cookieDomainRewrite: 'localhost',
@@ -36,9 +36,7 @@ const proxyOpts = (api) => ({
 });
 
 const routes = {
-  api: railsServer,
-  uploads: railsServer,
-  users: railsServer,
+  api: railsServer
 };
 
 const proxy = {};
@@ -46,7 +44,5 @@ const proxy = {};
 Object.keys(routes).forEach((server) => {
   proxy[`/${server}`] = proxyOpts(routes[server]);
 });
-
-// console.log(proxy);
 
 export default proxy;
