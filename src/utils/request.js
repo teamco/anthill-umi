@@ -1,9 +1,12 @@
-const axios = require('axios');
+import request from 'umi-request';
+import { history } from 'umi';
+import { API_CONFIG } from '@/services/config';
 
 /**
- * @type {{SERVER_URL, SERVER_PORT}}
+ * @constant
+ * @type {{SERVER_PORT: number, API: string, SERVER_URL: string, ANTHILL_KEY: string}}
  */
-const { SERVER_URL = 'http://localhost', SERVER_PORT = 5000 } = process.env;
+const apiConfig = API_CONFIG();
 
 /**
  * @function
@@ -31,6 +34,10 @@ const DEFAULT_HEADERS = {
   accept: 'application/json',
 };
 
+/**
+ * @constant
+ * @return {{'Access-Control-Allow-Origin': string, 'Content-Type': string, accept: string}}
+ */
 const mergeHeaders = () => {
   // DEFAULT_HEADERS['X-CSRF-Token'] = _csrfToken();
   return DEFAULT_HEADERS;
@@ -38,21 +45,29 @@ const mergeHeaders = () => {
 
 /**
  * @function
- * @param url
- * @param key
- * @return {*}
+ * @param {string} url
+ * @param args
+ * @return {string}
  */
-function adaptUrlToParams(url, key) {
-  return url.replace(/:id/, key);
+function adaptUrlToParams(url = '', args) {
+  const matchers = url.match(/:\w+/g);
+  matchers &&
+    matchers.forEach((matcher) => {
+      const instance = matcher.replace(':', '');
+      url = url.replace(new RegExp(matcher), args[instance]);
+    });
+
+  return url;
 }
 
 /**
  * @function
  * @param url
+ * @param direct
  * @return {string}
  */
-function adoptUrlToServer(url) {
-  return `${SERVER_URL}:${SERVER_PORT}/${url}`;
+function adoptUrlToAPI(url, direct) {
+  return direct ? `/${url}` : `/${apiConfig.API}/${url}`;
 }
 
 /**
@@ -60,19 +75,28 @@ function adoptUrlToServer(url) {
  * @param {string} url
  * @param {string} [method]
  * @param [headers]
+ * @param {boolean} [direct]
+ * @param {string} [responseType]
  * @param [args]
  * @return {{headers, method: string, url: *}}
  */
-function config({ url, method = 'get', headers = {}, ...args }) {
-  if (url.match(/:id/)) {
-    url = adaptUrlToParams(url, args.key);
+function config({
+  url = '',
+  method = 'get',
+  headers = {},
+  direct = false,
+  responseType = 'json',
+  ...args
+}) {
+  if (url.match(/:(\w+)Key/)) {
+    url = adaptUrlToParams(url, args);
   }
 
   return {
     ...{
-      url: adoptUrlToServer(url),
+      url: adoptUrlToAPI(url, direct),
       method,
-      responseType: 'json',
+      responseType,
       headers: { ...mergeHeaders(), ...headers },
     },
     ...args,
@@ -101,13 +125,23 @@ function toBase64(file) {
  * @return {Q.Promise<any> | undefined}
  */
 function xhr(opts, errorMsg, fallbackUrl) {
-  return axios(opts).catch(() => {
-    errorMsg && errorMsg();
-    setTimeout(() => {
-      debugger;
-      // fallbackUrl && (window.location.href = fallbackUrl);
-    }, 2000);
-  });
+  const { pathname } = window.location;
+  const { url, method } = opts;
+  delete opts.url;
+  delete opts.method;
+
+  return request[method](url, opts)
+    .then((res) => ({ data: { ...res } }))
+    .catch((error) => {
+      errorMsg && errorMsg(error?.data?.error);
+      setTimeout(() => {
+        if (fallbackUrl && !pathname.match(new RegExp(fallbackUrl))) {
+          history.replace(`${fallbackUrl}?ref=${encodeURIComponent(pathname)}`);
+        }
+      }, 2000);
+
+      return error?.response;
+    });
 }
 
 /**
@@ -124,5 +158,4 @@ export default {
   config,
   toBase64,
   isSuccess,
-  adoptUrlToServer,
 };

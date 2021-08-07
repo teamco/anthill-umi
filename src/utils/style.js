@@ -1,4 +1,4 @@
-const capitalize = require('capitalize-first-letter');
+import capitalize from 'capitalize-first-letter';
 
 /**
  * Define reset matrix css

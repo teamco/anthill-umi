@@ -1,6 +1,7 @@
-import {htmlToElement} from '@/utils/dom';
+import { htmlToElement } from '@/utils/dom';
 
-const REGEXP = /^.*(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i;
+const REGEXP =
+  /^.*(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i;
 const MASK = 'https://www.youtube.com/embed/{videoId}';
 
 /**
@@ -13,6 +14,7 @@ export function getEmbedCode(preview) {
     preview = htmlToElement(preview).getAttribute('src');
   }
 
-  return preview.replace(REGEXP, MASK.replace(/{videoId}/g, '$1')).
-      replace(/embed\/embed/, 'embed');
+  return preview
+    .replace(REGEXP, MASK.replace(/{videoId}/g, '$1'))
+    .replace(/embed\/embed/, 'embed');
 }

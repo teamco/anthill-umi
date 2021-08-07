@@ -1,17 +1,16 @@
-import {isDevelopment} from '@/services/common.service';
+import caller from 'caller-id';
+import { isDevelopment } from '@/services/common.service';
 
 /**
  * @constructor
  * @class Logger
  */
 export default class Logger {
-
   /**
    * @constructor
    * @param scope
    */
   constructor(scope) {
-
     /**
      * @property Logger
      * @type {*}
@@ -44,17 +43,19 @@ export default class Logger {
      */
     this.warn = (...args) => console.log(...args);
 
-    this.setConfig((scope.config || {}).logger || {
-      handle: false,
-      show: true,
-      namespaces: false,
-      type: {
-        log: isDevelopment(),
-        info: false,
-        error: true,
-        warn: true
-      }
-    });
+    this.setConfig(
+      (scope.config || {}).logger || {
+        handle: false,
+        show: true,
+        namespaces: false,
+        type: {
+          log: isDevelopment(),
+          info: false,
+          error: true,
+          warn: true,
+        },
+      },
+    );
   }
 
   /**
@@ -91,12 +92,11 @@ export default class Logger {
    * @param config
    */
   setConfig(config) {
-    const protoConfig = {...this.constructor.prototype.config};
-    this.config = {...config};
+    const protoConfig = { ...this.constructor.prototype.config };
+    this.config = { ...config };
 
     if (Object.keys(config || {}).length) {
       if (!Object.keys(protoConfig || {}).length) {
-
         /**
          * Define cross items logger config
          * @property Logger
@@ -105,7 +105,6 @@ export default class Logger {
         this.constructor.prototype.config = config;
       }
     } else if (protoConfig) {
-
       /**
        * Define config
        * @type {*}
@@ -142,16 +141,15 @@ export default class Logger {
    */
   puts(type) {
     const config = this.config,
-        scope = this.scope,
-        log = this.isLoggable();
+      scope = this.scope,
+      log = this.isLoggable();
 
     let content = [],
-        hash = {};
+      hash = {};
 
     if (log && config.type[type]) {
       try {
         if (config.namespaces) {
-
           /**
            * Define constructor name instance
            * @type {Function.name|*}
@@ -166,7 +164,8 @@ export default class Logger {
           }
         }
 
-        let args = [], i = 1;
+        let args = [],
+          i = 1;
 
         for (i; i < arguments.length; i += 1) {
           args.push(arguments[i]);
@@ -176,18 +175,16 @@ export default class Logger {
           hash[type] = args;
           content.push(hash);
         } else {
-          content.push({log: args});
+          content.push({ log: args });
         }
 
         if (type === 'error' && this.console.trace) {
-          content.push({trace: args});
+          content.push({ trace: args });
         }
-
       } catch (e) {
-
         if (this.console.error) {
           content.push({
-            error: [e, arguments]
+            error: [e, arguments],
           });
         }
       }
@@ -202,22 +199,17 @@ export default class Logger {
 
     this.console.groupCollapsed(scope);
 
-    /**
-     * @constant caller
-     */
-    const caller = require('caller-id');
-
     for (i; i < l; i += 1) {
       hash = content[i];
       const k = Object.keys(hash)[0];
 
       hash[k]['caller'] = caller.getData();
-      hash[k]['line'] = Logger.stackIt(((new Error).stack + '').split('\n'));
+      hash[k]['line'] = Logger.stackIt((new Error().stack + '').split('\n'));
 
       this.console[k](hash[k]);
     }
 
-    this.console.info('timestamp', (new Date()).getTime());
+    this.console.info('timestamp', new Date().getTime());
     this.console.groupEnd();
 
     return true;
@@ -231,13 +223,12 @@ export default class Logger {
    */
   timer(name, start) {
     const config = this.config,
-        log = this.isLoggable();
+      log = this.isLoggable();
 
     start = typeof start !== 'undefined';
 
     if (log && config.type.log) {
-      start ? this.console.time(name) :
-          this.console.timeEnd(name);
+      start ? this.console.time(name) : this.console.timeEnd(name);
     }
   }
 
@@ -246,7 +237,7 @@ export default class Logger {
    * @memberOf Logger.defineLogs
    */
   defineLogs() {
-    Object.keys((this.config || {}).type || {}).forEach(log => {
+    Object.keys((this.config || {}).type || {}).forEach((log) => {
       log && (this[log] = this.puts.bind(this, log));
     });
   }

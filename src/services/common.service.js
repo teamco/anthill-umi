@@ -2,7 +2,7 @@
  * Generate and translate standard UUIDs into shorter - or just different - formats and back.
  * @link https://github.com/oculus42/short-uuid
  */
-const short = require('short-uuid');
+import short from 'short-uuid';
 
 /**
  * @constant
@@ -23,7 +23,6 @@ export const isProduction = () => process.env.NODE_ENV === 'production';
  * @return {string}
  */
 export function generateKey() {
-
   /**
    * Generate short uuid as a key
    * Only in case of new
@@ -38,7 +37,7 @@ export function generateKey() {
  * @param [namespace]
  * @return {number}
  */
-export function getEntityFormIdx({entityForm, key, namespace = ''}) {
+export function getEntityFormIdx({ entityForm, key, namespace = '' }) {
   let idx = -1;
   if (namespace && namespace.length) {
     key = `${namespace}/${key}`;

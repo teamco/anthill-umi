@@ -1,29 +1,75 @@
 import { defineConfig } from 'umi';
+import routes from './routes';
+import proxy from './proxy';
+
+const fs = require('fs');
+
+/**
+ * @function
+ * @param dir
+ * @param files_
+ * @return {*[]}
+ */
+function getFiles(dir, files_) {
+  files_ = files_ || [];
+  const files = fs.readdirSync(dir);
+  for (let i in files) {
+    const name = dir + '/' + files[i];
+    if (fs.statSync(name).isDirectory()) {
+      getFiles(name, files_);
+    } else {
+      if (name.match(/.model/)) {
+        files_.push(name);
+      }
+    }
+  }
+  return files_;
+}
+
+const widgetsPath = `${__dirname}/src/vendors/widgets`;
+const extraModels = getFiles(widgetsPath);
 
 export default defineConfig({
   crossorigin: true,
+  routes,
+  proxy,
+  dynamicImport: {
+    loading: '@/components/Loader',
+  },
+  dynamicImportSyntax: {},
+  fastRefresh: {},
   dva: {
+    extraModels,
     immer: true,
     hmr: true,
   },
+  mfsu: {},
   lessLoader: {
     lessLoaderOptions: {},
   },
   nodeModulesTransform: {
     type: 'none',
   },
-  routes: [
-    {
-      exact: false,
-      path: '/',
-      component: '@/layouts/app.layout',
-      routes: [
-        {
-          exact: true,
-          path: '/websites/:id/development',
-          component: '@/pages/website/mode/development',
+  chunks: ['vendors', 'umi'],
+  chainWebpack(config, { webpack }) {
+    config.merge({
+      optimization: {
+        splitChunks: {
+          chunks: 'all',
+          minSize: 30000,
+          minChunks: 3,
+          automaticNameDelimiter: '.',
+          cacheGroups: {
+            vendor: {
+              name: 'vendors',
+              test({ resource }) {
+                return /[\\/]node_modules[\\/]/.test(resource);
+              },
+              priority: 10,
+            },
+          },
         },
-      ],
-    },
-  ],
+      },
+    });
+  },
 });
