@@ -37,98 +37,98 @@ const websiteDevelopment = props => {
   const widgetFormProps = {};
 
   return (
-      <Layout className={classnames(styles.layout, mode)}>
-        <MenuDevelopment {...props}/>
-        <Layout className={'site-layout'}>
-          <Content style={{margin: 0}}>
-            <div className={styles.workspace}>
-              <Workspace pages={pages}
-                         navigateTo={navigateTo}/>
-              <FormProperties/>
-            </div>
-          </Content>
-        </Layout>
+    <Layout className={classnames(styles.layout, mode)}>
+      <MenuDevelopment {...props} />
+      <Layout className={'site-layout'}>
+        <Content style={{margin: 0}}>
+          <div className={styles.workspace}>
+            <Workspace pages={pages}
+                       navigateTo={navigateTo} />
+            <FormProperties />
+          </div>
+        </Content>
       </Layout>
+    </Layout>
   );
 };
 
 export default connect(({
+    workspaceModel,
+    loading
+  }) => {
+    return {
       workspaceModel,
       loading
-    }) => {
-      return {
-        workspaceModel,
-        loading
-      };
+    };
+  },
+  dispatch => ({
+    dispatch,
+    onMode() {
+      dispatch({type: 'workspaceModel/mode'});
     },
-    dispatch => ({
-      dispatch,
-      onMode() {
-        dispatch({type: 'workspaceModel/mode'});
-      },
-      onCollapse() {
-        dispatch({type: 'workspaceModel/collapse'});
-      },
-      onWidgets() {
-        dispatch({type: 'workspaceModel/widgets'});
-      },
-      onNavigateToPage(idx) {
-        dispatch({
-          type: 'workspaceModel/navigateToPage',
-          payload: {idx}
-        });
-      },
-      onPageSettingModal(onSavePage, page) {
-        dispatch({
-          type: 'workspaceModel/showPageSettingModal',
-          payload: {
-            onSavePage,
-            pageSettingOf: page
-          }
-        });
-      },
-      onAddPage(values) {
-        dispatch({
-          type: 'workspaceModel/addPage',
-          payload: {values}
-        });
-      },
-      onScrollToWidget(widget) {
-        dispatch({
-          type: 'pageModel/scrollToWidget',
-          payload: {widget}
-        });
-      },
-      onAddWidget(widget) {
-        dispatch({
-          type: 'pageModel/addWidget',
-          payload: {widget}
-        });
-      },
-      onSearch(entities, value, type) {
-        dispatch({
-          type: 'workspaceModel/search',
-          payload: {
-            entities,
-            value,
-            type
-          }
-        });
-      },
-      onCancelModal(type) {
-        dispatch({
-          type: 'workspaceModel/cancelModal',
-          payload: {type}
-        });
-      },
-      onUpdatePageSetting(values, page) {
-        dispatch({
-          type: 'workspaceModel/updatePageSetting',
-          payload: {
-            values,
-            page
-          }
-        });
-      }
-    })
+    onCollapse() {
+      dispatch({type: 'workspaceModel/collapse'});
+    },
+    onWidgets() {
+      dispatch({type: 'workspaceModel/widgets'});
+    },
+    onNavigateToPage(idx) {
+      dispatch({
+        type: 'workspaceModel/navigateToPage',
+        payload: {idx}
+      });
+    },
+    onPageSettingModal(onSavePage, page) {
+      dispatch({
+        type: 'workspaceModel/showPageSettingModal',
+        payload: {
+          onSavePage,
+          pageSettingOf: page
+        }
+      });
+    },
+    onAddPage(values) {
+      dispatch({
+        type: 'workspaceModel/addPage',
+        payload: {values}
+      });
+    },
+    onScrollToWidget(widget) {
+      dispatch({
+        type: 'pageModel/scrollToWidget',
+        payload: {widget}
+      });
+    },
+    onAddWidget(widget) {
+      dispatch({
+        type: 'pageModel/addWidget',
+        payload: {widget}
+      });
+    },
+    onSearch(entities, value, type) {
+      dispatch({
+        type: 'workspaceModel/search',
+        payload: {
+          entities,
+          value,
+          type
+        }
+      });
+    },
+    onCancelModal(type) {
+      dispatch({
+        type: 'workspaceModel/cancelModal',
+        payload: {type}
+      });
+    },
+    onUpdatePageSetting(values, page) {
+      dispatch({
+        type: 'workspaceModel/updatePageSetting',
+        payload: {
+          values,
+          page
+        }
+      });
+    }
+  })
 )(withTranslation()(websiteDevelopment));

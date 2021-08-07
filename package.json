@@ -9,14 +9,6 @@
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,jsx,less,md,json}": [
-      "prettier --write"
-    ]
-  },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@ant-design/pro-layout": "^6.23.4",
