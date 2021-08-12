@@ -1,4 +1,4 @@
-import { defineConfig } from 'umi';
+import {defineConfig} from 'umi';
 import routes from './routes';
 import proxy from './proxy';
 
@@ -34,20 +34,20 @@ export default defineConfig({
   routes,
   proxy,
   dynamicImport: {
-    loading: '@/components/Loader',
+    loading: '@/components/Loader'
   },
   dynamicImportSyntax: {},
   fastRefresh: {},
   dva: {
     extraModels,
     immer: true,
-    hmr: true,
+    hmr: true
   },
   mfsu: {},
   lessLoader: {
-    lessLoaderOptions: {},
+    lessLoaderOptions: {}
   },
   nodeModulesTransform: {
-    type: 'none',
-  },
+    type: 'none'
+  }
 });

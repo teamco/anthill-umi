@@ -15,9 +15,9 @@ export function getWidgets({key}) {
     key
   });
   return request.xhr(
-      opts,
-      () => errorGetMsg(i18n.t('menu:widgets')),
-      '/pages'
+    opts,
+    () => errorGetMsg(i18n.t('menu:widgets')),
+    '/pages'
   );
 }
 
@@ -32,9 +32,9 @@ export function getWidget({key}) {
     key
   });
   return request.xhr(
-      opts,
-      () => errorGetMsg(i18n.t('instance:website')),
-      '/pages/widgets'
+    opts,
+    () => errorGetMsg(i18n.t('instance:website')),
+    '/pages/widgets'
   );
 }
 
@@ -54,22 +54,22 @@ export async function saveWidget({entityForm, fileList = [], tags = []}) {
   const picture = fileList[0] ? await request.toBase64(fileList[0]) : undefined;
 
   return request.xhr({
-        ...opts, ...{
-          data: {
-            widget: {
-              name: entityForm.name,
-              description: entityForm.description,
-              key: entityForm.entityKey,
-              width: entityForm.width,
-              height: entityForm.height,
-              tags: JSON.stringify(tags),
-              user_id: 1,
-              picture
-            }
+      ...opts, ...{
+        data: {
+          widget: {
+            name: entityForm.name,
+            description: entityForm.description,
+            key: entityForm.entityKey,
+            width: entityForm.width,
+            height: entityForm.height,
+            tags: JSON.stringify(tags),
+            user_id: 1,
+            picture
           }
         }
-      },
-      () => errorSaveMsg(false, i18n.t('instance:widget'))
+      }
+    },
+    () => errorSaveMsg(false, i18n.t('instance:widget'))
   );
 }
 
@@ -90,20 +90,20 @@ export async function updateWidget({entityForm, fileList = [], tags = []}) {
   const picture = fileList[0] ? await request.toBase64(fileList[0]) : undefined;
 
   return request.xhr({
-        ...opts, ...{
-          data: {
-            widget: {
-              name: entityForm.name,
-              description: entityForm.description,
-              width: entityForm.width,
-              height: entityForm.height,
-              tags: JSON.stringify(tags),
-              picture
-            }
+      ...opts, ...{
+        data: {
+          widget: {
+            name: entityForm.name,
+            description: entityForm.description,
+            width: entityForm.width,
+            height: entityForm.height,
+            tags: JSON.stringify(tags),
+            picture
           }
         }
-      },
-      () => errorSaveMsg(true, i18n.t('instance:widget'))
+      }
+    },
+    () => errorSaveMsg(true, i18n.t('instance:widget'))
   );
 }
 
@@ -120,7 +120,7 @@ export async function destroyWidget({entityKey}) {
   });
 
   return request.xhr(
-      opts,
-      () => errorDeleteMsg(i18n.t('instance:widget'))
+    opts,
+    () => errorDeleteMsg(i18n.t('instance:widget'))
   );
 }
