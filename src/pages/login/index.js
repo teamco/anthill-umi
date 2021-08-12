@@ -1,67 +1,103 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'dva';
-import { Button, Row, Form, Input } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {connect} from 'dva';
+import {withTranslation} from 'react-i18next';
 
-const FormItem = Form.Item;
+import ErrorModal from '@/components/Authentication/modals/error.modal';
+import SignInModal from '@/components/Authentication/modals/signin.modal';
+import Page from '@/components/Page';
 
-const Login = ({ loading, dispatch }) => {
-  const [form] = Form.useForm();
+/**
+ * @constant
+ * @param props
+ * @return {JSX.Element}
+ */
+const login = (props) => {
+  const {t, authModel, signInVisible = true, onQuery, onSignIn, loading} = props;
 
-  const { scrollToField } = form;
+  const {currentUser, errors} = authModel;
 
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+  const [isSignInVisible, setIsSignInVisible] = useState(signInVisible);
+  const [isErrorVisible, setIsErrorVisible] = useState(false);
+
+  useEffect(() => {
+    onQuery(currentUser);
+    return () => {
+      // TODO: handle unmount
+    };
+  }, [currentUser]);
+
+  let errorProps = {};
+
+  if (errors) {
+    errorProps = {
+      title: t('error:errorNum', {number: 400}),
+      errors
+    };
+
+    if (isErrorVisible) {
+      // TODO (teamco): Do something.
+    } else {
+      // setIsErrorVisible(true);
+    }
+  }
+
+  /**
+   * @constant
+   */
+  const handleErrorCancel = () => {
+    setIsErrorVisible(false);
+    // setError(null);
   };
 
-  const onFinishFailed = ({ errorFields }) => {
-    scrollToField(errorFields[0].name);
+  /**
+   * @constant
+   * @param signInFn
+   */
+  const handleCancel = (signInFn) => {
+    if (typeof signInFn === 'function') {
+      signInFn();
+    }
+  };
+
+  /**
+   * @constant
+   * @param values
+   */
+  const onFinish = (values) => {
+    setIsSignInVisible(false);
+    onSignIn(values.email, values.password);
+  };
+
+  const signInProps = {
+    isSignInVisible,
+    signInVisible: true,
+    handleCancel,
+    authModel,
+    onFinish,
+    loading
   };
 
   return (
-    <div>
-      <div>
-        <img alt="logo" />
-      </div>
-      <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
-        <FormItem
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: 'Required field',
-            },
-          ]}
-          name={'username'}
-        >
-          <Input placeholder="Username" />
-        </FormItem>
-        <FormItem
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: 'Required field',
-            },
-          ]}
-          name={'password'}
-        >
-          <Input type="password" placeholder="Password" />
-        </FormItem>
-        <Row>
-          <Button type="primary" loading={loading.effects.login}>
-            Sign in
-          </Button>
-        </Row>
-      </Form>
-    </div>
+      <Page component={'login'}>
+        <ErrorModal errorProps={errorProps}
+                    isErrorVisible={isErrorVisible}
+                    handleErrorCancel={handleErrorCancel} />
+        <SignInModal {...signInProps} />
+      </Page>
   );
 };
 
-Login.propTypes = {
-  form: PropTypes.object,
-  dispatch: PropTypes.func,
-  loading: PropTypes.object,
-};
-
-export default connect(({ loading }) => ({ loading }))(Login);
+export default connect(
+    ({authModel, loading}) => {
+      return {authModel, loading};
+    },
+    (dispatch) => ({
+      dispatch,
+      onQuery(user) {
+        dispatch({type: 'authModel/query', payload: {user}});
+      },
+      onSignIn(email, password) {
+        dispatch({type: 'authModel/signIn', payload: {email, password}});
+      }
+    })
+)(withTranslation()(login));

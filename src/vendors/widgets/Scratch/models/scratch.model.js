@@ -1,6 +1,9 @@
+/**
+ * @type {Function}
+ */
 import dvaModelExtend from 'dva-model-extend';
 
-import { commonModel } from '@/models/common';
+import {commonModel} from '@/models/common.model';
 
 const DEFAULTS = {};
 
@@ -10,29 +13,30 @@ const DEFAULTS = {};
 export default dvaModelExtend(commonModel, {
   namespace: 'scratchModel',
   state: {
-    defaults: {},
+    defaults: {}
   },
   subscriptions: {
-    setup({ dispatch }) {},
+    setup({dispatch}) {
+    }
   },
   effects: {
-    *setProperties({ payload }, { put }) {
+    * setProperties({payload}, {put}) {
       yield put({
         type: 'contentModel/setContentProperties',
         payload: {
           contentProperties: payload.properties,
-          contentForm: { ...DEFAULTS },
-          target: 'scratchModel',
-        },
+          contentForm: {...DEFAULTS},
+          target: 'scratchModel'
+        }
       });
 
       yield put({
         type: 'updateState',
         payload: {
-          defaults: DEFAULTS,
-        },
+          defaults: DEFAULTS
+        }
       });
-    },
+    }
   },
-  reducers: {},
+  reducers: {}
 });

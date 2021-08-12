@@ -1,6 +1,9 @@
+/**
+ * @type {Function}
+ */
 import dvaModelExtend from 'dva-model-extend';
 
-import {commonModel} from '@/models/common';
+import {commonModel} from '@/models/common.model';
 import i18n from '@/utils/i18n';
 
 import {getAssignedWidgets} from '@/services/website.service';
@@ -13,7 +16,6 @@ import {getWidgets} from '@/services/widget.service';
 export default dvaModelExtend(commonModel, {
   namespace: 'websiteModel',
   state: {
-    fileList: [],
     websites: [],
     widgets: [],
     assignedWidgets: []
@@ -28,7 +30,7 @@ export default dvaModelExtend(commonModel, {
       const {data} = yield call(getAssignedWidgets, {key: payload.key});
       const allWidgets = yield call(getWidgets);
 
-      const {website, widgets} = data.assigned;
+      const {website, widgets} = data?.assigned;
 
       yield put({
         type: 'toForm',

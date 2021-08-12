@@ -1,7 +1,10 @@
-import {history} from 'umi';
+/**
+ * @type {Function}
+ */
 import dvaModelExtend from 'dva-model-extend';
+import {history} from 'umi';
 
-import {commonModel} from '@/models/common';
+import {commonModel} from '@/models/common.model';
 
 import {generateKey} from '@/services/common.service';
 import PageLayout from '@/pages/website/mode/page/page.layout';
@@ -83,7 +86,7 @@ export default dvaModelExtend(commonModel, {
     * widgets(_, {put, call, select}) {
       const {websiteKey} = yield select((state) => state.workspaceModel);
       const widgets = yield call(getAssignedWidgets, {key: websiteKey});
-      const assigned = widgets.data.assigned.widgets;
+      const assigned = widgets.data?.assigned?.widgets || [];
 
       yield put({
         type: 'updateState',

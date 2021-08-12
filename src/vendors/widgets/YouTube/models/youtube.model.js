@@ -1,10 +1,13 @@
+/**
+ * @type {Function}
+ */
 import dvaModelExtend from 'dva-model-extend';
 
-import { commonModel } from '@/models/common';
-import { getEmbedCode } from '@/vendors/widgets/YouTube/services/youtube.service';
+import {commonModel} from '@/models/common.model';
+import {getEmbedCode} from '@/vendors/widgets/YouTube/services/youtube.service';
 
 const DEFAULTS = {
-  'youtube/embedUrl': 'https://www.youtube.com/embed/ALZHF5UqnU4',
+  'youtube/embedUrl': 'https://www.youtube.com/embed/ALZHF5UqnU4'
 };
 
 /**
@@ -13,14 +16,15 @@ const DEFAULTS = {
 export default dvaModelExtend(commonModel, {
   namespace: 'youtubeModel',
   state: {
-    defaults: {},
+    defaults: {}
   },
   subscriptions: {
-    setup({ dispatch }) {},
+    setup({dispatch}) {
+    }
   },
   effects: {
-    *setProperties({ payload }, { put, select }) {
-      const { entityForm } = yield select((state) => state.youtubeModel);
+    * setProperties({payload}, {put, select}) {
+      const {entityForm} = yield select((state) => state.youtubeModel);
 
       if (payload.embedUrl) {
         DEFAULTS['youtube/embedUrl'] = payload.embedUrl;
@@ -30,9 +34,9 @@ export default dvaModelExtend(commonModel, {
         type: 'contentModel/setContentProperties',
         payload: {
           contentProperties: payload.properties,
-          contentForm: { ...DEFAULTS },
-          target: 'youtubeModel',
-        },
+          contentForm: {...DEFAULTS},
+          target: 'youtubeModel'
+        }
       });
 
       if (payload.embedUrl) {
@@ -41,20 +45,20 @@ export default dvaModelExtend(commonModel, {
           payload: {
             model: 'youtubeModel',
             entityType: 'widget',
-            youtubeSrc: getEmbedCode(DEFAULTS['youtube/embedUrl']),
-          },
+            youtubeSrc: getEmbedCode(DEFAULTS['youtube/embedUrl'])
+          }
         });
       }
     },
 
-    *updatePreview({ payload }, { put }) {
+    * updatePreview({payload}, {put}) {
       yield put({
         type: 'updateState',
         payload: {
-          youtubePreview: getEmbedCode(payload.youtubePreview),
-        },
+          youtubePreview: getEmbedCode(payload.youtubePreview)
+        }
       });
-    },
+    }
   },
-  reducers: {},
+  reducers: {}
 });

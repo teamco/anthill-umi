@@ -1,7 +1,10 @@
+/**
+ * @type {Function}
+ */
 import dvaModelExtend from 'dva-model-extend';
 
-import { commonModel } from '@/models/common';
-import { toEntityForm } from '@/utils/state';
+import {commonModel} from '@/models/common.model';
+import {toEntityForm} from '@/utils/state';
 
 const DEFAULTS = {
   widgetOverlapping: true,
@@ -22,7 +25,7 @@ const DEFAULTS = {
   widgetShowInMobile: true,
   widgetSetLayerUp: 0,
   widgetCellWidth: 0,
-  widgetRowHeight: 0,
+  widgetRowHeight: 0
 };
 
 /**
@@ -37,23 +40,24 @@ export default dvaModelExtend(commonModel, {
     propertiesModalVisible: false,
     properties: [],
     contentForm: {},
-    widgetProps: {},
+    widgetProps: {}
   },
   subscriptions: {
-    setup({ dispatch }) {},
+    setup({dispatch}) {
+    }
   },
   effects: {
-    *propertiesModalVisibility({ payload }, { put, call, select }) {
-      const { contentForm } = yield select((state) => state.contentModel);
-      const { visible = false, widgetProps, updateForm = false } = payload;
+    * propertiesModalVisibility({payload}, {put, call, select}) {
+      const {contentForm} = yield select((state) => state.contentModel);
+      const {visible = false, widgetProps, updateForm = false} = payload;
 
       yield put({
         type: 'updateState',
         payload: {
           propertiesModalVisible: visible,
           widgetProps,
-          updateForm,
-        },
+          updateForm
+        }
       });
 
       if (widgetProps) {
@@ -67,77 +71,77 @@ export default dvaModelExtend(commonModel, {
           ...contentForm,
           contentKey: widgetProps.contentKey,
           entityKey: widgetProps.key,
-          entityType: 'widget',
+          entityType: 'widget'
         };
 
-        const _toEntityForm = yield call(toEntityForm, { model });
+        const _toEntityForm = yield call(toEntityForm, {model});
 
         yield put({
           type: 'updateState',
           payload: {
             entityForm: {
-              [widgetProps.key]: { ..._toEntityForm },
-            },
-          },
+              [widgetProps.key]: {..._toEntityForm}
+            }
+          }
         });
       }
 
       yield put({
         type: 'pageModel/setActiveWidget',
-        payload: { widget: widgetProps },
+        payload: {widget: widgetProps}
       });
     },
 
-    *setContentProperties({ payload }, { put }) {
+    * setContentProperties({payload}, {put}) {
       yield put({
         type: 'updateState',
         payload: {
           contentForm: payload.contentForm,
           contentProperties: payload.contentProperties,
-          targetModel: payload.target,
-        },
+          targetModel: payload.target
+        }
       });
     },
 
-    *transferFormRef({ payload }, { put, select }) {
-      const { targetModel } = yield select((state) => state.contentModel);
+    * transferFormRef({payload}, {put, select}) {
+      const {targetModel} = yield select((state) => state.contentModel);
       yield put({
         type: `${targetModel}/updateState`,
-        payload: { widgetForm: payload.form },
+        payload: {widgetForm: payload.form}
       });
     },
 
-    *updateContentForm({ payload }, { put }) {
+    * updateContentForm({payload}, {put}) {
       yield put({
         type: 'toForm',
         payload: {
           model: 'contentModel',
-          ...payload.props,
-        },
+          ...payload.props
+        }
       });
     },
 
-    *setOpacity({ payload }, { put }) {
+    * setOpacity({payload}, {put}) {
       yield put({
         type: 'updateState',
-        payload: { opacity: payload.opacity },
+        payload: {opacity: payload.opacity}
       });
     },
 
-    *hideContent({ payload }, { put, select }) {
-      const { widgetProps } = yield select((state) => state.contentModel);
+    * hideContent({payload}, {put, select}) {
+      const {widgetProps} = yield select((state) => state.contentModel);
       yield put({
         type: 'updateState',
         payload: {
           hideContent: payload.hide
-            ? widgetProps.entityForm.widgetHideContentOnInteraction
-            : false,
-        },
+              ? widgetProps.entityForm.widgetHideContentOnInteraction
+              : false
+        }
       });
     },
 
-    *widgetStick({ payload }, { put, call, select }) {
-      const { widget } = yield select((state) => state.pageModel);
+    * widgetStick({payload}, {put, call, select}) {
+      const {widget} = yield select((state) => state.pageModel);
 
       if (widget) {
         const model = widget.entityForm;
@@ -145,17 +149,17 @@ export default dvaModelExtend(commonModel, {
         model.widgetDraggable = false;
         model.widgetResizable = false;
 
-        const _toEntityForm = yield call(toEntityForm, { model });
+        const _toEntityForm = yield call(toEntityForm, {model});
 
         yield put({
           type: 'toForm',
-          payload: { entityForm: _toEntityForm },
+          payload: {entityForm: _toEntityForm}
         });
       }
     },
 
-    *widgetUnstick({ payload }, { put, call, select }) {
-      const { widget } = yield select((state) => state.pageModel);
+    * widgetUnstick({payload}, {put, call, select}) {
+      const {widget} = yield select((state) => state.pageModel);
 
       if (widget) {
         const model = widget.entityForm;
@@ -168,14 +172,14 @@ export default dvaModelExtend(commonModel, {
           model.widgetUnstick = false;
         }
 
-        const _toEntityForm = yield call(toEntityForm, { model });
+        const _toEntityForm = yield call(toEntityForm, {model});
 
         yield put({
           type: 'toForm',
-          payload: { entityForm: _toEntityForm },
+          payload: {entityForm: _toEntityForm}
         });
       }
-    },
+    }
   },
-  reducers: {},
+  reducers: {}
 });

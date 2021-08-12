@@ -1,64 +1,60 @@
-/* global window */
-/* global document */
-/* global location */
-import dvaModelExtend from 'dva-model-extend';
+/**
+ * @type {Function}
+ */
+import modelExtend from 'dva-model-extend';
 
-import { commonModel } from '@/models/common';
-import { menus } from '@/services/menu.service';
+import {commonModel} from '@/models/common.model';
+import {menus} from '@/services/menu.service';
+
+const appMeta = {
+  name: 'AntHill API',
+  charSet: 'utf-8'
+};
+
+const DEFAULT_STATE = {
+  interval: {
+    timeout: 20000,
+    enabled: true
+  },
+  layoutOpts: {
+    mainHeader: false,
+    pageBreadcrumbs: false,
+    pageHeader: false,
+    mainFooter: false,
+    mainMenu: false
+  },
+  activeTab: true,
+  collapsedMenu: true,
+  menus: [],
+  meta: {...appMeta, ...{title: ''}}
+};
 
 /**
  * @export
  */
-export default dvaModelExtend(commonModel, {
+export default modelExtend(commonModel, {
   namespace: 'appModel',
-  state: {
-    layoutOpts: {
-      mainHeader: false,
-      pageBreadcrumbs: false,
-      pageHeader: false,
-      mainFooter: false,
-      mainMenu: false,
-    },
-    activeTab: true,
-    collapsedMenu: true,
-    menus: [],
-    activeForm: {
-      form: null,
-    },
-    activeModel: {
-      isEdit: false,
-      title: '',
-    },
-  },
-  subscriptions: {
-    setup({ dispatch }) {
-      dispatch({ type: 'query' });
-    },
-  },
+  state: {...DEFAULT_STATE},
+
   effects: {
-    *query({ payload }, { put, select }) {
-      const { mode } = yield select((state) => state.appModel);
 
-      if (mode) {
-        return false;
-      }
-
+    * appQuery({payload}, {put, select}) {
       yield put({
         type: 'updateState',
         payload: {
-          menus,
-        },
+          menus
+        }
       });
 
       yield put({
         type: 'adminLayout',
         payload: {
-          visible: true,
-        },
+          visible: true
+        }
       });
     },
 
-    *adminLayout({ payload }, { put }) {
+    * adminLayout({payload}, {put}) {
       yield put({
         type: 'updateState',
         payload: {
@@ -67,58 +63,43 @@ export default dvaModelExtend(commonModel, {
             pageBreadcrumbs: payload.visible,
             pageHeader: payload.visible,
             mainFooter: payload.visible,
-            mainMenu: payload.visible,
-          },
-        },
+            mainMenu: payload.visible
+          }
+        }
       });
     },
 
-    *storeForm({ payload }, { put }) {
+    * updateDocumentMeta({payload}, {put, select}) {
+      const {meta} = yield select(state => state.appModel);
       yield put({
         type: 'updateState',
         payload: {
-          activeForm: payload,
-        },
+          meta: {...meta, ...payload.meta}
+        }
       });
     },
 
-    *activeModel({ payload }, { put }) {
+    * toggleMenu({payload}, {put}) {
       yield put({
         type: 'updateState',
         payload: {
-          activeModel: { ...payload },
-        },
+          collapsedMenu: payload.collapse
+        }
       });
     },
 
-    *activeButtons({ payload }, { put }) {
+    * checkActiveTab({payload}, {put}) {
       yield put({
         type: 'updateState',
         payload: {
-          activeButtons: { ...payload },
-        },
+          activeTab: payload
+        }
       });
     },
 
-    *toggleMenu({ payload }, { put }) {
-      yield put({
-        type: 'updateState',
-        payload: {
-          collapsedMenu: payload.collapse,
-        },
-      });
-    },
-
-    *checkActiveTab({ payload }, { put }) {
-      yield put({
-        type: 'updateState',
-        payload: {
-          activeTab: payload,
-        },
-      });
-    },
-
-    *notification(_, { put }) {},
+    * notification(_, {put}) {
+      console.log('notification');
+    }
   },
-  reducers: {},
+  reducers: {}
 });
