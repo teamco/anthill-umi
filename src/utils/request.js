@@ -1,6 +1,6 @@
 import request from 'umi-request';
-import { history } from 'umi';
-import { API_CONFIG } from '@/services/config';
+import {history} from 'umi';
+import {API_CONFIG} from '@/services/config';
 
 /**
  * @constant
@@ -31,7 +31,7 @@ function _csrfToken() {
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json;charset=UTF-8',
   'Access-Control-Allow-Origin': '*',
-  accept: 'application/json',
+  accept: 'application/json'
 };
 
 /**
@@ -52,10 +52,10 @@ const mergeHeaders = () => {
 function adaptUrlToParams(url = '', args) {
   const matchers = url.match(/:\w+/g);
   matchers &&
-    matchers.forEach((matcher) => {
-      const instance = matcher.replace(':', '');
-      url = url.replace(new RegExp(matcher), args[instance]);
-    });
+  matchers.forEach((matcher) => {
+    const instance = matcher.replace(':', '');
+    url = url.replace(new RegExp(matcher), args[instance]);
+  });
 
   return url;
 }
@@ -63,10 +63,10 @@ function adaptUrlToParams(url = '', args) {
 /**
  * @function
  * @param url
- * @param direct
+ * @param {boolean} [direct]
  * @return {string}
  */
-function adoptUrlToAPI(url, direct) {
+function adoptUrlToAPI(url, direct = false) {
   return direct ? `/${url}` : `/${apiConfig.API}/${url}`;
 }
 
@@ -98,9 +98,9 @@ function config({
       url: adoptUrlToAPI(url, direct),
       method,
       responseType,
-      headers: { ...mergeHeaders(), ...headers },
+      headers: {...mergeHeaders(), ...headers}
     },
-    ...args,
+    ...args
   };
 }
 
@@ -126,23 +126,21 @@ function toBase64(file) {
  * @return {Q.Promise<any> | undefined}
  */
 function xhr(opts, errorMsg, fallbackUrl) {
-  const { pathname } = window.location;
-  const { url, method } = opts;
+  const {pathname} = window.location;
+  const {url, method} = opts;
   delete opts.url;
   delete opts.method;
 
-  return request[method](url, opts)
-    .then((res) => ({ data: { ...res } }))
-    .catch((error) => {
-      errorMsg && errorMsg(error?.data?.error);
-      setTimeout(() => {
-        if (fallbackUrl && !pathname.match(new RegExp(fallbackUrl))) {
-          //history.replace(`${fallbackUrl}?ref=${encodeURIComponent(pathname)}`);
-        }
-      }, 2000);
+  return request[method](url, opts).then((res) => ({data: {...res}})).catch((error) => {
+    errorMsg && errorMsg(error?.data?.error);
+    setTimeout(() => {
+      if (fallbackUrl && !pathname.match(new RegExp(fallbackUrl))) {
+        //history.replace(`${fallbackUrl}?ref=${encodeURIComponent(pathname)}`);
+      }
+    }, 2000);
 
-      return error?.response;
-    });
+    return error?.response;
+  });
 }
 
 /**
@@ -159,4 +157,5 @@ export default {
   config,
   toBase64,
   isSuccess,
+  adoptUrlToAPI
 };

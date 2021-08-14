@@ -57,22 +57,22 @@ const MenuDevelopment = props => {
    * @private
    */
   const _page = (page, idx) => (
-    <div onClick={() => onNavigateToPage(idx)}
-         style={{position: 'relative'}}>
-      <LayoutOutlined/>
-      <Tooltip title={page.entityForm.description}
-               placement={'right'}>
-        {page.entityForm.name}
-      </Tooltip>
-      <div className={styles.setting}>
-        <SettingOutlined key={'setting'}
-                         onClick={e => {
-                           e.preventDefault();
-                           e.stopPropagation();
-                           onPageSettingModal(onUpdatePageSetting, page);
-                         }}/>
+      <div onClick={() => onNavigateToPage(idx)}
+           style={{position: 'relative'}}>
+        <LayoutOutlined />
+        <Tooltip title={page.entityForm.description}
+                 placement={'right'}>
+          {page.entityForm.name}
+        </Tooltip>
+        <div className={styles.setting}>
+          <SettingOutlined key={'setting'}
+                           onClick={e => {
+                             e.preventDefault();
+                             e.stopPropagation();
+                             onPageSettingModal(onUpdatePageSetting, page);
+                           }} />
+        </div>
       </div>
-    </div>
   );
 
   /**
@@ -82,14 +82,14 @@ const MenuDevelopment = props => {
    * @private
    */
   const _pageWidget = widget => (
-    <div onClick={() => onScrollToWidget(widget)}>
-      {/*<img src={widget.picture.thumb.url}*/}
-      {/*     alt={widget.name}/>*/}
-      <Tooltip title={widget.entityForm.widgetDescription}
-               placement={'right'}>
-        {widget.entityForm.widgetName}
-      </Tooltip>
-    </div>
+      <div onClick={() => onScrollToWidget(widget)}>
+        {/*<img src={widget.picture.thumb.url}*/}
+        {/*     alt={widget.name}/>*/}
+        <Tooltip title={widget.entityForm.widgetDescription}
+                 placement={'right'}>
+          {widget.entityForm.widgetName}
+        </Tooltip>
+      </div>
   );
 
   /**
@@ -99,14 +99,14 @@ const MenuDevelopment = props => {
    * @private
    */
   const _widget = widget => (
-    <div onClick={() => onAddWidget(widget)}>
-      <img src={request.adoptUrlToServer(widget.picture.thumb.url)}
-           alt={widget.name}/>
-      <Tooltip title={widget.description}
-               placement={'right'}>
-        {widget.name}
-      </Tooltip>
-    </div>
+      <div onClick={() => onAddWidget(widget)}>
+        <img src={request.adoptUrlToAPI(widget.picture.thumb.url)}
+             alt={widget.name} />
+        <Tooltip title={widget.description}
+                 placement={'right'}>
+          {widget.name}
+        </Tooltip>
+      </div>
   );
 
   /**
@@ -117,91 +117,96 @@ const MenuDevelopment = props => {
    * @private
    */
   const _search = (entities, type) => (
-    <Menu.Item className={styles.search} disabled>
-      <Input placeholder={t('website:search')}
-             suffix={<SearchOutlined/>}
-             allowClear
-             onChange={e => onSearch(entities, e.target.value, type)}
-             style={{width: 180}}/>
-    </Menu.Item>
+      <Menu.Item key={`${type}:search`}
+                 className={styles.search}
+                 disabled>
+        <Input placeholder={t('website:search')}
+               suffix={<SearchOutlined />}
+               allowClear
+               onChange={e => onSearch(entities, e.target.value, type)}
+               style={{width: 180}} />
+      </Menu.Item>
   );
 
   /**
    * Empty result
    * @constant
+   * @param {string} type
    * @return {JSX.Element}
    * @private
    */
-  const _empty = () => (
-    <Menu.Item className={styles.emptyDataWrapper} disabled>
-      <Empty className={styles.emptyData}
-             description={t('msg:noData')}
-             image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-    </Menu.Item>
+  const _empty = (type) => (
+      <Menu.Item key={`${type}:empty`}
+                 className={styles.emptyDataWrapper}
+                 disabled>
+        <Empty className={styles.emptyData}
+               description={t('msg:noData')}
+               image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </Menu.Item>
   );
 
   return (
-    <Sider collapsible
-           collapsed={collapsedMenu}
-           onCollapse={onCollapse}
-           theme={'light'}
-           style={{overflow: 'hidden'}}>
-      <Menu mode={'inline'}
-            theme={'light'}
-            triggerSubMenuAction={'click'}
-            className={collapsedMenu ? styles.devMenuCollapsed : styles.devMenu}>
-        <SubMenu key={'pages'}
-                 icon={<LayoutOutlined/>}
-                 title={t('menu:pages')}
-                 popupClassName={styles.devSubMenuCollapsed}
-                 style={{position: 'relative'}}>
-          <Menu.Item key={'add-page'}
-                     className={styles.addPage}
-                     onClick={() => onPageSettingModal(onAddPage)}>
-            <PlusSquareTwoTone/>
-          </Menu.Item>
-          {_search(pages, 'pages')}
-          {pagesFiltered.length ?
-            pagesFiltered.map((page, idx) => (
-              <Menu.Item key={`page-${idx}`}>
-                {_page(page, idx)}
-              </Menu.Item>
-            )) : _empty()}
-        </SubMenu>
-        {currentPage.entityForm && widgets.length && (
-          <SubMenu key={'widgets'}
-                   icon={<AppstoreAddOutlined/>}
+      <Sider collapsible
+             collapsed={collapsedMenu}
+             onCollapse={onCollapse}
+             theme={'light'}
+             style={{overflow: 'hidden'}}>
+        <Menu mode={'inline'}
+              theme={'light'}
+              triggerSubMenuAction={'click'}
+              className={collapsedMenu ? styles.devMenuCollapsed : styles.devMenu}>
+          <SubMenu key={'pages'}
+                   icon={<LayoutOutlined />}
+                   title={t('menu:pages')}
                    popupClassName={styles.devSubMenuCollapsed}
-                   title={t('menu:widgets')}>
-            {_search(widgets, 'widgets')}
-            {widgetsFiltered.length ?
-              widgetsFiltered.map((widget, idx) => (
-                <Menu.Item key={`widget-${idx}`}>
-                  {_widget(widget)}
-                </Menu.Item>
-              )) : _empty()}
+                   style={{position: 'relative'}}>
+            <Menu.Item key={'add-page'}
+                       className={styles.addPage}
+                       onClick={() => onPageSettingModal(onAddPage)}>
+              <PlusSquareTwoTone />
+            </Menu.Item>
+            {_search(pages, 'pages')}
+            {pagesFiltered.length ?
+                pagesFiltered.map((page, idx) => (
+                    <Menu.Item key={`page-${idx}`}>
+                      {_page(page, idx)}
+                    </Menu.Item>
+                )) : _empty('page')}
           </SubMenu>
-        )}
-        {currentPage.widgets.length && (
-          <SubMenu key={'pageWidgets'}
-                   icon={<AppstoreAddOutlined/>}
-                   popupClassName={styles.devSubMenuCollapsed}
-                   title={t('menu:pageWidgets')}>
-            {_search(currentPage.widgets, 'currentPageWidgets')}
-            {pageWidgetsFiltered.length ?
-              pageWidgetsFiltered.map((widget, idx) => (
-                <Menu.Item key={`widget-${idx}`}>
-                  {_pageWidget(widget)}
-                </Menu.Item>
-              )) : _empty()}
-          </SubMenu>
-        )}
-      </Menu>
-      <PagePropertiesModal showPageModal={showPageModal}
-                           onCancel={onCancelModal}
-                           page={pageSettingOf}
-                           onOk={onSavePage}/>
-    </Sider>
+          {currentPage.entityForm && widgets.length ? (
+              <SubMenu key={'widgets'}
+                       icon={<AppstoreAddOutlined />}
+                       popupClassName={styles.devSubMenuCollapsed}
+                       title={t('menu:widgets')}>
+                {_search(widgets, 'widgets')}
+                {widgetsFiltered.length ?
+                    widgetsFiltered.map((widget, idx) => (
+                        <Menu.Item key={`widget-${idx}`}>
+                          {_widget(widget)}
+                        </Menu.Item>
+                    )) : _empty('widget')}
+              </SubMenu>
+          ) : null}
+          {currentPage.widgets.length ? (
+              <SubMenu key={'pageWidgets'}
+                       icon={<AppstoreAddOutlined />}
+                       popupClassName={styles.devSubMenuCollapsed}
+                       title={t('menu:pageWidgets')}>
+                {_search(currentPage.widgets, 'currentPageWidgets')}
+                {pageWidgetsFiltered.length ?
+                    pageWidgetsFiltered.map((widget, idx) => (
+                        <Menu.Item key={`widget-${idx}`}>
+                          {_pageWidget(widget)}
+                        </Menu.Item>
+                    )) : _empty('assigned')}
+              </SubMenu>
+          ) : null}
+        </Menu>
+        <PagePropertiesModal showPageModal={showPageModal}
+                             onCancel={onCancelModal}
+                             page={pageSettingOf}
+                             onOk={onSavePage} />
+      </Sider>
   );
 };
 
