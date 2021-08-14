@@ -50,9 +50,9 @@ export const API = {
     getUser: 'users/:userKey'
   },
   websites: {
-    getWebsite: 'websites/:websiteKey',
-    getWebsiteWidgets: 'websites/:websiteKey/widgets',
-    updateWebsite: 'websites/:websiteKey',
+    getWebsite: 'users/:userKey/websites/:websiteKey',
+    getWebsiteWidgets: 'users/:userKey/websites/:websiteKey/widgets',
+    updateWebsite: 'users/:userKey/websites/:websiteKey',
     saveWebsite: 'websites'
   },
   widgets: {

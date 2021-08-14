@@ -75,8 +75,7 @@ class AppLayout extends Component {
                              onRoute={onRoute}
                              model={activeModel}
                              collapsed={collapsedMenu}
-                             onCollapse={onToggleMenu}
-                  />
+                             onCollapse={onToggleMenu} />
               )}
               <Layout className={styles.siteLayout}>
                 {mainHeader && currentUser && (<Main.Header />)}

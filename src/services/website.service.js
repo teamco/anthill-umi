@@ -22,13 +22,15 @@ export function getWebsite({ key }) {
  * @export
  * @param token
  * @param websiteKey
+ * @param userKey
  * @return {Q.Promise<*>|undefined}
  */
-export function getAssignedWidgets({ token, websiteKey }) {
+export function getAssignedWidgets({ token, websiteKey, userKey }) {
   const opts = request.config({
     url: API.websites.getWebsiteWidgets,
     headers: { 'Authorization': getXHRToken({ token }) },
-    websiteKey
+    websiteKey,
+    userKey
   });
 
   return request.xhr(opts, () => errorGetMsg(i18n.t('instance:website')));
