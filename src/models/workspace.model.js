@@ -2,14 +2,14 @@
  * @type {Function}
  */
 import dvaModelExtend from 'dva-model-extend';
-import {history} from 'umi';
+import { history } from 'umi';
 
-import {commonModel} from '@/models/common.model';
+import { commonModel } from '@/models/common.model';
 
-import {generateKey} from '@/services/common.service';
+import { generateKey } from '@/services/common.service';
 import PageLayout from '@/pages/website/mode/page/page.layout';
 import Logger from '@/core/modules/Logger';
-import {getAssignedWidgets} from '@/services/website.service';
+import { getAssignedWidgets } from '@/services/website.service';
 
 /**
  * @constant
@@ -57,13 +57,13 @@ export default dvaModelExtend(commonModel, {
   },
 
   subscriptions: {
-    setup({dispatch}) {
-      dispatch({type: 'setCurrentPage'});
+    setup({ dispatch }) {
+      dispatch({ type: 'setCurrentPage' });
     }
   },
 
   effects: {
-    * mode({payload}, {put}) {
+    * mode({ payload }, { put }) {
       yield put({
         type: 'appModel/adminLayout',
         payload: {
@@ -72,8 +72,8 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * collapse(_, {put, select}) {
-      const {collapsedMenu} = yield select((state) => state.workspaceModel);
+    * collapse(_, { put, select }) {
+      const { collapsedMenu } = yield select((state) => state.workspaceModel);
 
       yield put({
         type: 'updateState',
@@ -83,9 +83,11 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * widgets(_, {put, call, select}) {
-      const {websiteKey} = yield select((state) => state.workspaceModel);
-      const widgets = yield call(getAssignedWidgets, {key: websiteKey});
+    * widgets({ payload }, { put, call, select }) {
+      let { token } = yield select(state => state.authModel);
+      const { websiteKey } = payload;
+
+      const widgets = yield call(getAssignedWidgets, { token, websiteKey });
       const assigned = widgets.data?.assigned?.widgets || [];
 
       yield put({
@@ -97,13 +99,16 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * setCurrentPage({payload = {}}, {put, call, select}) {
-      const {locationPathname, pages, currentPage} = yield select(
-        (state) => state.workspaceModel
-      );
+    * setCurrentPage({ payload = {} }, { put, call, select }) {
+      const {
+        locationPathname,
+        pages,
+        currentPage
+      } = yield select((state) => state.workspaceModel);
+
       let pageHash = ``;
       let _pages = [...pages];
-      let _currentPage = {..._pages[payload.idx]};
+      let _currentPage = { ..._pages[payload.idx] };
 
       if (Object.keys(_currentPage).length) {
         const entityForm = Object.create(_currentPage.entityForm);
@@ -119,7 +124,7 @@ export default dvaModelExtend(commonModel, {
 
         yield put({
           type: 'pageModel/setPage',
-          payload: {page: {..._currentPage}}
+          payload: { page: { ..._currentPage } }
         });
 
         yield put({
@@ -136,7 +141,7 @@ export default dvaModelExtend(commonModel, {
       }
     },
 
-    * navigateToPage({payload}, {put}) {
+    * navigateToPage({ payload }, { put }) {
       yield put({
         type: 'updateState',
         payload: {
@@ -146,11 +151,11 @@ export default dvaModelExtend(commonModel, {
 
       yield put({
         type: 'setCurrentPage',
-        payload: {...payload}
+        payload: { ...payload }
       });
     },
 
-    * showPageSettingModal({payload}, {put}) {
+    * showPageSettingModal({ payload }, { put }) {
       yield put({
         type: 'updateState',
         payload: {
@@ -162,32 +167,32 @@ export default dvaModelExtend(commonModel, {
       if (payload.pageSettingOf) {
         yield put({
           type: 'pageModel/setPage',
-          payload: {page: payload.pageSettingOf}
+          payload: { page: payload.pageSettingOf }
         });
       } else {
-        yield put({type: 'pageModel/resetState'});
+        yield put({ type: 'pageModel/resetState' });
       }
     },
 
-    * resetPage({page}, {put, select}) {
-      const {currentPage} = yield select((state) => state.workspaceModel);
+    * resetPage({ page }, { put, select }) {
+      const { currentPage } = yield select((state) => state.workspaceModel);
 
       if (currentPage) {
         yield put({
           type: 'pageModel/setPage',
-          payload: {page: currentPage}
+          payload: { page: currentPage }
         });
       }
     },
 
-    * cancelModal({payload}, {put}) {
+    * cancelModal({ payload }, { put }) {
       yield put({
         type: 'updateState',
-        payload: {[payload.type]: false}
+        payload: { [payload.type]: false }
       });
     },
 
-    * search({payload}, {put, select}) {
+    * search({ payload }, { put, select }) {
       const state = yield select((state) => state.workspaceModel);
       const entities = state[payload.type];
       let filtered = [...entities];
@@ -195,7 +200,7 @@ export default dvaModelExtend(commonModel, {
       if (payload.value) {
         const _regex = new RegExp(payload.value, 'gi');
         filtered = entities.filter((entity) =>
-          _getEntityName(entity, payload.type).match(_regex)
+            _getEntityName(entity, payload.type).match(_regex)
         );
       }
 
@@ -207,12 +212,12 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * addPage({payload}, {put, select}) {
-      const {pages} = yield select((state) => state.workspaceModel);
-
+    * addPage({ payload }, { put, select }) {
+      const { pages } = yield select((state) => state.workspaceModel);
+      debugger
       const page = {
         widgets: [],
-        entityForm: {...payload.values}
+        entityForm: { ...payload.values }
       };
 
       yield put({
@@ -226,15 +231,15 @@ export default dvaModelExtend(commonModel, {
       // Page collection does not updated yet.
       yield put({
         type: 'navigateToPage',
-        payload: {idx: pages.length}
+        payload: { idx: pages.length }
       });
     },
 
-    * updatePageSetting({payload}, {put, select}) {
-      const {pages} = yield select((state) => state.workspaceModel);
+    * updatePageSetting({ payload }, { put, select }) {
+      const { pages } = yield select((state) => state.workspaceModel);
       const page = pages.find(
-        (page) =>
-          page.entityForm.entityKey === payload.page.entityForm.entityKey
+          (page) =>
+              page.entityForm.entityKey === payload.page.entityForm.entityKey
       );
 
       if (!page) {
@@ -252,8 +257,8 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * saveCollection({payload}, {put, call, select}) {
-      const {pages} = yield select((state) => state.workspaceModel);
+    * saveCollection({ payload }, { put, call, select }) {
+      const { pages } = yield select((state) => state.workspaceModel);
 
       console.log(pages);
       // debugger

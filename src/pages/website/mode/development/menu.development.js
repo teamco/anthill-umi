@@ -1,5 +1,5 @@
 import React from 'react';
-import {Empty, Input, Layout, Menu, Tooltip} from 'antd';
+import { Empty, Input, Layout, Menu, Tooltip } from 'antd';
 import {
   AppstoreAddOutlined,
   LayoutOutlined,
@@ -12,8 +12,8 @@ import request from '@/utils/request';
 import styles from '@/pages/website/mode/mode.module.less';
 import PagePropertiesModal from '@/pages/website/mode/page/page.properties.modal';
 
-const {Sider} = Layout;
-const {SubMenu} = Menu;
+const { Sider } = Layout;
+const { SubMenu } = Menu;
 
 /**
  * @export
@@ -43,7 +43,7 @@ const MenuDevelopment = props => {
     collapsedMenu,
     onSavePage,
     pageSettingOf,
-    currentPage = {widgets: []},
+    currentPage = { widgets: [] },
     pagesFiltered = [],
     pageWidgetsFiltered = [],
     widgetsFiltered = []
@@ -58,7 +58,7 @@ const MenuDevelopment = props => {
    */
   const _page = (page, idx) => (
       <div onClick={() => onNavigateToPage(idx)}
-           style={{position: 'relative'}}>
+           style={{ position: 'relative' }}>
         <LayoutOutlined />
         <Tooltip title={page.entityForm.description}
                  placement={'right'}>
@@ -124,7 +124,7 @@ const MenuDevelopment = props => {
                suffix={<SearchOutlined />}
                allowClear
                onChange={e => onSearch(entities, e.target.value, type)}
-               style={{width: 180}} />
+               style={{ width: 180 }} />
       </Menu.Item>
   );
 
@@ -150,7 +150,7 @@ const MenuDevelopment = props => {
              collapsed={collapsedMenu}
              onCollapse={onCollapse}
              theme={'light'}
-             style={{overflow: 'hidden'}}>
+             style={{ overflow: 'hidden' }}>
         <Menu mode={'inline'}
               theme={'light'}
               triggerSubMenuAction={'click'}
@@ -159,7 +159,7 @@ const MenuDevelopment = props => {
                    icon={<LayoutOutlined />}
                    title={t('menu:pages')}
                    popupClassName={styles.devSubMenuCollapsed}
-                   style={{position: 'relative'}}>
+                   style={{ position: 'relative' }}>
             <Menu.Item key={'add-page'}
                        className={styles.addPage}
                        onClick={() => onPageSettingModal(onAddPage)}>

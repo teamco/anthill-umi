@@ -1,8 +1,8 @@
-import React, {Component, memo, Suspense} from 'react';
-import {connect} from 'dva';
-import {history, withRouter, Helmet} from 'umi';
-import {Form, Layout, BackTop} from 'antd';
-import {withTranslation} from 'react-i18next';
+import React, { Component, memo, Suspense } from 'react';
+import { connect } from 'dva';
+import { history, withRouter, Helmet } from 'umi';
+import { Form, Layout, BackTop } from 'antd';
+import { withTranslation } from 'react-i18next';
 import ReactInterval from 'react-interval';
 
 import '@/utils/i18n';
@@ -11,15 +11,15 @@ import Loader from '@/components/Loader';
 import Main from '@/components/Main';
 import Login from '@/pages/login';
 
-import {isAdmin} from '@/services/user.service';
+import { isAdmin } from '@/services/user.service';
 
 import styles from '@/layouts/app.layout.less';
 
-const {Content} = Layout;
+const { Content } = Layout;
 
 class AppLayout extends Component {
   componentDidMount() {
-    const {onActiveTab, onQuery} = this.props;
+    const { onActiveTab, onQuery } = this.props;
     // handleActiveTab(onActiveTab);
     onQuery();
   }
@@ -49,10 +49,10 @@ class AppLayout extends Component {
         pageBreadcrumbs
       },
       meta,
-      interval: {timeout, enabled}
+      interval: { timeout, enabled }
     } = appModel;
 
-    const {currentUser} = authModel;
+    const { currentUser } = authModel;
 
     return (
         <>
@@ -68,7 +68,7 @@ class AppLayout extends Component {
                     spinning={loading.effects['appModel/appQuery']} />
           }>
             {/* Have to refresh for production environment */}
-            <Layout style={{minHeight: '100vh'}}
+            <Layout style={{ minHeight: '100vh' }}
                     key={language ? language : 'en-US'}>
               {mainMenu && isAdmin(currentUser) && (
                   <Main.Menu data={menus}
@@ -108,38 +108,34 @@ class AppLayout extends Component {
 }
 
 export default withRouter(
-    connect(
-        ({
-              appModel,
-              authModel,
-              loading
-            }
-        ) => {
-          return {
-            appModel,
-            authModel,
-            loading
-          };
-        },
+    connect(({
+          appModel,
+          authModel,
+          loading
+        }) => ({
+          appModel,
+          authModel,
+          loading
+        }),
         (dispatch) => ({
               dispatch,
               onRoute(path) {
                 history.push(path);
               },
               onToggleMenu(collapse) {
-                dispatch({type: `appModel/toggleMenu`, payload: {collapse}});
+                dispatch({ type: `appModel/toggleMenu`, payload: { collapse } });
               },
               onActiveTab(payload) {
-                dispatch({type: 'appModel/checkActiveTab', payload});
+                dispatch({ type: 'appModel/checkActiveTab', payload });
               },
               onQuery() {
-                dispatch({type: 'appModel/appQuery'});
+                dispatch({ type: 'appModel/appQuery' });
               },
               onUpdateDocumentMeta(meta) {
-                dispatch({type: 'appModel/updateDocumentMeta', payload: {meta}});
+                dispatch({ type: 'appModel/updateDocumentMeta', payload: { meta } });
               },
               onNotification() {
-                dispatch({type: 'appModel/notification'});
+                dispatch({ type: 'appModel/notification' });
               }
             }
         )

@@ -11,7 +11,7 @@ const routes = [
     routes: [
       {
         exact: true,
-        path: '/websites/:id/development',
+        path: '/websites/:websiteKey/development',
         component: '@/pages/website/mode/development',
       },
     ],

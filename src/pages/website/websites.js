@@ -187,10 +187,10 @@ export default connect(
       dispatch(history.push(`/pages/websites/new`));
     },
     onMode(entityKey, mode) {
-      dispatch(history.push(`/pages/websites/${entityKey}/${mode}`));
+      history.push(`/pages/websites/${entityKey}/${mode}`);
     },
     onAssignWidgets(entityKey) {
-      dispatch(history.push(`/pages/websites/${entityKey}/widgets`));
+      history.push(`/pages/websites/${entityKey}/widgets`);
     },
   }),
 )(withTranslation()(websites));

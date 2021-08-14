@@ -1,14 +1,15 @@
-import {API} from '@/services/config';
+import { API } from '@/services/config';
 import request from '@/utils/request';
 import i18n from '@/utils/i18n';
-import {errorGetMsg} from '@/utils/message';
+import { errorGetMsg } from '@/utils/message';
+import { getXHRToken } from '@/services/auth.service';
 
 /**
  * @export
  * @param key
  * @return {*}
  */
-export function getWebsite({key}) {
+export function getWebsite({ key }) {
   const opts = request.config({
     url: API.websites.getWebsite,
     websiteKey: key
@@ -19,13 +20,15 @@ export function getWebsite({key}) {
 
 /**
  * @export
- * @param key
+ * @param token
+ * @param websiteKey
  * @return {Q.Promise<*>|undefined}
  */
-export function getAssignedWidgets({key}) {
+export function getAssignedWidgets({ token, websiteKey }) {
   const opts = request.config({
     url: API.websites.getWebsiteWidgets,
-    websiteKey: key
+    headers: { 'Authorization': getXHRToken({ token }) },
+    websiteKey
   });
 
   return request.xhr(opts, () => errorGetMsg(i18n.t('instance:website')));
