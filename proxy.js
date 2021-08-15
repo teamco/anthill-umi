@@ -2,11 +2,21 @@ import { API_CONFIG } from './src/services/config';
 
 /**
  * @constant
- * @type {{SERVER_PORT: number, API: string, SERVER_URL: string, ANTHILL_KEY: string}}
+ * @type {{
+ *  ANTHILL_KEY,
+ *  SERVER_URL,
+ *  ADMIN_URL,
+ *  UI_URL,
+ *  SERVER_PORT,
+ *  ADMIN_PORT,
+ *  UI_PORT,
+ *  API
+ * }}
  */
 const apiConfig = API_CONFIG();
 
 const railsServer = `${apiConfig.SERVER_URL}:${apiConfig.SERVER_PORT}`;
+const uiAdmin = `${apiConfig.ADMIN_URL}:${apiConfig.ADMIN_PORT}`;
 
 /**
  * @constant
@@ -36,7 +46,8 @@ const proxyOpts = api => ({
 });
 
 const routes = {
-  api: railsServer
+  api: railsServer,
+  upload: uiAdmin
 };
 
 const proxy = {};

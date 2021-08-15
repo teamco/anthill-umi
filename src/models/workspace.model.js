@@ -87,13 +87,17 @@ export default dvaModelExtend(commonModel, {
       let { token, currentUser } = yield select(state => state.authModel);
       const { websiteKey } = payload;
 
+      /**
+       * @constant
+       * @type {{data: {assigned_widgets, website}}}
+       */
       const widgets = yield call(getAssignedWidgets, {
         token,
         websiteKey,
         userKey: currentUser?.metadata?.key
       });
 
-      const assigned = widgets.data?.assigned?.widgets || [];
+      const assigned = widgets.data?.assigned_widgets || [];
 
       yield put({
         type: 'updateState',

@@ -1,7 +1,16 @@
 /**
  * @export
- * @return {{SERVER_PORT: number, API: string, SERVER_URL: string, ANTHILL_KEY: string}}
- * @constructor
+ * @return {{
+ *  ANTHILL_KEY,
+ *  SERVER_URL,
+ *  ADMIN_URL,
+ *  UI_URL,
+ *  SERVER_PORT,
+ *  ADMIN_PORT,
+ *  UI_PORT,
+ *  API
+ * }}
+ * @constant
  */
 export const API_CONFIG = () => {
 

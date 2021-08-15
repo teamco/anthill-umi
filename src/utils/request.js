@@ -1,5 +1,4 @@
 import request from 'umi-request';
-import {history} from 'umi';
 import {API_CONFIG} from '@/services/config';
 
 /**
@@ -157,5 +156,6 @@ export default {
   config,
   toBase64,
   isSuccess,
+  apiConfig,
   adoptUrlToAPI
 };

@@ -98,16 +98,18 @@ const MenuDevelopment = props => {
    * @return {JSX.Element}
    * @private
    */
-  const _widget = widget => (
-      <div onClick={() => onAddWidget(widget)}>
-        <img src={request.adoptUrlToAPI(widget.picture.thumb.url)}
-             alt={widget.name} />
-        <Tooltip title={widget.description}
-                 placement={'right'}>
-          {widget.name}
-        </Tooltip>
-      </div>
-  );
+  const _widget = widget => {
+    return (
+        <div onClick={() => onAddWidget(widget)}>
+          <img src={widget.picture.thumb.url}
+               alt={widget.name} />
+          <Tooltip title={widget.description}
+                   placement={'right'}>
+            {widget.name}
+          </Tooltip>
+        </div>
+    );
+  };
 
   /**
    * @constant
@@ -177,7 +179,7 @@ const MenuDevelopment = props => {
                     </Menu.Item>
                 )) : _empty('page')}
           </SubMenu>
-          {currentPage.entityForm && widgets.length ? (
+          {currentPage.entityForm ? (
               <SubMenu key={'widgets'}
                        icon={<AppstoreAddOutlined />}
                        popupClassName={styles.devSubMenuCollapsed}
