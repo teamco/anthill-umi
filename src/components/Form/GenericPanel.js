@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
-import {Collapse, Form, Tooltip} from 'antd';
-import {WarningTwoTone} from '@ant-design/icons';
-import {withTranslation} from 'react-i18next';
+import React, { Component } from 'react';
+import { Collapse, Form, Tooltip } from 'antd';
+import { WarningTwoTone } from '@ant-design/icons';
+import { withTranslation } from 'react-i18next';
 
-import './form.less';
+import styles from './form.less';
 
 import Grid from '../Grid';
 
-const {AntHillRow} = Grid;
-const {Panel} = Collapse;
+const { AntHillRow } = Grid;
+const { Panel } = Collapse;
 
 /**
  * @constant
@@ -18,7 +18,7 @@ const {Panel} = Collapse;
  * @private
  */
 const _cleanProps = (_child, props = []) => {
-  const _props = {..._child.props};
+  const _props = { ..._child.props };
   props.forEach(prop => {
     delete _props[prop];
   });
@@ -34,7 +34,8 @@ class GenericPanel extends Component {
       header,
       name,
       inRow = true,
-      className = ''
+      className = '',
+      ...rest
     } = this.props;
 
     /**
@@ -88,14 +89,14 @@ class GenericPanel extends Component {
           config = {}
         } = _child.props;
 
-        let {rules = [], valuePropName} = config;
+        let { rules = [], valuePropName } = config;
 
         const _isRequired = rules.find(rule => rule.required);
         if (_isRequired && !_isRequired.message) {
-          _isRequired.message = t('form:required', {field: label});
+          _isRequired.message = t('form:required', { field: label });
         }
         const _placeholder = label ?
-            _handleProps(placeholder, t('form:placeholder', {field: label})) :
+            _handleProps(placeholder, t('form:placeholder', { field: label })) :
             null;
 
         const _props = _cleanProps(_child, ['config']);
@@ -108,15 +109,15 @@ class GenericPanel extends Component {
                        shouldUpdate
                        dependencies={dependencies}
                        key={`${idx}-${_key}`}
-                       className={'anthill-form-item'}
+                       className={styles.anthillFormItem}
                        rules={rules}
                        {...rest}>
               {_isRequired ?
                   React.cloneElement(_child, {
                     placeholder: _placeholder,
                     suffix: _handleProps(suffix, (
-                        <Tooltip title={t('form:required', {field: label})}>
-                          <WarningTwoTone twoToneColor="#ff4d4f"/>
+                        <Tooltip title={t('form:required', { field: label })}>
+                          <WarningTwoTone twoToneColor='#ff4d4f' />
                         </Tooltip>
                     )),
                     ..._props
@@ -133,8 +134,8 @@ class GenericPanel extends Component {
 
     return (
         <Collapse accordion
-                  className={'site-panel'}
-                  defaultActiveKey={defaultActiveKey}>
+                  className={styles.sitePanel}
+                  defaultActiveKey={defaultActiveKey} {...rest}>
           <Panel header={header}
                  key={name}
                  className={className}>

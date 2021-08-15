@@ -3,7 +3,7 @@ import {Input, Tag, Tooltip} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
 import {withTranslation} from 'react-i18next';
 
-import './form.less';
+import styles from './form.less';
 
 class EditableTags extends React.Component {
   state = {
@@ -81,8 +81,8 @@ class EditableTags extends React.Component {
               return (
                   <Input ref={this.saveEditInputRef}
                          key={tag}
-                         size="small"
-                         className="tag-input"
+                         size={'small'}
+                         className={'tagInput'}
                          value={editInputValue}
                          onChange={this.handleEditInputChange}
                          onBlur={this.handleEditInputConfirm}
@@ -93,7 +93,7 @@ class EditableTags extends React.Component {
             const isLongTag = tag.length > 20;
 
             const tagElem = (
-                <Tag className="edit-tag"
+                <Tag className={styles.editTag}
                      key={tag}
                      closable={true}
                      onClose={() => this.handleClose(tag)}>
@@ -120,16 +120,17 @@ class EditableTags extends React.Component {
           })}
           {inputVisible && (
               <Input ref={this.saveInputRef}
-                     type="text"
-                     size="small"
-                     className="tag-input"
+                     type={'text'}
+                     size={'small'}
+                     className={styles.tagInput}
                      value={inputValue}
                      onChange={this.handleInputChange}
                      onBlur={this.handleInputConfirm}
                      onPressEnter={this.handleInputConfirm}/>
           )}
           {!inputVisible && (
-              <Tag className="site-tag-plus" onClick={this.showInput}>
+              <Tag className={styles.siteTagPlus}
+                   onClick={this.showInput}>
                 <PlusOutlined/> {t('actions:newTag')}
               </Tag>
           )}

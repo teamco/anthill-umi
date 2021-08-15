@@ -106,7 +106,6 @@ export default dvaModelExtend(commonModel, {
 
     * setCurrentPage({ payload = {} }, { put, call, select }) {
       const {
-        locationPathname,
         pages,
         currentPage
       } = yield select((state) => state.workspaceModel);
@@ -142,7 +141,7 @@ export default dvaModelExtend(commonModel, {
           }
         });
 
-        history.push(`${locationPathname}${pageHash}`);
+        history.push(`${pageHash}`);
       }
     },
 
@@ -219,7 +218,7 @@ export default dvaModelExtend(commonModel, {
 
     * addPage({ payload }, { put, select }) {
       const { pages } = yield select((state) => state.workspaceModel);
-      debugger
+
       const page = {
         widgets: [],
         entityForm: { ...payload.values }

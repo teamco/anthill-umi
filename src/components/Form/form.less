@@ -1,68 +1,70 @@
-.site-panel {
+.sitePanel {
   margin-bottom: 20px;
 }
 
-.anthill-form-item {
+.anthillFormItem {
   margin-bottom: 10px;
 
-  label {
-    text-transform: lowercase;
-    font-variant: small-caps;
-    color: lightslategray;
-    font-size: 14px;
+  :global {
+    label {
+      text-transform: lowercase;
+      font-variant: small-caps;
+      color: lightslategray;
+      font-size: 14px;
 
-    &::before {
-      display: none !important;
-    }
-  }
-
-  input, textarea {
-
-    &::placeholder {
-      font-size: 12px;
-    }
-  }
-
-  .ant-radio-button-wrapper {
-    margin-bottom: -1px;
-
-    span {
-      position: relative;
-      top: -6px;
+      &::before {
+        display: none !important;
+      }
     }
 
-    span[role="img"] {
-      top: 6px;
-      margin-right: 5px;
-      margin-left: 5px;
+    input, textarea {
+
+      &::placeholder {
+        font-size: 12px;
+      }
     }
 
-    svg {
-      width: 22px;
-      height: 22px;
-      margin-top: 2px;
+    .ant-radio-button-wrapper {
+      margin-bottom: -1px;
+
+      span {
+        position: relative;
+        top: -6px;
+      }
+
+      span[role="img"] {
+        top: 6px;
+        margin-right: 5px;
+        margin-left: 5px;
+      }
+
+      svg {
+        width: 22px;
+        height: 22px;
+        margin-top: 2px;
+      }
     }
   }
 }
 
-.site-tag-plus {
+.siteTagPlus {
   background: #fff !important;
   border-style: dashed !important;
   cursor: pointer !important;
 }
 
-.edit-tag {
+.editTag {
   user-select: none;
   margin-bottom: 8px !important;
 }
 
-.tag-input {
+.tagInput {
   width: 78px;
   margin-right: 8px;
   vertical-align: top;
 }
 
-.modal-properties {
+.modalProperties {
   &.ant-modal-confirm {
     .ant-modal-body {
       padding: 20px;

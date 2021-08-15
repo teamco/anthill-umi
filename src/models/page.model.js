@@ -4,10 +4,10 @@
 import dvaModelExtend from 'dva-model-extend';
 import Logger from '@/core/modules/Logger';
 
-import {commonModel} from '@/models/common.model';
-import {generateKey} from '@/services/common.service';
-import {fromForm, getStoredValue, toEntityForm} from '@/utils/state';
-import {scrollToRef} from '@/utils/window';
+import { commonModel } from '@/models/common.model';
+import { generateKey } from '@/services/common.service';
+import { fromForm, getStoredValue, toEntityForm } from '@/utils/state';
+import { scrollToRef } from '@/utils/window';
 
 /**
  * @function
@@ -62,32 +62,20 @@ export default dvaModelExtend(commonModel, {
     modalWidth: '80%'
   },
   subscriptions: {
-    setup({dispatch}) {
+    setup({ dispatch }) {
     }
   },
   effects: {
-    * setPage({payload}, {put, call}) {
-      const {entityForm, layout} = payload.page;
+    * setPage({ payload }, { put, call }) {
+      const { entityForm, layout } = payload.page;
 
-      const pageAlignment = getStoredValue(
-          entityForm,
-          'pageAlignment',
-          DEFAULTS
-      );
+      const pageAlignment = getStoredValue(entityForm, 'pageAlignment', DEFAULTS);
       const pageWidth = getStoredValue(entityForm, 'pageWidth', DEFAULTS);
       const pageHeight = getStoredValue(entityForm, 'pageHeight', DEFAULTS);
       const gridColumns = getStoredValue(entityForm, 'gridColumns', DEFAULTS);
       const layoutMode = getStoredValue(entityForm, 'layoutMode', DEFAULTS);
-      const layoutOrganize = getStoredValue(
-          entityForm,
-          'layoutOrganize',
-          DEFAULTS
-      );
-      const layoutEmptySpaces = getStoredValue(
-          entityForm,
-          'layoutEmptySpaces',
-          DEFAULTS
-      );
+      const layoutOrganize = getStoredValue(entityForm, 'layoutOrganize', DEFAULTS);
+      const layoutEmptySpaces = getStoredValue(entityForm, 'layoutEmptySpaces', DEFAULTS);
 
       const cellWidth = layout.cellWidth(pageWidth, gridColumns);
 
@@ -117,15 +105,16 @@ export default dvaModelExtend(commonModel, {
       yield put({
         type: 'toForm',
         payload: {
-          entityForm: yield call(toEntityForm, {model})
+          model: 'pageModel',
+          form: { ...model }
         }
       });
 
-      payload.store && (yield put({type: 'workspaceModel/saveCollection'}));
+      payload.store && (yield put({ type: 'workspaceModel/saveCollection' }));
     },
 
-    * updatePageHeight({payload}, {put, select}) {
-      const {entityForm} = yield select((state) => state.pageModel);
+    * updatePageHeight({ payload }, { put, select }) {
+      const { entityForm } = yield select((state) => state.pageModel);
 
       const _formValues = fromForm(entityForm);
       let height = _formValues.pageHeight || DEFAULTS.pageHeight;
@@ -143,8 +132,8 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * updateColumnCellWidth({payload}, {put, select}) {
-      const {page, entityForm} = yield select((state) => state.pageModel);
+    * updateColumnCellWidth({ payload }, { put, select }) {
+      const { page, entityForm } = yield select((state) => state.pageModel);
 
       const _formValues = fromForm(entityForm);
       const cellWidth = page.layout.cellWidth(
@@ -162,8 +151,8 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * updatePageWidthCellWidth({payload}, {put, select}) {
-      const {page, entityForm} = yield select((state) => state.pageModel);
+    * updatePageWidthCellWidth({ payload }, { put, select }) {
+      const { page, entityForm } = yield select((state) => state.pageModel);
 
       const _formValues = fromForm(entityForm);
       const cellWidth = page.layout.cellWidth(
@@ -181,14 +170,14 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * addWidget({payload}, {put, select}) {
-      const {pages} = yield select((state) => state.workspaceModel);
-      const {page} = yield select((state) => state.pageModel);
+    * addWidget({ payload }, { put, select }) {
+      const { pages } = yield select((state) => state.workspaceModel);
+      const { page } = yield select((state) => state.pageModel);
       const idx = pages.findIndex(
           (_page) => _page.entityForm.entityKey === page.entityForm.entityKey
       );
       const _pages = [...pages];
-      const _page = {...page};
+      const _page = { ...page };
 
       if (!_page) {
         return logger.warn('Unable to get page', page);
@@ -234,7 +223,7 @@ export default dvaModelExtend(commonModel, {
       yield put({
         type: 'setPage',
         payload: {
-          page: {..._page},
+          page: { ..._page },
           store: true
         }
       });
@@ -251,8 +240,8 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * resizeTo({payload}, {put, select}) {
-      const {page} = yield select((state) => state.pageModel);
+    * resizeTo({ payload }, { put, select }) {
+      const { page } = yield select((state) => state.pageModel);
       const widget = _getWidget(page, payload);
 
       widget.dimensions = payload.dimensions;
@@ -266,8 +255,8 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * setWidgetPosition({payload}, {put, select}) {
-      const {page} = yield select((state) => state.pageModel);
+    * setWidgetPosition({ payload }, { put, select }) {
+      const { page } = yield select((state) => state.pageModel);
       const widget = _getWidget(page, payload);
 
       const offset = widget.offset || {
@@ -289,24 +278,24 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * setActiveWidget({payload}, {put, select}) {
-      const {page} = yield select((state) => state.pageModel);
+    * setActiveWidget({ payload }, { put, select }) {
+      const { page } = yield select((state) => state.pageModel);
       const widget = _getWidget(page, payload);
 
       yield put({
         type: 'updateState',
-        payload: {widget}
+        payload: { widget }
       });
     },
 
-    * scrollToWidget({payload}, {call, select}) {
-      const {page} = yield select((state) => state.pageModel);
+    * scrollToWidget({ payload }, { call, select }) {
+      const { page } = yield select((state) => state.pageModel);
       const widget = _getWidget(page, payload);
 
-      yield call(scrollToRef, {id: `widget-${widget.contentKey}`});
+      yield call(scrollToRef, { id: `widget-${widget.contentKey}` });
     },
 
-    * resetState(_, {put}) {
+    * resetState(_, { put }) {
       yield put({
         type: 'updateState',
         payload: {

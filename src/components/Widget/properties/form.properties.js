@@ -107,7 +107,6 @@ const FormProperties = props => {
              visible={propertiesModalVisible}
              className={styles.modalProperties}
              width={modalWidth}
-             forceRender={true}
              destroyOnClose={true}
              centered={true}
              onOk={handleOk}

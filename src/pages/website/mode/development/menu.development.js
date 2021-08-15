@@ -150,7 +150,11 @@ const MenuDevelopment = props => {
              collapsed={collapsedMenu}
              onCollapse={onCollapse}
              theme={'light'}
-             style={{ overflow: 'hidden' }}>
+             style={{
+               overflow: 'hidden',
+               position: 'relative',
+               zIndex: 10
+             }}>
         <Menu mode={'inline'}
               theme={'light'}
               triggerSubMenuAction={'click'}
