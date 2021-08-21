@@ -114,17 +114,19 @@ const MenuDevelopment = props => {
   /**
    * @constant
    * @param entities
-   * @param type
+   * @param {string} type
+   * @param {array} [sources]
    * @return {JSX.Element}
    * @private
    */
-  const _search = (entities, type) => (
+  const _search = (entities, type, sources = []) => (
       <Menu.Item key={`${type}:search`}
                  className={styles.search}
                  disabled>
         <Input placeholder={t('website:search')}
                suffix={<SearchOutlined />}
                allowClear
+               disabled={!sources.length}
                onChange={e => onSearch(entities, e.target.value, type)}
                style={{ width: 180 }} />
       </Menu.Item>
@@ -171,7 +173,7 @@ const MenuDevelopment = props => {
                        onClick={() => onPageSettingModal(onAddPage)}>
               <PlusSquareTwoTone />
             </Menu.Item>
-            {_search(pages, 'pages')}
+            {_search(pages, 'pages', pagesFiltered)}
             {pagesFiltered.length ?
                 pagesFiltered.map((page, idx) => (
                     <Menu.Item key={`page-${idx}`}>
@@ -184,7 +186,7 @@ const MenuDevelopment = props => {
                        icon={<AppstoreAddOutlined />}
                        popupClassName={styles.devSubMenuCollapsed}
                        title={t('menu:widgets')}>
-                {_search(widgets, 'widgets')}
+                {_search(widgets, 'widgets', widgetsFiltered)}
                 {widgetsFiltered.length ?
                     widgetsFiltered.map((widget, idx) => (
                         <Menu.Item key={`widget-${idx}`}>
@@ -198,7 +200,7 @@ const MenuDevelopment = props => {
                        icon={<AppstoreAddOutlined />}
                        popupClassName={styles.devSubMenuCollapsed}
                        title={t('menu:pageWidgets')}>
-                {_search(currentPage.widgets, 'currentPageWidgets')}
+                {_search(currentPage.widgets, 'currentPageWidgets', pageWidgetsFiltered)}
                 {pageWidgetsFiltered.length ?
                     pageWidgetsFiltered.map((widget, idx) => (
                         <Menu.Item key={`widget-${idx}`}>
