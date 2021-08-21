@@ -10,7 +10,7 @@ import Logger from '@/core/modules/Logger';
 export const fillForm = (prevProps, props, form, model) => {
   const entityForm = props[model].entityForm;
   if (
-    JSON.stringify(prevProps[model].entityForm) !== JSON.stringify(entityForm)
+      JSON.stringify(prevProps[model].entityForm) !== JSON.stringify(entityForm)
   ) {
     form.setFields(entityForm);
   }
@@ -46,7 +46,7 @@ export const fromForm = (entityForm) => {
 export const toEntityForm = ({ model }) => {
   return Object.keys(model).map((key) => ({
     name: key,
-    value: model[key],
+    value: model[key]
   }));
 };
 
@@ -78,7 +78,7 @@ export const localeDateTimeString = (timestamp) => {
  */
 export const spinningAll = (loading) => {
   const spinAt = Object.keys(loading.effects).filter(
-    (key) => loading.effects[key],
+      (key) => loading.effects[key]
   );
   !!spinAt.length && Logger.global('Loader', 'info', spinAt);
   return !!spinAt.length;
@@ -91,7 +91,7 @@ export const spinningAll = (loading) => {
  */
 export const spinningGlobal = (loading) => {
   const _globals = Object.keys(loading.effects).filter((key) =>
-    key.match(/appModel/),
+      key.match(/appModel/)
   );
   const spinAt = _globals.filter((key) => loading.effects[key]).length;
   !!spinAt.length && Logger.global('Loader', 'info', spinAt);
@@ -105,7 +105,7 @@ export const spinningGlobal = (loading) => {
  */
 export const spinningLocal = (loading) => {
   const _locals = Object.keys(loading.effects).filter(
-    (key) => !key.match(/appModel/),
+      (key) => !key.match(/appModel/)
   );
   const spinAt = _locals.filter((key) => loading.effects[key]);
   !!spinAt.length && Logger.global('Loader', 'info', spinAt);

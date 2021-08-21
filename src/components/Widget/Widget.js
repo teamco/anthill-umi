@@ -1,14 +1,14 @@
-import React, {createRef} from 'react';
-import {Card} from 'antd';
-import {connect} from 'dva';
-import {withTranslation} from 'react-i18next';
-import {ResizableBox} from 'react-resizable';
-import {SettingOutlined} from '@ant-design/icons';
+import React, { createRef } from 'react';
+import { Card } from 'antd';
+import { connect } from 'dva';
+import { withTranslation } from 'react-i18next';
+import { ResizableBox } from 'react-resizable';
+import { SettingOutlined } from '@ant-design/icons';
 
-import {useDrag} from 'react-dnd';
+import { useDrag } from 'react-dnd';
 import classnames from 'classnames';
 
-import {itemTypes} from '@/pages/website/mode/development/itemTypes';
+import { itemTypes } from '@/pages/website/mode/development/itemTypes';
 import widgets from '@/components/Widget/widget.list';
 import styles from '@/components/Widget/widget.module.less';
 import '@/components/Widget/resizable.less';
@@ -23,7 +23,7 @@ const MAX_OPACITY = 1;
  * @constructor
  */
 const Widget = props => {
-  let [{isDragging}, drag] = [{isDragging: false}, createRef()];
+  let [{ isDragging }, drag] = [{ isDragging: false }, createRef()];
 
   const {
     widgetProps,
@@ -38,65 +38,73 @@ const Widget = props => {
     contentModel
   } = props;
 
-  const content = widgetProps.name,
-      offset = widgetProps.offset || {},
-      dimensions = widgetProps.dimensions;
-
   const {
-    widgetHideContentOnInteraction,
-    widgetDraggable,
-    widgetResizable,
-    widgetStick
-  } = widgetProps.entityForm || {};
-
-  const draggable = updateForm ? widgetDraggable : false;
-  const resizable = updateForm ? widgetResizable : false;
+    name,
+    description,
+    contentKey,
+    offset,
+    dimensions
+  } = widgetProps;
 
   const position = {
     left: offset.x || 0,
     top: offset.y || 0
   };
 
-  const {opacity, hideContent, targetModel, mode} = contentModel;
+  const { targetModel, mode, widgetsForm } = contentModel;
 
-  const _onStart = () => {
-    onSetActiveWidget(widgetProps);
-    widgetHideContentOnInteraction ?
-        onHideContent(true) :
-        onSetOpacity(MIN_OPACITY);
-  };
+  const widgetForm = widgetsForm[contentKey];
 
-  const _onStop = () => {
-    onSetActiveWidget(undefined);
-    widgetHideContentOnInteraction ?
-        onHideContent(false) :
-        onSetOpacity(MAX_OPACITY);
-  };
+  const {
+    hideContent,
+    opacity,
+    widgetHideContentOnInteraction,
+    widgetDraggable,
+    widgetResizable,
+    widgetStick
+  } = widgetForm.properties;
+
+  const draggable = updateForm ? widgetDraggable : false;
+  const resizable = updateForm ? widgetResizable : false;
+
+  // const _onStart = () => {
+  //   onSetActiveWidget(widgetProps);
+  //   widgetHideContentOnInteraction ?
+  //       onHideContent(true) :
+  //       onSetOpacity(MIN_OPACITY);
+  // };
+  //
+  // const _onStop = () => {
+  //   onSetActiveWidget(undefined);
+  //   widgetHideContentOnInteraction ?
+  //       onHideContent(false) :
+  //       onSetOpacity(MAX_OPACITY);
+  // };
 
   if (draggable) {
-    [{isDragging}, drag] = useDrag({
-      item: {
-        name: content,
-        type: itemTypes.WIDGET
-      },
-      begin(monitor) {
-        _onStart();
-      },
-      end(item, monitor) {
-        const dropResult = monitor.getDropResult();
-        if (item && dropResult) {
-          _onStop();
-        }
-      },
-      collect(monitor) {
-        return {
-          isDragging: monitor.isDragging()
-        };
-      }
-    });
+    // [{ isDragging }, drag] = useDrag({
+    //   item: {
+    //     name,
+    //     type: itemTypes.WIDGET
+    //   },
+    //   begin(monitor) {
+    //     _onStart();
+    //   },
+    //   end(item, monitor) {
+    //     const dropResult = monitor.getDropResult();
+    //     if (item && dropResult) {
+    //       _onStop();
+    //     }
+    //   },
+    //   collect(monitor) {
+    //     return {
+    //       isDragging: monitor.isDragging()
+    //     };
+    //   }
+    // });
   }
 
-  const widget = widgets[content];
+  const widget = widgets[name];
   const stickTo = widgetStick ?
       classnames(styles.stickTo, styles[widgetStick]) : '';
 
@@ -107,10 +115,10 @@ const Widget = props => {
   };
 
   const card = (
-      <div name={content}
-           id={`widget-${widgetProps.contentKey}`}
+      <div name={name}
+           id={`widget-${contentKey}`}
            ref={drag}
-           className={stickTo}
+           className={classnames(styles.widget, stickTo)}
            style={style}>
         <Card hoverable
               bordered={false}
@@ -120,14 +128,14 @@ const Widget = props => {
                                  onClick={() => {
                                    onPropertiesModalVisibility(true, widgetProps, updateForm);
                                    onInitFormDraft(targetModel);
-                                 }}/>
+                                 }} />
               ]}
               cover={(
-                  <div style={{height: '100%'}}>
-                    <div className={styles.interactionHide}/>
-                    <div style={hideContent ? {display: 'none'} : null}>
+                  <div style={{ height: '100%' }}>
+                    <div className={styles.interactionHide} />
+                    <div style={hideContent ? { display: 'none' } : null}>
                       {React.cloneElement(widget, {
-                        opts: {content}
+                        opts: { name, contentKey }
                       })}
                     </div>
                   </div>
@@ -136,34 +144,33 @@ const Widget = props => {
       </div>
   );
 
-  return widget ? resizable ? (
-      <ResizableBox className={classnames(styles.widget, styles[mode])}
-                    style={{...position}}
-                    onResize={(e, data) => {
-                      _onStart();
-                      onResize(data, widgetProps);
-                    }}
-                    onResizeStop={(e, data) => {
-                      _onStop();
-                      onResizeStop(data, widgetProps);
-                    }}
-                    width={dimensions.width}
-                    height={dimensions.height}
-                    resizeHandles={['se']}>
-        {card}
-      </ResizableBox>
-  ) : card : null;
+  // return widget ? resizable ? (
+      // <ResizableBox className={classnames(styles.widget, styles[mode])}
+      //               style={{ ...position }}
+      //               onResize={(e, data) => {
+      //                 _onStart();
+      //                 onResize(data, widgetProps);
+      //               }}
+      //               onResizeStop={(e, data) => {
+      //                 _onStop();
+      //                 onResizeStop(data, widgetProps);
+      //               }}
+      //               width={dimensions.width}
+      //               height={dimensions.height}
+      //               resizeHandles={['se']}>
+      //   {card}
+      // </ResizableBox>
+  // ) : card : null;
+  return widget ? card : null
 };
 
 export default connect(({
       contentModel,
       loading
-    }) => {
-      return {
-        contentModel,
-        loading
-      };
-    },
+    }) => ({
+      contentModel,
+      loading
+    }),
     dispatch => ({
       dispatch,
       onPropertiesModalVisibility(visible, widgetProps, updateForm) {
@@ -179,25 +186,25 @@ export default connect(({
       onInitFormDraft(model) {
         dispatch({
           type: `contentModel/initFormDraft`,
-          payload: {model}
+          payload: { model }
         });
       },
       onSetOpacity(opacity) {
         dispatch({
           type: 'contentModel/setOpacity',
-          payload: {opacity}
+          payload: { opacity }
         });
       },
       onHideContent(hide) {
         dispatch({
           type: 'contentModel/hideContent',
-          payload: {hide}
+          payload: { hide }
         });
       },
       onSetActiveWidget(widget) {
         dispatch({
           type: 'pageModel/setActiveWidget',
-          payload: {widget}
+          payload: { widget }
         });
       }
     })

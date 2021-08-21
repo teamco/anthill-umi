@@ -86,22 +86,13 @@ export default connect(({
         });
       },
       onAddPage(values) {
-        dispatch({
-          type: 'workspaceModel/addPage',
-          payload: { values }
-        });
+        dispatch({ type: 'workspaceModel/addPage', payload: { values } });
       },
       onScrollToWidget(widget) {
-        dispatch({
-          type: 'pageModel/scrollToWidget',
-          payload: { widget }
-        });
+        dispatch({ type: 'pageModel/scrollToWidget', payload: { widget } });
       },
       onAddWidget(widget) {
-        dispatch({
-          type: 'pageModel/addWidget',
-          payload: { widget }
-        });
+        dispatch({ type: 'pageModel/addWidget', payload: { widget } });
       },
       onSearch(entities, value, type) {
         dispatch({
@@ -114,10 +105,7 @@ export default connect(({
         });
       },
       onCancelModal(type) {
-        dispatch({
-          type: 'workspaceModel/cancelModal',
-          payload: { type }
-        });
+        dispatch({ type: 'workspaceModel/cancelModal', payload: { type } });
       },
       onUpdatePageSetting(values, page) {
         dispatch({

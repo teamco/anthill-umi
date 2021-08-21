@@ -1,7 +1,7 @@
 /**
  * @export
  * @param {string} html Representing a single element
- * @return {ChildNode}
+ * @return {ChildNode|HTMLElement}
  */
 export function htmlToElement(html) {
   const template = document.createElement('template');

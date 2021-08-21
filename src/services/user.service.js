@@ -1,8 +1,8 @@
 import i18n from '@/utils/i18n';
 import request from '@/utils/request';
-import {API} from '@/services/config';
-import {errorGetMsg} from '@/utils/message';
-import {getXHRToken} from '@/services/auth.service';
+import { API } from '@/services/config';
+import { errorGetMsg } from '@/utils/message';
+import { getXHRToken } from '@/services/auth.service';
 import gravatar from 'gravatar.js';
 
 /**
@@ -28,10 +28,11 @@ export const isModerator = (user) => {
  * @param token
  * @return {Q.Promise<*>|undefined}
  */
-export function getCurrentUser({token}) {
+export function getCurrentUser({ token }) {
+  console.log('>>>', getXHRToken({ token }));
   const opts = request.config({
     url: API.auth.currentUser,
-    headers: {'Authorization': getXHRToken({token})}
+    headers: { 'Authorization': getXHRToken({ token }) }
   });
 
   return request.xhr(opts,
@@ -46,10 +47,10 @@ export function getCurrentUser({token}) {
  * @param token
  * @return {Q.Promise<*>|undefined}
  */
-export function getUser({userKey, token}) {
+export function getUser({ userKey, token }) {
   const opts = request.config({
     url: API.users.getUser,
-    headers: {'Authorization': getXHRToken({token})},
+    headers: { 'Authorization': getXHRToken({ token }) },
     userKey
   });
 
@@ -66,6 +67,6 @@ export function getUser({userKey, token}) {
  * @param {string} format
  * @return {*}
  */
-export function getProfileImage({email, protocol = 'http', format = 'json'}) {
-  return gravatar.url(email, {protocol, format});
+export function getProfileImage({ email, protocol = 'http', format = 'json' }) {
+  return gravatar.url(email, { protocol, format });
 }

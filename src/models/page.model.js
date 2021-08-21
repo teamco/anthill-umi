@@ -173,15 +173,18 @@ export default dvaModelExtend(commonModel, {
     * addWidget({ payload }, { put, select }) {
       const { pages } = yield select((state) => state.workspaceModel);
       const { page } = yield select((state) => state.pageModel);
+
+      const _pages = [...pages];
+
+      if (!page) {
+        return logger.warn('Unable to get page', page);
+      }
+
       const idx = pages.findIndex(
           (_page) => _page.entityForm.entityKey === page.entityForm.entityKey
       );
-      const _pages = [...pages];
-      const _page = { ...page };
 
-      if (!_page) {
-        return logger.warn('Unable to get page', page);
-      }
+      const _page = { ...page };
 
       const {
         name,
@@ -212,10 +215,8 @@ export default dvaModelExtend(commonModel, {
       widgets.push(widgetProps);
 
       yield put({
-        type: 'contentModel/propertiesModalVisibility',
-        payload: {
-          widgetProps
-        }
+        type: 'contentModel/setWidgetProps',
+        payload: { widgetProps, page }
       });
 
       _page.widgets = [...widgets];
