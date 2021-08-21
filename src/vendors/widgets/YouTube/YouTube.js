@@ -52,8 +52,8 @@ class YouTube extends Component {
     const { contentModel, opts, t } = this.props;
     const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
 
-    const youtubeSrc = contentForm['youtube/embedUrl'];
-
+    const youtubeSrc = contentForm?.youtubePreview;
+console.log(youtubeSrc)
     return youtubeSrc ? (
         <Iframe label={t('form:preview')}
                 height={'100%'}

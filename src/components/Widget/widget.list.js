@@ -6,10 +6,7 @@ import YouTube from '@/vendors/widgets/YouTube';
 
 export default {
   Scratch: <Scratch />,
-  YouTube: (
-      <YouTube embedUrl={'https://www.youtube.com/embed/ALZHF5UqnU4'}
-               disabledUrl={false} />
-  ),
+  YouTube: <YouTube embedUrl={'https://www.youtube.com/embed/ALZHF5UqnU4'} />,
   '24TV.UA': <YouTube embedUrl={'https://youtu.be/LEZeZphNUGY'} />,
   'Espreso.TV': <YouTube embedUrl={'https://youtu.be/6arO8p6gmBI'} />,
   'Prm.UA': <YouTube embedUrl={'https://youtu.be/RmYML3CiypI'} />,
