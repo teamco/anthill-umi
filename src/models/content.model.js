@@ -65,6 +65,14 @@ export default dvaModelExtend(commonModel, {
       }
     },
 
+    * propertiesModalVisibility({ payload }, { put, select }) {
+      const { visible, contentKey } = payload;
+      yield put({
+        type: 'updateState',
+        payload: { propertiesModalVisible: visible }
+      });
+    },
+
     * toWidgetForm({ payload }, { put, select }) {
       const { widgetsForm } = yield select((state) => state.contentModel);
       const { form } = payload;

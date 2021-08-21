@@ -126,7 +126,7 @@ const Widget = props => {
               actions={[
                 <SettingOutlined key={'setting'}
                                  onClick={() => {
-                                   onPropertiesModalVisibility(true, widgetProps, updateForm);
+                                   onPropertiesModalVisibility(true, contentKey);
                                    onInitFormDraft(targetModel);
                                  }} />
               ]}
@@ -173,13 +173,12 @@ export default connect(({
     }),
     dispatch => ({
       dispatch,
-      onPropertiesModalVisibility(visible, widgetProps, updateForm) {
+      onPropertiesModalVisibility(visible, contentKey) {
         dispatch({
           type: 'contentModel/propertiesModalVisibility',
           payload: {
-            visible,
-            updateForm,
-            widgetProps
+            contentKey,
+            visible
           }
         });
       },
