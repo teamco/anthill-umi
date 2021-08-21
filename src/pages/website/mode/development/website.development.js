@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { Layout } from 'antd';
 
 import styles from '@/pages/website/mode/mode.module.less';
-import '@/components/Form/form.less';
+import appStyles from '@/layouts/app.layout.less';
 
 import Workspace from '@/pages/website/mode/Workspace';
 import MenuDevelopment from '@/pages/website/mode/development/menu.development';
@@ -42,7 +42,7 @@ const websiteDevelopment = props => {
   return (
       <Layout className={classnames(styles.layout, mode)}>
         <MenuDevelopment {...props} />
-        <Layout className={'site-layout'}>
+        <Layout className={appStyles.siteLayout}>
           <Content style={{ margin: 0 }}>
             <div className={styles.workspace}>
               <Workspace pages={pages}
