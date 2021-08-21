@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import { withTranslation } from 'react-i18next';
 
@@ -9,21 +9,39 @@ import { youtubeProperties } from './config/youtube.properties';
 
 const { GenericPanel } = Form;
 
-class YouTube extends Component {
-  properties() {
-    const { t, onUpdatePreview, contentModel, disabledUrl = true } = this.props;
+const YouTube = props => {
+  const {
+    t,
+    opts,
+    contentModel,
+    onSetProperties,
+    onUpdatePreview
+  } = props;
 
-    let { youtubePreview } = contentModel;
-    if (!youtubePreview) {
-      // youtubePreview = { ...fromForm(youtubeModel.entityForm) }.youtubeSrc;
-    }
+  const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
 
-    return youtubePreview ? (
+  useEffect(() => {
+    const youtubeSrc = contentForm?.youtubePreview;
+    onSetProperties(properties(), youtubeSrc, opts.contentKey);
+  }, [contentForm?.youtubePreview]);
+
+  const youtubeSrc = contentForm?.youtubePreview;
+
+  /**
+   * @constant
+   * @return {JSX.Element|null}
+   */
+  const properties = () => {
+    const {
+      disabledUrl = true
+    } = props;
+
+    return youtubeSrc ? (
         <div>
           <GenericPanel header={t('panel:contentProperties')}
                         name={'widget-content-properties'}
                         defaultActiveKey={['widget-content-properties']}>
-            {youtubeProperties(onUpdatePreview, youtubePreview, disabledUrl).map(
+            {youtubeProperties(onUpdatePreview, youtubeSrc, disabledUrl).map(
                 (prop, idx) => (
                     <div key={idx}>{prop}</div>
                 )
@@ -31,46 +49,22 @@ class YouTube extends Component {
           </GenericPanel>
         </div>
     ) : null;
-  }
+  };
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { youtubeModel, embedUrl, onSetProperties, opts } = this.props;
-    const _isChanged = JSON.stringify(prevProps.youtubeModel) !==
-        JSON.stringify(youtubeModel);
-
-    if (_isChanged) {
-      onSetProperties(this.properties(), embedUrl, opts.contentKey);
-    }
-  }
-
-  componentDidMount() {
-    const { onSetProperties, embedUrl, opts } = this.props;
-    onSetProperties(this.properties(), embedUrl, opts.contentKey);
-  }
-
-  render() {
-    const { contentModel, opts, t } = this.props;
-    const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
-
-    const youtubeSrc = contentForm?.youtubePreview;
-console.log(youtubeSrc)
-    return youtubeSrc ? (
-        <Iframe label={t('form:preview')}
-                height={'100%'}
-                key={opts.contentKey}
-                src={youtubeSrc} />
-    ) : null;
-  }
-}
+  return youtubeSrc ? (
+      <Iframe label={t('form:preview')}
+              height={'100%'}
+              key={opts.contentKey}
+              src={youtubeSrc} />
+  ) : null;
+};
 
 export default connect(
-    ({ contentModel, youtubeModel, loading }) => {
-      return {
-        contentModel,
-        youtubeModel,
-        loading
-      };
-    },
+    ({ contentModel, youtubeModel, loading }) => ({
+      contentModel,
+      youtubeModel,
+      loading
+    }),
     (dispatch) => ({
       dispatch,
       onUpdatePreview({ target }) {
