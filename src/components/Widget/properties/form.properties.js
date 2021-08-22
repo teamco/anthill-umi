@@ -50,14 +50,14 @@ const FormProperties = props => {
   } = contentModel;
 
   const contentKey = getFormValue(entityForm, 'entityKey');
-  const widgetProps = widgetsForm[contentKey] || {};
-  console.log(entityForm, contentKey);
-  const { targetModel } = widgetProps;
+  const widgetProps = widgetsForm[contentKey];
+
+  const { targetModel, name } = widgetProps || {};
 
   useEffect(() => {
-    if (propertiesModalVisible) {
+    if (propertiesModalVisible && widgetProps) {
       const { main, properties } = widgetProps;
-      main && fillWidgetFormEffect([main, properties], ['widget', 'behavior'], form);
+      fillWidgetFormEffect([main, properties], ['widget', 'behavior'], form);
       setSaving(false);
     }
   }, [contentKey]);
@@ -76,7 +76,7 @@ const FormProperties = props => {
     ), (
         <span>
           <ProfileOutlined />
-          {widgetProps.name}
+          {name}
         </span>
     )
   ];
