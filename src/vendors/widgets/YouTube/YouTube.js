@@ -13,6 +13,7 @@ const YouTube = props => {
   const {
     t,
     opts,
+    embedUrl,
     contentModel,
     onSetProperties,
     onUpdatePreview
@@ -21,8 +22,12 @@ const YouTube = props => {
   const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
 
   useEffect(() => {
+    onSetProperties(properties(), embedUrl, opts.contentKey);
+  }, []);
+
+  useEffect(() => {
     const youtubeSrc = contentForm?.youtubePreview;
-    onSetProperties(properties(), youtubeSrc, opts.contentKey);
+    youtubeSrc && onSetProperties(properties(), youtubeSrc, opts.contentKey);
   }, [contentForm?.youtubePreview]);
 
   const youtubeSrc = contentForm?.youtubePreview;
@@ -32,31 +37,28 @@ const YouTube = props => {
    * @return {JSX.Element|null}
    */
   const properties = () => {
-    const {
-      disabledUrl = true
-    } = props;
+    const { disabledUrl = true } = props;
+    const _properties = youtubeProperties(onUpdatePreview, youtubeSrc, disabledUrl);
 
-    return youtubeSrc ? (
+    return (
         <div>
           <GenericPanel header={t('panel:contentProperties')}
                         name={'widget-content-properties'}
                         defaultActiveKey={['widget-content-properties']}>
-            {youtubeProperties(onUpdatePreview, youtubeSrc, disabledUrl).map(
-                (prop, idx) => (
-                    <div key={idx}>{prop}</div>
-                )
-            )}
+            {_properties.map((prop, idx) => (
+                <div key={idx}>{prop}</div>
+            ))}
           </GenericPanel>
         </div>
-    ) : null;
+    );
   };
 
-  return youtubeSrc ? (
+  return (
       <Iframe label={t('form:preview')}
               height={'100%'}
               key={opts.contentKey}
               src={youtubeSrc} />
-  ) : null;
+  );
 };
 
 export default connect(

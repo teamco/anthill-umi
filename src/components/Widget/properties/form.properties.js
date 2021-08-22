@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {connect} from 'dva';
-import {withTranslation} from 'react-i18next';
-import {Form, Modal} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
+import { withTranslation } from 'react-i18next';
+import { Form, Modal } from 'antd';
+import { fillWidgetFormEffect, getFormValue } from '@/utils/state';
 import {
   AuditOutlined,
   ExclamationCircleOutlined,
@@ -12,11 +13,10 @@ import {
 import styles from '@/components/Widget/widget.module.less';
 import FormComponents from '@/components/Form';
 
-import {mainProperties} from '@/components/Widget/properties/main.properties';
-import {interactionProperties} from '@/components/Widget/properties/interaction.properties';
-import {fillFormEffect} from '@/utils/state';
+import { mainProperties } from '@/components/Widget/properties/main.properties';
+import { interactionProperties } from '@/components/Widget/properties/interaction.properties';
 
-const {GenericTabs, GenericPanel} = FormComponents;
+const { GenericTabs, GenericPanel } = FormComponents;
 
 /**
  * @export
@@ -24,6 +24,7 @@ const {GenericTabs, GenericPanel} = FormComponents;
  * @return {JSX.Element}
  */
 const FormProperties = props => {
+
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
 
@@ -40,47 +41,52 @@ const FormProperties = props => {
   } = props;
 
   const {
-    targetModel,
+    entityForm,
+    widgetsForm,
     updateForm,
     modalWidth,
-    widgetProps = {},
     contentProperties,
     propertiesModalVisible
   } = contentModel;
 
+  const contentKey = getFormValue(entityForm, 'entityKey');
+  const widgetProps = widgetsForm[contentKey] || {};
+  console.log(entityForm, contentKey);
+  const { targetModel } = widgetProps;
+
   useEffect(() => {
     if (propertiesModalVisible) {
-      onTransferFormRef(form);
-      fillFormEffect(contentModel, form);
+      const { main, properties } = widgetProps;
+      main && fillWidgetFormEffect([main, properties], ['widget', 'behavior'], form);
       setSaving(false);
     }
-  }, [contentModel]);
+  }, [contentKey]);
 
   const tabs = [
     (
         <span>
-          <AuditOutlined/>
+          <AuditOutlined />
           {t('instance:widget')}
         </span>
     ), (
         <span>
-          <InteractionOutlined/>
+          <InteractionOutlined />
           {t('instance:behavior')}
         </span>
     ), (
         <span>
-          <ProfileOutlined/>
+          <ProfileOutlined />
           {widgetProps.name}
         </span>
     )
   ];
 
-  const _main = mainProperties({
+  const _mainProps = mainProperties({
     onChange(type) {
     }
   });
 
-  const _behavior = interactionProperties({
+  const _behaviorProps = interactionProperties({
     onChange(type) {
       if (type.match(/widgetStickTo/)) {
         onWidgetUnstick(false);
@@ -101,16 +107,16 @@ const FormProperties = props => {
     });
   };
 
-  return (
+  return propertiesModalVisible ? (
       <Modal title={t('panel:properties')}
-             icon={<ExclamationCircleOutlined/>}
+             icon={<ExclamationCircleOutlined />}
              visible={propertiesModalVisible}
              className={styles.modalProperties}
              width={modalWidth}
              destroyOnClose={true}
              centered={true}
              onOk={handleOk}
-             okButtonProps={{disabled: !updateForm || saving}}
+             okButtonProps={{ disabled: !updateForm || saving }}
              onCancel={() => {
                onResetWidget(targetModel);
                onPropertiesModalVisibility(false);
@@ -121,17 +127,17 @@ const FormProperties = props => {
               onFinish={onFinish}>
           <GenericTabs tabs={tabs}
                        defaultActiveKey={'0'}>
-            <div style={{marginTop: 10}}>
+            <div style={{ marginTop: 10 }}>
               <GenericPanel header={t('panel:widgetProps')}
                             name={'widgetGeneral'}
                             defaultActiveKey={['widgetGeneral']}>
-                {_main.main.map((prop, idx) => (
+                {_mainProps.main.map((prop, idx) => (
                     <div key={idx}>{prop}</div>
                 ))}
               </GenericPanel>
               <GenericPanel header={t('panel:widgetPropsAdvanced')}
                             name={'widgetAdvanced'}>
-                {_main.advanced.map((prop, idx) => (
+                {_mainProps.advanced.map((prop, idx) => (
                     <div key={idx}>{prop}</div>
                 ))}
               </GenericPanel>
@@ -140,13 +146,13 @@ const FormProperties = props => {
               <GenericPanel header={t('panel:interactions')}
                             name={'widgetInteractions'}
                             defaultActiveKey={['widgetInteractions']}>
-                {_behavior.interactions.map((prop, idx) => (
+                {_behaviorProps.interactions.map((prop, idx) => (
                     <div key={idx}>{prop}</div>
                 ))}
               </GenericPanel>
               <GenericPanel header={t('panel:dimensions')}
                             name={'widgetDimensions'}>
-                {_behavior.dimensions.map((prop, idx) => (
+                {_behaviorProps.dimensions.map((prop, idx) => (
                     <div key={idx}>{prop}</div>
                 ))}
               </GenericPanel>
@@ -157,7 +163,7 @@ const FormProperties = props => {
           </GenericTabs>
         </Form>
       </Modal>
-  );
+  ) : null;
 };
 
 export default connect(({
@@ -184,25 +190,25 @@ export default connect(({
       onTransferFormRef(form) {
         dispatch({
           type: 'contentModel/transferFormRef',
-          payload: {form}
+          payload: { form }
         });
       },
       onWidgetUnstick(unstick) {
         dispatch({
           type: 'contentModel/widgetUnstick',
-          payload: {unstick}
+          payload: { unstick }
         });
       },
       onWidgetStick(stickTo) {
         dispatch({
           type: 'contentModel/widgetStick',
-          payload: {stickTo}
+          payload: { stickTo }
         });
       },
       onResetWidget(model) {
         dispatch({
           type: 'contentModel/revertFormValues',
-          payload: {model}
+          payload: { model }
         });
       },
       onFinish() {

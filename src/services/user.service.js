@@ -29,7 +29,6 @@ export const isModerator = (user) => {
  * @return {Q.Promise<*>|undefined}
  */
 export function getCurrentUser({ token }) {
-  console.log('>>>', getXHRToken({ token }));
   const opts = request.config({
     url: API.auth.currentUser,
     headers: { 'Authorization': getXHRToken({ token }) }

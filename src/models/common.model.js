@@ -59,7 +59,6 @@ const commonModel = {
     * toForm({ payload }, { call, put, select }) {
       const { entityForm } = yield select((state) => state[payload.model]);
       const _entityForm = [...entityForm];
-      const toDelete = [];
 
       const keys = Object.keys(payload.form);
       for (let i = 0; i < keys.length; i++) {
@@ -71,21 +70,17 @@ const commonModel = {
           value: payload.form[key]
         };
 
-        // Overwrite existing values
         if (idx > -1) {
-          toDelete.push(idx);
+          // Overwrite existing values
+          _entityForm[idx] = formItem;
+        } else {
+          _entityForm.push(formItem);
         }
-
-        _entityForm.push(formItem);
       }
 
       yield put({
         type: 'updateState',
-        payload: {
-          entityForm: [
-            ..._entityForm.filter((form, idx) => toDelete.indexOf(idx) === -1)
-          ]
-        }
+        payload: { entityForm: [..._entityForm] }
       });
     },
 

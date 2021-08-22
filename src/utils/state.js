@@ -9,9 +9,8 @@ import Logger from '@/core/modules/Logger';
  */
 export const fillForm = (prevProps, props, form, model) => {
   const entityForm = props[model].entityForm;
-  if (
-      JSON.stringify(prevProps[model].entityForm) !== JSON.stringify(entityForm)
-  ) {
+  if (JSON.stringify(prevProps[model].entityForm) !==
+      JSON.stringify(entityForm)) {
     form.setFields(entityForm);
   }
 };
@@ -29,6 +28,17 @@ export const fillFormEffect = (model, form, draft = false) => {
 
 /**
  * @export
+ * @param form
+ * @param ns
+ * @param {array} models
+ */
+export const fillWidgetFormEffect = (models = [], ns, form) => {
+  const entityForm = models.map((model, idx) => toEntityForm({ model, ns: ns[idx] }));
+  form.setFields(entityForm.flat());
+};
+
+/**
+ * @export
  * @param entityForm
  * @return {{}}
  */
@@ -41,11 +51,12 @@ export const fromForm = (entityForm) => {
 /**
  * @export
  * @param model
+ * @param ns
  * @return {*}
  */
-export const toEntityForm = ({ model }) => {
+export const toEntityForm = ({ model, ns }) => {
   return Object.keys(model).map((key) => ({
-    name: key,
+    name: ns ? [ns, key] : key,
     value: model[key]
   }));
 };
@@ -59,6 +70,23 @@ export const toEntityForm = ({ model }) => {
  */
 export function getStoredValue(entityForm, key, DEFAULTS = {}) {
   return entityForm[key] || DEFAULTS[key];
+}
+
+/**
+ * @function
+ * @param model
+ * @param key
+ * @return {*}
+ */
+export function getFormValue(model, key) {
+  let value = undefined;
+  model.forEach(_obj => {
+    if (_obj?.name === key) {
+      value = _obj?.value;
+    }
+  });
+
+  return value;
 }
 
 /**

@@ -4,28 +4,27 @@
 import dvaModelExtend from 'dva-model-extend';
 
 import { commonModel } from '@/models/common.model';
-import { toEntityForm } from '@/utils/state';
 
 const DEFAULTS = {
-  widgetOverlapping: true,
-  widgetAlwaysOnTop: false,
-  widgetFreeze: false,
-  widgetDraggable: true,
-  widgetResizable: true,
-  widgetScrollable: false,
-  widgetMaximizable: false,
-  widgetZoomable: false,
-  widgetStretchWidth: false,
-  widgetStretchHeight: false,
-  widgetUnstick: 'widgetUnstick',
-  widgetStick: false,
-  widgetStatistics: false,
-  widgetHideContentOnInteraction: true,
-  widgetPageContainment: false,
-  widgetShowInMobile: true,
-  widgetSetLayerUp: 0,
-  widgetCellWidth: 0,
-  widgetRowHeight: 0
+  overlapping: true,
+  alwaysOnTop: false,
+  freeze: false,
+  draggable: true,
+  resizable: true,
+  scrollable: false,
+  maximizable: false,
+  zoomable: false,
+  stretchWidth: false,
+  stretchHeight: false,
+  unstick: 'widgetUnstick',
+  stick: false,
+  statistics: false,
+  hideContentOnInteraction: true,
+  pageContainment: false,
+  showInMobile: true,
+  setLayerUp: 0,
+  cellWidth: 0,
+  rowHeight: 0
 };
 
 /**
@@ -43,7 +42,7 @@ export default dvaModelExtend(commonModel, {
   effects: {
 
     * setWidgetProps({ payload }, { put }) {
-      const { visible = false, widgetProps, page, updateForm = false } = payload;
+      const { visible = false, widgetProps, updateForm = false } = payload;
 
       if (widgetProps) {
         const form = {
@@ -67,6 +66,20 @@ export default dvaModelExtend(commonModel, {
 
     * propertiesModalVisibility({ payload }, { put, select }) {
       const { visible, contentKey } = payload;
+
+      const model = {
+        entityKey: contentKey,
+        entityType: 'widget'
+      };
+
+      yield put({
+        type: 'toForm',
+        payload: {
+          model: 'contentModel',
+          form: { ...model }
+        }
+      });
+
       yield put({
         type: 'updateState',
         payload: { propertiesModalVisible: visible }
@@ -105,29 +118,11 @@ export default dvaModelExtend(commonModel, {
             ..._widgetsForm,
             [contentKey]: {
               ..._widgetForm,
-              contentModel: model,
+              targetModel: model,
               contentForm,
               propsModal
             }
           }
-        }
-      });
-    },
-
-    * transferFormRef({ payload }, { put, select }) {
-      const { targetModel } = yield select((state) => state.contentModel);
-      yield put({
-        type: `${targetModel}/updateState`,
-        payload: { widgetForm: payload.form }
-      });
-    },
-
-    * updateContentForm({ payload }, { put }) {
-      yield put({
-        type: 'toForm',
-        payload: {
-          model: 'contentModel',
-          ...payload.props
         }
       });
     },
@@ -144,9 +139,9 @@ export default dvaModelExtend(commonModel, {
       yield put({
         type: 'updateState',
         payload: {
-          hideContent: payload.hide
-              ? widgetProps.entityForm.widgetHideContentOnInteraction
-              : false
+          hideContent: payload.hide ?
+              widgetProps.entityForm.widgetHideContentOnInteraction :
+              false
         }
       });
     },
@@ -160,12 +155,12 @@ export default dvaModelExtend(commonModel, {
         model.widgetDraggable = false;
         model.widgetResizable = false;
 
-        const _toEntityForm = yield call(toEntityForm, { model });
+        // const _toEntityForm = yield call(toEntityForm, { model });
 
-        yield put({
-          type: 'toForm',
-          payload: { entityForm: _toEntityForm }
-        });
+        // yield put({
+        //   type: 'toForm',
+        //   payload: { entityForm: _toEntityForm }
+        // });
       }
     },
 
@@ -183,12 +178,12 @@ export default dvaModelExtend(commonModel, {
           model.widgetUnstick = false;
         }
 
-        const _toEntityForm = yield call(toEntityForm, { model });
-
-        yield put({
-          type: 'toForm',
-          payload: { entityForm: _toEntityForm }
-        });
+        // const _toEntityForm = yield call(toEntityForm, { model });
+        //
+        // yield put({
+        //   type: 'toForm',
+        //   payload: { entityForm: _toEntityForm }
+        // });
       }
     }
   },

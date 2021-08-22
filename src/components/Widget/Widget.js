@@ -51,7 +51,7 @@ const Widget = props => {
     top: offset.y || 0
   };
 
-  const { targetModel, mode, widgetsForm } = contentModel;
+  const { widgetsForm } = contentModel;
 
   const widgetForm = widgetsForm[contentKey];
 
@@ -127,7 +127,6 @@ const Widget = props => {
                 <SettingOutlined key={'setting'}
                                  onClick={() => {
                                    onPropertiesModalVisibility(true, contentKey);
-                                   onInitFormDraft(targetModel);
                                  }} />
               ]}
               cover={(
@@ -145,23 +144,23 @@ const Widget = props => {
   );
 
   // return widget ? resizable ? (
-      // <ResizableBox className={classnames(styles.widget, styles[mode])}
-      //               style={{ ...position }}
-      //               onResize={(e, data) => {
-      //                 _onStart();
-      //                 onResize(data, widgetProps);
-      //               }}
-      //               onResizeStop={(e, data) => {
-      //                 _onStop();
-      //                 onResizeStop(data, widgetProps);
-      //               }}
-      //               width={dimensions.width}
-      //               height={dimensions.height}
-      //               resizeHandles={['se']}>
-      //   {card}
-      // </ResizableBox>
+  // <ResizableBox className={classnames(styles.widget, styles[mode])}
+  //               style={{ ...position }}
+  //               onResize={(e, data) => {
+  //                 _onStart();
+  //                 onResize(data, widgetProps);
+  //               }}
+  //               onResizeStop={(e, data) => {
+  //                 _onStop();
+  //                 onResizeStop(data, widgetProps);
+  //               }}
+  //               width={dimensions.width}
+  //               height={dimensions.height}
+  //               resizeHandles={['se']}>
+  //   {card}
+  // </ResizableBox>
   // ) : card : null;
-  return widget ? card : null
+  return widget ? card : null;
 };
 
 export default connect(({
