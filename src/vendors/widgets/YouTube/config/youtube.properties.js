@@ -3,35 +3,28 @@ import { Input } from 'antd';
 
 import i18n from '@/utils/i18n';
 
-import Iframe from '@/components/Iframe';
-
-const { TextArea } = Input;
-
 /**
  * @export
  * @param onUpdatePreview
- * @param youtubePreview
+ * @param previewUrl
  * @param {boolean} [disabledUrl]
  * @return {JSX.Element[][]}
  */
 export const youtubeProperties = (
     onUpdatePreview,
-    youtubePreview,
+    previewUrl,
     disabledUrl = false
 ) => {
   return [
     [
       <Input type={'text'}
              label={i18n.t('form:name')}
-             name={'youtube/text'}
-             key={'youtubeText'}
-             config={{
-               rules: [{ required: true }]
-             }} />
+             name={['youtube', 'text']}
+             key={'youtubeText'} />
     ],
     [
       <TextArea label={i18n.t('form:embedUrl')}
-                name={'youtube/embedUrl'}
+                name={['youtube', 'embedUrl']}
                 key={'youtubeUrl'}
                 disabled={disabledUrl}
                 onChange={onUpdatePreview}
@@ -44,8 +37,12 @@ export const youtubeProperties = (
     [
       <Iframe label={i18n.t('form:preview')}
               height={320}
-              key={'youtubePreview'}
-              src={youtubePreview} />
+              key={'previewUrl'}
+              src={previewUrl} />
     ]
   ];
 };
+
+import Iframe from '@/components/Iframe';
+
+const { TextArea } = Input;

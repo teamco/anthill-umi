@@ -16,29 +16,34 @@ const YouTube = props => {
     embedUrl,
     contentModel,
     onSetProperties,
-    onUpdatePreview
+    onUpdatePreview,
+    disabledUrl = true
   } = props;
 
   const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
 
   useEffect(() => {
-    onSetProperties(properties(), embedUrl, opts.contentKey);
+    onSetProperties(properties, embedUrl, opts.contentKey);
   }, []);
 
   useEffect(() => {
-    const youtubeSrc = contentForm?.youtubePreview;
-    youtubeSrc && onSetProperties(properties(), youtubeSrc, opts.contentKey);
-  }, [contentForm?.youtubePreview]);
+    const youtubeSrc = contentForm?.previewUrl;
+    youtubeSrc && onSetProperties(properties, youtubeSrc, opts.contentKey);
+  }, [contentForm?.previewUrl]);
 
-  const youtubeSrc = contentForm?.youtubePreview;
+  const youtubeSrc = contentForm?.previewUrl;
 
   /**
    * @constant
+   * @param [props]
    * @return {JSX.Element|null}
    */
-  const properties = () => {
-    const { disabledUrl = true } = props;
-    const _properties = youtubeProperties(onUpdatePreview, youtubeSrc, disabledUrl);
+  const properties = props => {
+    const _properties = youtubeProperties(
+        onUpdatePreview,
+        youtubeSrc,
+        disabledUrl
+    );
 
     return (
         <div>
@@ -73,7 +78,7 @@ export default connect(
         dispatch({
           type: 'youtubeModel/updatePreview',
           payload: {
-            youtubePreview: target.value
+            previewUrl: target.value
           }
         });
       },

@@ -50,12 +50,16 @@ const FormProperties = props => {
   const contentKey = getFormValue(entityForm, 'entityKey');
   const widgetProps = widgetsForm[contentKey];
 
-  const { targetModel, main, propsModal } = widgetProps || {};
+  const { targetModel, main, ContentPropsModal, source } = widgetProps || {};
 
   useEffect(() => {
     if (propertiesModalVisible && widgetProps) {
-      const { main, properties } = widgetProps;
-      fillWidgetFormEffect([main, properties], ['widget', 'behavior'], form);
+      const { main, properties, contentForm } = widgetProps;
+      fillWidgetFormEffect(
+          [main, properties, contentForm],
+          ['widget', 'behavior', source],
+          form
+      );
       setSaving(false);
     }
   }, [contentKey]);
@@ -122,6 +126,12 @@ const FormProperties = props => {
         <Form layout={'vertical'}
               form={form}
               onFieldsChange={onFieldsChange}
+              initialValues={[
+                {
+                  name: [source, 'text'],
+                  value: main?.name
+                }
+              ]}
               onFinish={onFinish}>
           <GenericTabs tabs={tabs}
                        defaultActiveKey={'0'}>
@@ -156,7 +166,7 @@ const FormProperties = props => {
               </GenericPanel>
             </div>
             <div>
-              {propsModal}
+              <ContentPropsModal />
             </div>
           </GenericTabs>
         </Form>

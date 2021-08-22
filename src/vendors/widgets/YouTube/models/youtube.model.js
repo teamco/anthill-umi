@@ -7,7 +7,7 @@ import { commonModel } from '@/models/common.model';
 import { getEmbedCode } from '@/vendors/widgets/YouTube/services/youtube.service';
 
 const DEFAULTS = {
-  'youtube/embedUrl': 'https://www.youtube.com/embed/ALZHF5UqnU4'
+  embedUrl: 'https://www.youtube.com/embed/ALZHF5UqnU4'
 };
 
 /**
@@ -17,13 +17,13 @@ export default dvaModelExtend(commonModel, {
   namespace: 'youtubeModel',
   state: {
     defaults: {},
-    youtubePreview: false
+    previewUrl: false
   },
   effects: {
 
     * setProperties({ payload }, { put }) {
       const {
-        embedUrl = DEFAULTS['youtube/embedUrl'],
+        embedUrl = DEFAULTS['embedUrl'],
         properties,
         contentKey
       } = payload;
@@ -34,10 +34,11 @@ export default dvaModelExtend(commonModel, {
           model: 'youtubeModel',
           contentKey,
           propsModal: properties,
+          source: 'youtube',
           contentForm: {
             ...DEFAULTS,
-            youtubePreview: getEmbedCode(embedUrl),
-            'youtube/embedUrl': embedUrl
+            previewUrl: getEmbedCode(embedUrl),
+            embedUrl
           }
         }
       });
@@ -47,7 +48,7 @@ export default dvaModelExtend(commonModel, {
       yield put({
         type: 'updateState',
         payload: {
-          youtubePreview: getEmbedCode(payload.youtubePreview)
+          previewUrl: getEmbedCode(payload.previewUrl)
         }
       });
     }

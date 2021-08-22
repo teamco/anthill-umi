@@ -102,9 +102,10 @@ export default dvaModelExtend(commonModel, {
     * setContentProperties({ payload }, { put, select }) {
       const { widgetsForm } = yield select((state) => state.contentModel);
       const {
+        source,
         contentKey,
-        propsModal,
         contentForm,
+        propsModal,
         model
       } = payload;
 
@@ -120,7 +121,8 @@ export default dvaModelExtend(commonModel, {
               ..._widgetForm,
               targetModel: model,
               contentForm,
-              propsModal
+              source,
+              ContentPropsModal: propsModal
             }
           }
         }
