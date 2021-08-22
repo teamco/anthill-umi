@@ -62,7 +62,7 @@ const FormProperties = props => {
       );
       setSaving(false);
     }
-  }, [contentKey]);
+  }, [contentKey, widgetProps]);
 
   const tabs = [
     (
@@ -90,10 +90,10 @@ const FormProperties = props => {
 
   const _behaviorProps = interactionProperties({
     onChange(type) {
-      if (type.match(/widgetStickTo/)) {
+      if (type.match(/stickTo/)) {
         onWidgetUnstick(false);
         onWidgetStick(type);
-      } else if (type.match(/widgetUnstick/)) {
+      } else if (type.match(/unstick/)) {
         onWidgetUnstick(true);
       }
     }
@@ -102,7 +102,7 @@ const FormProperties = props => {
   const handleOk = () => {
     setSaving(true);
     form.validateFields().then(values => {
-      form.resetFields();
+      setSaving(false);
       debugger
     }).catch(e => {
       setSaving(false);
@@ -118,7 +118,7 @@ const FormProperties = props => {
              destroyOnClose={true}
              centered={true}
              onOk={handleOk}
-             okButtonProps={{ disabled: !updateForm || saving }}
+             okButtonProps={{ disabled: saving }}
              onCancel={() => {
                onResetWidget(targetModel);
                onPropertiesModalVisibility(false);

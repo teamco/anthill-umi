@@ -120,7 +120,7 @@ export const interactionProperties = ({ onChange }) => {
                        max={10000}
                        label={i18n.t('widget:cellOffset')}
                        key={'widgetCellOffset'}
-                       name={'widgetCellOffset'}
+                       name={['behavior', 'cellOffset']}
                        onChange={() => onChange('widgetCellOffset')} />
       ),
       (
@@ -128,7 +128,7 @@ export const interactionProperties = ({ onChange }) => {
                        max={10000}
                        label={i18n.t('widget:rowOffset')}
                        key={'widgetRowOffset'}
-                       name={'widgetRowOffset'}
+                       name={['behavior', 'rowOffset']}
                        onChange={() => onChange('widgetRowOffset')} />
       )
     ],
@@ -138,7 +138,7 @@ export const interactionProperties = ({ onChange }) => {
                        max={10000}
                        label={i18n.t('widget:cellWidth')}
                        key={'widgetCellWidth'}
-                       name={'widgetCellWidth'}
+                       name={['behavior', 'cellWidth']}
                        onChange={() => onChange('widgetCellWidth')} />
       ),
       (
@@ -146,20 +146,20 @@ export const interactionProperties = ({ onChange }) => {
                        max={10000}
                        label={i18n.t('widget:rowHeight')}
                        key={'widgetRowHeight'}
-                       name={'widgetRowHeight'}
+                       name={['behavior', 'rowHeight']}
                        onChange={() => onChange('widgetRowHeight')} />
       )
     ],
     [
       (
-          <Switch name={'widgetStretchWidth'}
+          <Switch name={['behavior', 'stretchWidth']}
                   label={i18n.t('widget:stretchWidth')}
                   key={'widgetStretchWidth'}
                   config={{ valuePropName: 'checked' }}
                   onChange={() => onChange('widgetStretchWidth')} />
       ),
       (
-          <Switch name={'widgetStretchHeight'}
+          <Switch name={['behavior', 'stretchHeight']}
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:stretchHeight')}
                   key={'widgetStretchHeight'}
@@ -169,11 +169,11 @@ export const interactionProperties = ({ onChange }) => {
     [
       (
           <Radio.Group buttonStyle={'solid'}
-                       name={'widgetUnstick'}
+                       name={['behavior', 'unstick']}
                        label={i18n.t('widget:unStickLabel')}
                        key={'widgetUnstick'}
-                       onChange={() => onChange('widgetUnstick')}>
-            <Radio.Button value={'widgetUnstick'}>
+                       onChange={() => onChange('unstick')}>
+            <Radio.Button value={'unstick'}>
               <RedoOutlined />
               {i18n.t('widget:unStick')}
             </Radio.Button>
@@ -181,24 +181,24 @@ export const interactionProperties = ({ onChange }) => {
       ),
       (
           <Radio.Group buttonStyle={'solid'}
-                       name={'widgetStick'}
+                       name={['behavior', 'stick']}
                        label={i18n.t('widget:stick')}
                        key={'widgetStick'}
                        onChange={e => onChange(e.target.value)}>
             <div style={{ marginBottom: 2 }}>
-              {_eventTooltip('widget:stickToTopLeft', <RadiusUpleftOutlined />, 'widgetStickToTopLeft')}
-              {_eventTooltip('widget:stickToCenterTop', <BorderTopOutlined />, 'widgetStickToCenterTop')}
-              {_eventTooltip('widget:stickToTopRight', <RadiusUprightOutlined />, 'widgetStickToTopRight')}
+              {_eventTooltip('widget:stickToTopLeft', <RadiusUpleftOutlined />, 'stickToTopLeft')}
+              {_eventTooltip('widget:stickToCenterTop', <BorderTopOutlined />, 'stickToCenterTop')}
+              {_eventTooltip('widget:stickToTopRight', <RadiusUprightOutlined />, 'stickToTopRight')}
             </div>
             <div style={{ marginBottom: 2 }}>
-              {_eventTooltip('widget:stickToCenterLeft', <BorderLeftOutlined />, 'widgetStickToCenterLeft')}
-              {_eventTooltip('widget:stickToCenter', <BorderInnerOutlined />, 'widgetStickToCenter')}
-              {_eventTooltip('widget:stickToCenterRight', <BorderRightOutlined />, 'widgetStickToCenterRight')}
+              {_eventTooltip('widget:stickToCenterLeft', <BorderLeftOutlined />, 'stickToCenterLeft')}
+              {_eventTooltip('widget:stickToCenter', <BorderInnerOutlined />, 'stickToCenter')}
+              {_eventTooltip('widget:stickToCenterRight', <BorderRightOutlined />, 'stickToCenterRight')}
             </div>
             <div style={{ marginBottom: 2 }}>
-              {_eventTooltip('widget:stickToBottomLeft', <RadiusBottomleftOutlined />, 'widgetStickToBottomLeft')}
-              {_eventTooltip('widget:stickToCenterBottom', <BorderBottomOutlined />, 'widgetStickToCenterBottom')}
-              {_eventTooltip('widget:stickToBottomRight', <RadiusBottomrightOutlined />, 'widgetStickToBottomRight')}
+              {_eventTooltip('widget:stickToBottomLeft', <RadiusBottomleftOutlined />, 'stickToBottomLeft')}
+              {_eventTooltip('widget:stickToCenterBottom', <BorderBottomOutlined />, 'stickToCenterBottom')}
+              {_eventTooltip('widget:stickToBottomRight', <RadiusBottomrightOutlined />, 'stickToBottomRight')}
             </div>
           </Radio.Group>
       )

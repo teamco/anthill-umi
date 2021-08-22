@@ -66,14 +66,14 @@ export const mainProperties = ({ onChange }) => {
     ],
     [
       (
-          <Switch name={['widget', 'statistics']}
+          <Switch name={['behavior', 'statistics']}
                   label={i18n.t('widget:statistics')}
                   key={'widgetStatistics'}
                   config={{ valuePropName: 'checked' }}
                   onChange={() => onChange('statistics')} />
       ),
       (
-          <Switch name={['widget', 'hideContentOnInteraction']}
+          <Switch name={['behavior', 'hideContentOnInteraction']}
                   label={i18n.t('widget:hideContentOnInteraction')}
                   key={'widgetHideContentOnInteraction'}
                   config={{ valuePropName: 'checked' }}
@@ -82,14 +82,14 @@ export const mainProperties = ({ onChange }) => {
     ],
     [
       (
-          <Switch name={['widget', 'pageContainment']}
+          <Switch name={['behavior', 'pageContainment']}
                   label={i18n.t('widget:pageContainment')}
                   key={'widgetPageContainment'}
                   config={{ valuePropName: 'checked' }}
                   onChange={() => onChange('pageContainment')} />
       ),
       (
-          <Switch name={['widget', 'showInMobile']}
+          <Switch name={['behavior', 'showInMobile']}
                   label={i18n.t('widget:showInMobile')}
                   key={'widgetShowInMobile'}
                   config={{ valuePropName: 'checked' }}

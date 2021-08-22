@@ -58,14 +58,11 @@ const Widget = props => {
   const {
     hideContent,
     opacity,
-    widgetHideContentOnInteraction,
-    widgetDraggable,
-    widgetResizable,
-    widgetStick
+    hideContentOnInteraction,
+    draggable,
+    resizable,
+    stick
   } = widgetForm.properties;
-
-  const draggable = updateForm ? widgetDraggable : false;
-  const resizable = updateForm ? widgetResizable : false;
 
   // const _onStart = () => {
   //   onSetActiveWidget(widgetProps);
@@ -105,8 +102,8 @@ const Widget = props => {
   }
 
   const widget = widgets[name];
-  const stickTo = widgetStick ?
-      classnames(styles.stickTo, styles[widgetStick]) : '';
+  const stickTo = stick ?
+      classnames(styles.stickTo, styles[stick]) : '';
 
   const style = {
     ...position,

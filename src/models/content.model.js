@@ -16,7 +16,7 @@ const DEFAULTS = {
   zoomable: false,
   stretchWidth: false,
   stretchHeight: false,
-  unstick: 'widgetUnstick',
+  unstick: 'unstick',
   stick: false,
   statistics: false,
   hideContentOnInteraction: true,
@@ -24,7 +24,9 @@ const DEFAULTS = {
   showInMobile: true,
   setLayerUp: 0,
   cellWidth: 0,
-  rowHeight: 0
+  rowHeight: 0,
+  cellOffset: 0,
+  rowOffset: 0
 };
 
 /**
@@ -37,7 +39,8 @@ export default dvaModelExtend(commonModel, {
     propertiesModalVisible: false,
     properties: [],
     contentForm: {},
-    widgetsForm: {}
+    widgetsForm: {},
+    contentKey: null
   },
   effects: {
 
@@ -64,7 +67,7 @@ export default dvaModelExtend(commonModel, {
       }
     },
 
-    * propertiesModalVisibility({ payload }, { put, select }) {
+    * propertiesModalVisibility({ payload }, { put }) {
       const { visible, contentKey } = payload;
 
       const model = {
@@ -82,7 +85,10 @@ export default dvaModelExtend(commonModel, {
 
       yield put({
         type: 'updateState',
-        payload: { propertiesModalVisible: visible }
+        payload: {
+          contentKey: visible ? contentKey : null,
+          propertiesModalVisible: visible
+        }
       });
     },
 
@@ -110,7 +116,7 @@ export default dvaModelExtend(commonModel, {
       } = payload;
 
       const _widgetsForm = { ...widgetsForm };
-      const _widgetForm = _widgetsForm[contentKey];
+      const widgetForm = _widgetsForm[contentKey];
 
       yield put({
         type: 'updateState',
@@ -118,7 +124,7 @@ export default dvaModelExtend(commonModel, {
           widgetsForm: {
             ..._widgetsForm,
             [contentKey]: {
-              ..._widgetForm,
+              ...widgetForm,
               targetModel: model,
               contentForm,
               source,
@@ -148,45 +154,58 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * widgetStick({ payload }, { put, call, select }) {
-      const { widget } = yield select((state) => state.pageModel);
+    * widgetStick({ payload }, { put, select }) {
+      const { widgetsForm, contentKey } = yield select((state) => state.contentModel);
 
-      if (widget) {
-        const model = widget.entityForm;
-        model.widgetStick = payload.stickTo;
-        model.widgetDraggable = false;
-        model.widgetResizable = false;
+      const _widgetsForm = { ...widgetsForm };
+      const widgetForm = _widgetsForm[contentKey];
+      const widgetFormProps = { ...widgetForm.properties };
 
-        // const _toEntityForm = yield call(toEntityForm, { model });
+      widgetFormProps.draggable = false;
+      widgetFormProps.stick = payload?.stickTo;
 
-        // yield put({
-        //   type: 'toForm',
-        //   payload: { entityForm: _toEntityForm }
-        // });
-      }
+      const model = {
+        ..._widgetsForm,
+        [contentKey]: {
+          ...widgetForm,
+          properties: { ...widgetFormProps }
+        }
+      };
+
+      yield put({
+        type: 'updateState',
+        payload: { widgetsForm: { ...model } }
+      });
     },
 
-    * widgetUnstick({ payload }, { put, call, select }) {
-      const { widget } = yield select((state) => state.pageModel);
+    * widgetUnstick({ payload }, { put, select }) {
+      const { widgetsForm, contentKey } = yield select((state) => state.contentModel);
 
-      if (widget) {
-        const model = widget.entityForm;
-        if (payload.unstick) {
-          model.widgetUnstick = DEFAULTS.widgetUnstick;
-          model.widgetDraggable = DEFAULTS.widgetDraggable;
-          model.widgetResizable = DEFAULTS.widgetResizable;
-          model.widgetStick = false;
-        } else {
-          model.widgetUnstick = false;
-        }
+      const _widgetsForm = { ...widgetsForm };
+      const widgetForm = _widgetsForm[contentKey];
+      const widgetFormProps = { ...widgetForm.properties };
 
-        // const _toEntityForm = yield call(toEntityForm, { model });
-        //
-        // yield put({
-        //   type: 'toForm',
-        //   payload: { entityForm: _toEntityForm }
-        // });
+      if (payload.unstick) {
+        widgetFormProps.unstick = DEFAULTS.unstick;
+        widgetFormProps.draggable = DEFAULTS.draggable;
+        widgetFormProps.resizable = DEFAULTS.resizable;
+        widgetFormProps.stick = false;
+      } else {
+        widgetFormProps.unstick = false;
       }
+
+      const model = {
+        ..._widgetsForm,
+        [contentKey]: {
+          ...widgetForm,
+          properties: { ...widgetFormProps }
+        }
+      };
+
+      yield put({
+        type: 'updateState',
+        payload: { widgetsForm: { ...model } }
+      });
     }
   },
   reducers: {}
