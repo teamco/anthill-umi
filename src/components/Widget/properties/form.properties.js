@@ -32,7 +32,6 @@ const FormProperties = props => {
     t,
     contentModel,
     onPropertiesModalVisibility,
-    onTransferFormRef,
     onFieldsChange,
     onFinish,
     onResetWidget,
@@ -45,14 +44,13 @@ const FormProperties = props => {
     widgetsForm,
     updateForm,
     modalWidth,
-    contentProperties,
     propertiesModalVisible
   } = contentModel;
 
   const contentKey = getFormValue(entityForm, 'entityKey');
   const widgetProps = widgetsForm[contentKey];
 
-  const { targetModel, name } = widgetProps || {};
+  const { targetModel, main, propsModal } = widgetProps || {};
 
   useEffect(() => {
     if (propertiesModalVisible && widgetProps) {
@@ -76,7 +74,7 @@ const FormProperties = props => {
     ), (
         <span>
           <ProfileOutlined />
-          {name}
+          {main?.name}
         </span>
     )
   ];
@@ -158,7 +156,7 @@ const FormProperties = props => {
               </GenericPanel>
             </div>
             <div>
-              {contentProperties}
+              {propsModal}
             </div>
           </GenericTabs>
         </Form>

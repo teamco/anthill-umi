@@ -118,6 +118,24 @@ export const interactionProperties = ({ onChange }) => {
       (
           <InputNumber min={0}
                        max={10000}
+                       label={i18n.t('widget:cellOffset')}
+                       key={'widgetCellOffset'}
+                       name={'widgetCellOffset'}
+                       onChange={() => onChange('widgetCellOffset')} />
+      ),
+      (
+          <InputNumber min={0}
+                       max={10000}
+                       label={i18n.t('widget:rowOffset')}
+                       key={'widgetRowOffset'}
+                       name={'widgetRowOffset'}
+                       onChange={() => onChange('widgetRowOffset')} />
+      )
+    ],
+    [
+      (
+          <InputNumber min={0}
+                       max={10000}
                        label={i18n.t('widget:cellWidth')}
                        key={'widgetCellWidth'}
                        name={'widgetCellWidth'}
