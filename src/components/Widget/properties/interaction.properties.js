@@ -47,21 +47,21 @@ export const interactionProperties = ({ onChange }) => {
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:overlapping')}
                   key={'widgetOverlapping'}
-                  onChange={() => onChange('widgetOverlapping')} />
+                  onChange={() => onChange('overlapping')} />
       ),
       (
           <Switch name={['behavior', 'alwaysOnTop']}
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:alwaysOnTop')}
                   key={'widgetAlwaysOnTop'}
-                  onChange={() => onChange('widgetAlwaysOnTop')} />
+                  onChange={() => onChange('alwaysOnTop')} />
       ),
       (
           <Switch name={['behavior', 'freeze']}
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:freeze')}
                   key={'widgetFreeze'}
-                  onChange={() => onChange('widgetFreeze')} />
+                  onChange={() => onChange('freeze')} />
       )
     ],
     [
@@ -70,7 +70,7 @@ export const interactionProperties = ({ onChange }) => {
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:draggable')}
                   key={'widgetDraggable'}
-                  onChange={() => onChange('widgetDraggable')} />
+                  onChange={() => onChange('draggable')} />
       ),
       (
           <Switch name={['behavior', 'resizable']}
@@ -84,7 +84,7 @@ export const interactionProperties = ({ onChange }) => {
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:scrollable')}
                   key={'widgetScrollable'}
-                  onChange={() => onChange('widgetScrollable')} />
+                  onChange={() => onChange('scrollable')} />
       )
     ],
     [
@@ -93,14 +93,14 @@ export const interactionProperties = ({ onChange }) => {
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:maximizable')}
                   key={'widgetMaximizable'}
-                  onChange={() => onChange('widgetMaximizable')} />
+                  onChange={() => onChange('maximizable')} />
       ),
       (
           <Switch name={['behavior', 'zoomable']}
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:zoomable')}
                   key={'widgetZoomable'}
-                  onChange={() => onChange('widgetZoomable')} />
+                  onChange={() => onChange('zoomable')} />
       ),
       (
           <InputNumber min={0}
@@ -108,7 +108,7 @@ export const interactionProperties = ({ onChange }) => {
                        label={i18n.t('widget:setLayer')}
                        key={'widgetSetLayerUp'}
                        name={['behavior', 'setLayerUp']}
-                       onChange={() => onChange('widgetSetLayerUp')} />
+                       onChange={() => onChange('setLayerUp')} />
       )
     ]
   ];
@@ -121,7 +121,7 @@ export const interactionProperties = ({ onChange }) => {
                        label={i18n.t('widget:cellOffset')}
                        key={'widgetCellOffset'}
                        name={['behavior', 'cellOffset']}
-                       onChange={() => onChange('widgetCellOffset')} />
+                       onChange={() => onChange('cellOffset')} />
       ),
       (
           <InputNumber min={0}
@@ -129,7 +129,7 @@ export const interactionProperties = ({ onChange }) => {
                        label={i18n.t('widget:rowOffset')}
                        key={'widgetRowOffset'}
                        name={['behavior', 'rowOffset']}
-                       onChange={() => onChange('widgetRowOffset')} />
+                       onChange={() => onChange('rowOffset')} />
       )
     ],
     [
@@ -139,7 +139,7 @@ export const interactionProperties = ({ onChange }) => {
                        label={i18n.t('widget:cellWidth')}
                        key={'widgetCellWidth'}
                        name={['behavior', 'cellWidth']}
-                       onChange={() => onChange('widgetCellWidth')} />
+                       onChange={() => onChange('cellWidth')} />
       ),
       (
           <InputNumber min={0}
@@ -147,7 +147,7 @@ export const interactionProperties = ({ onChange }) => {
                        label={i18n.t('widget:rowHeight')}
                        key={'widgetRowHeight'}
                        name={['behavior', 'rowHeight']}
-                       onChange={() => onChange('widgetRowHeight')} />
+                       onChange={() => onChange('rowHeight')} />
       )
     ],
     [
@@ -156,14 +156,14 @@ export const interactionProperties = ({ onChange }) => {
                   label={i18n.t('widget:stretchWidth')}
                   key={'widgetStretchWidth'}
                   config={{ valuePropName: 'checked' }}
-                  onChange={() => onChange('widgetStretchWidth')} />
+                  onChange={() => onChange('stretchWidth')} />
       ),
       (
           <Switch name={['behavior', 'stretchHeight']}
                   config={{ valuePropName: 'checked' }}
                   label={i18n.t('widget:stretchHeight')}
                   key={'widgetStretchHeight'}
-                  onChange={() => onChange('widgetStretchHeight')} />
+                  onChange={() => onChange('stretchHeight')} />
       )
     ],
     [

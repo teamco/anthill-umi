@@ -7,6 +7,7 @@ import { commonModel } from '@/models/common.model';
 import { getEmbedCode } from '@/vendors/widgets/YouTube/services/youtube.service';
 
 const DEFAULTS = {
+  text: '',
   embedUrl: 'https://www.youtube.com/embed/ALZHF5UqnU4'
 };
 

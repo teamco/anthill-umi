@@ -135,6 +135,33 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
+    * updateProps({ payload }, { put, select }) {
+      const { widgetsForm, contentKey } = yield select((state) => state.contentModel);
+      const { values } = payload;
+
+      const _widgetsForm = { ...widgetsForm };
+      const widgetForm = _widgetsForm[contentKey];
+
+      const widgetFormMain = { ...widgetForm.main, ...values?.widget };
+      const widgetFormProps = { ...widgetForm.properties, ...values?.behavior };
+      const widgetFormContent = { ...widgetForm.contentForm, ...values[widgetForm.source] };
+
+      const model = {
+        ..._widgetsForm,
+        [contentKey]: {
+          ...widgetForm,
+          main: { ...widgetFormMain },
+          properties: { ...widgetFormProps },
+          contentForm: { ...widgetFormContent }
+        }
+      };
+
+      yield put({
+        type: 'updateState',
+        payload: { widgetsForm: { ...model } }
+      });
+    },
+
     * setOpacity({ payload }, { put }) {
       yield put({
         type: 'updateState',

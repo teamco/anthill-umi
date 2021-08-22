@@ -32,7 +32,6 @@ const FormProperties = props => {
     t,
     contentModel,
     onPropertiesModalVisibility,
-    onFieldsChange,
     onFinish,
     onResetWidget,
     onWidgetStick,
@@ -42,7 +41,6 @@ const FormProperties = props => {
   const {
     entityForm,
     widgetsForm,
-    updateForm,
     modalWidth,
     propertiesModalVisible
   } = contentModel;
@@ -65,22 +63,9 @@ const FormProperties = props => {
   }, [contentKey, widgetProps]);
 
   const tabs = [
-    (
-        <span>
-          <AuditOutlined />
-          {t('instance:widget')}
-        </span>
-    ), (
-        <span>
-          <InteractionOutlined />
-          {t('instance:behavior')}
-        </span>
-    ), (
-        <span>
-          <ProfileOutlined />
-          {main?.name}
-        </span>
-    )
+    (<span><AuditOutlined />{t('instance:widget')}</span>),
+    (<span><InteractionOutlined />{t('instance:behavior')}</span>),
+    (<span><ProfileOutlined />{main?.name}</span>)
   ];
 
   const _mainProps = mainProperties({
@@ -88,6 +73,12 @@ const FormProperties = props => {
     }
   });
 
+  /**
+   * Handle behavior un/stick.
+   * @constant
+   * @type {*}
+   * @private
+   */
   const _behaviorProps = interactionProperties({
     onChange(type) {
       if (type.match(/stickTo/)) {
@@ -99,11 +90,16 @@ const FormProperties = props => {
     }
   });
 
+  /**
+   * Handle <Ok> Button click
+   * @constant
+   */
   const handleOk = () => {
     setSaving(true);
     form.validateFields().then(values => {
       setSaving(false);
-      debugger
+      onFinish(values);
+      onPropertiesModalVisibility(false);
     }).catch(e => {
       setSaving(false);
     });
@@ -124,15 +120,7 @@ const FormProperties = props => {
                onPropertiesModalVisibility(false);
              }}>
         <Form layout={'vertical'}
-              form={form}
-              onFieldsChange={onFieldsChange}
-              initialValues={[
-                {
-                  name: [source, 'text'],
-                  value: main?.name
-                }
-              ]}
-              onFinish={onFinish}>
+              form={form}>
           <GenericTabs tabs={tabs}
                        defaultActiveKey={'0'}>
             <div style={{ marginTop: 10 }}>
@@ -174,52 +162,23 @@ const FormProperties = props => {
   ) : null;
 };
 
-export default connect(({
+export default connect(({ contentModel, loading }) => ({
       contentModel,
       loading
-    }) => {
-      return {
-        contentModel,
-        loading
-      };
-    },
+    }),
     dispatch => ({
       dispatch,
-      // onFieldsChange(changedFields, allFields) {
-      //   dispatch({
-      //     type: 'contentModel/updateFields',
-      //     payload: {
-      //       changedFields,
-      //       allFields,
-      //       model: 'contentModel'
-      //     }
-      //   });
-      // },
-      onTransferFormRef(form) {
-        dispatch({
-          type: 'contentModel/transferFormRef',
-          payload: { form }
-        });
-      },
       onWidgetUnstick(unstick) {
-        dispatch({
-          type: 'contentModel/widgetUnstick',
-          payload: { unstick }
-        });
+        dispatch({ type: 'contentModel/widgetUnstick', payload: { unstick } });
       },
       onWidgetStick(stickTo) {
-        dispatch({
-          type: 'contentModel/widgetStick',
-          payload: { stickTo }
-        });
+        dispatch({ type: 'contentModel/widgetStick', payload: { stickTo } });
       },
       onResetWidget(model) {
-        dispatch({
-          type: 'contentModel/revertFormValues',
-          payload: { model }
-        });
+        dispatch({ type: 'contentModel/revertFormValues', payload: { model } });
       },
-      onFinish() {
+      onFinish(values) {
+        dispatch({ type: 'contentModel/updateProps', payload: { values } });
       },
       onPropertiesModalVisibility(visible, widgetProps) {
         dispatch({
