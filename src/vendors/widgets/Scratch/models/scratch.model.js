@@ -3,7 +3,8 @@
  */
 import dvaModelExtend from 'dva-model-extend';
 
-import {commonModel} from '@/models/common.model';
+import { commonModel } from '@/models/common.model';
+import { getEmbedCode } from '@/vendors/widgets/YouTube/services/youtube.service';
 
 const DEFAULTS = {};
 
@@ -15,25 +16,22 @@ export default dvaModelExtend(commonModel, {
   state: {
     defaults: {}
   },
-  subscriptions: {
-    setup({dispatch}) {
-    }
-  },
   effects: {
-    * setProperties({payload}, {put}) {
+
+    * setProperties({ payload }, { put }) {
+      const {
+        properties,
+        contentKey
+      } = payload;
+
       yield put({
         type: 'contentModel/setContentProperties',
         payload: {
-          contentProperties: payload.properties,
-          contentForm: {...DEFAULTS},
-          target: 'scratchModel'
-        }
-      });
-
-      yield put({
-        type: 'updateState',
-        payload: {
-          defaults: DEFAULTS
+          model: 'scratchModel',
+          contentKey,
+          propsModal: properties,
+          source: 'scratch',
+          contentForm: { ...DEFAULTS }
         }
       });
     }

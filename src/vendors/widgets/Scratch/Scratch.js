@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { connect } from 'dva';
 import { withTranslation } from 'react-i18next';
 
@@ -8,51 +8,58 @@ import { scratchProperties } from '@/vendors/widgets/Scratch/config/scratch.prop
 
 const { GenericPanel } = Form;
 
-class Scratch extends Component {
-  properties() {
-    const { scratchModel, t } = this.props;
+const Scratch = props => {
+  const {
+    t,
+    opts,
+    contentModel,
+    scratchModel,
+    onSetProperties
+  } = props;
 
-    const {} = scratchModel;
+  const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
+
+  useEffect(() => {
+    onSetProperties(properties, opts.contentKey);
+  }, []);
+
+  /**
+   * @constant
+   * @param [props]
+   * @return {JSX.Element|null}
+   */
+  const properties = props => {
+    const {} = props;
 
     return (
-      <div>
-        <GenericPanel
-          header={t('panel:contentProperties')}
-          name={'widget-content-properties'}
-          defaultActiveKey={['widget-content-properties']}
-        >
-          {scratchProperties().map((prop, idx) => (
-            <div key={idx}>{prop}</div>
-          ))}
-        </GenericPanel>
-      </div>
+        <div>
+          <GenericPanel header={t('panel:contentProperties')}
+                        name={'widget-content-properties'}
+                        defaultActiveKey={['widget-content-properties']}>
+            {scratchProperties().map((prop, idx) => (
+                <div key={idx}>{prop}</div>
+            ))}
+          </GenericPanel>
+        </div>
     );
-  }
+  };
 
-  componentDidMount() {
-    const { onSetProperties } = this.props;
-    onSetProperties(this.properties());
-  }
-
-  render() {
-    return <div style={{ padding: 20 }}>Embedded content</div>;
-  }
-}
+  return <div style={{ padding: 20 }}>Embedded content</div>;
+};
 
 export default connect(
-  ({ scratchModel, loading }) => {
-    return {
+    ({ scratchModel, contentModel, loading }) => ({
       scratchModel,
-      loading,
-    };
-  },
-  (dispatch) => ({
-    dispatch,
-    onSetProperties(properties) {
-      dispatch({
-        type: 'scratchModel/setProperties',
-        payload: { properties },
-      });
-    },
-  }),
+      contentModel,
+      loading
+    }),
+    (dispatch) => ({
+      dispatch,
+      onSetProperties(properties, contentKey) {
+        dispatch({
+          type: 'scratchModel/setProperties',
+          payload: { properties, contentKey }
+        });
+      }
+    })
 )(withTranslation()(Scratch));
