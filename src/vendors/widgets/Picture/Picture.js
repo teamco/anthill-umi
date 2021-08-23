@@ -4,7 +4,7 @@ import { Image } from 'antd';
 import { withTranslation } from 'react-i18next';
 
 import Form from '@/components/Form';
-import { fromForm } from '@/utils/state';
+
 import {
   pictureFilterProperties,
   pictureProperties
