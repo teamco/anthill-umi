@@ -14,5 +14,5 @@ export default {
   'Espreso.TV': <YouTube embedUrl={'https://youtu.be/6arO8p6gmBI'} />,
   'Prm.UA': <YouTube embedUrl={'https://youtu.be/RmYML3CiypI'} />,
   Zik: <YouTube embedUrl={'https://youtu.be/a_3eJgMMBsg'} />,
-  Picture: <Picture />
+  Picture: <Picture imageUrl={'https://www.publicdomainpictures.net/pictures/320000/nahled/background-image.png'} />
 };

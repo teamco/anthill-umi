@@ -10,9 +10,9 @@ import filter from '@/vendors/widgets/Picture/config/picture.filter';
 export const handleMultipleFilters = ({ style, filterType, payload }) => {
   let _selectedFilters = [];
   const newFilter = filter[filterType](
-    payload.filter,
-    payload.value,
-    payload.unit,
+      payload.filter,
+      payload.value,
+      payload.unit
   );
 
   if (style.filter) {
@@ -21,9 +21,9 @@ export const handleMultipleFilters = ({ style, filterType, payload }) => {
 
     _selectedFilters = _filter.split(' ');
 
-    idx > -1
-      ? (_selectedFilters[idx] = newFilter)
-      : _selectedFilters.push(newFilter);
+    idx > -1 ?
+        (_selectedFilters[idx] = newFilter) :
+        _selectedFilters.push(newFilter);
   } else {
     _selectedFilters.push(newFilter);
   }

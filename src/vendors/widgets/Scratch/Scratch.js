@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import { withTranslation } from 'react-i18next';
 

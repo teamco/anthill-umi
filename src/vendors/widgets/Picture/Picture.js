@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Image } from 'antd';
 import { withTranslation } from 'react-i18next';
@@ -7,151 +7,123 @@ import Form from '@/components/Form';
 import { fromForm } from '@/utils/state';
 import {
   pictureFilterProperties,
-  pictureProperties,
+  pictureProperties
 } from '@/vendors/widgets/Picture/config/picture.properties';
 
 import styles from './picture.module.less';
 
 const { GenericPanel } = Form;
 
-class Picture extends Component {
-  properties() {
-    const {
-      pictureModel,
-      onUpdatePreview,
-      onUpdateFilter,
-      onRemoveFilter,
-      onUpdateContentForm,
-      onUpdateTransform,
-      onUpdateFilterSlider,
-      t,
-    } = this.props;
+const Picture = props => {
+  const {
+    t,
+    opts,
+    imageUrl,
+    pictureModel,
+    onUpdateFilter,
+    onRemoveFilter,
+    onUpdateContentForm,
+    onUpdateTransform,
+    onUpdateFilterSlider,
+    contentModel,
+    onSetProperties
+  } = props;
 
-    const { style, selectedFilters, sliderProps, entityForm } = pictureModel;
+  const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
 
-    const { pictureImageUrlPreview } = fromForm(entityForm);
+  useEffect(() => {
+    onSetProperties(properties, imageUrl, opts.contentKey);
+  }, []);
 
-    return pictureImageUrlPreview ? (
-      <div>
-        <GenericPanel
-          header={t('panel:contentProperties')}
-          name={'widget-content-properties'}
-          defaultActiveKey={['widget-content-properties']}
-        >
-          {pictureProperties(onUpdatePreview).map((prop, idx) => (
-            <div key={idx}>{prop}</div>
-          ))}
-        </GenericPanel>
-        <GenericPanel
-          className={styles.pictureProperties}
-          header={t('panel:contentPropertiesFilter')}
-          name={'widget-content-properties-filter'}
-          defaultActiveKey={['widget-content-properties-filter']}
-        >
-          {pictureFilterProperties({
-            onUpdateFilterSlider,
-            onUpdateFilter,
-            onUpdateTransform,
-            onRemoveFilter,
-            onUpdateContentForm,
-            selectedFilters,
-            pictureImageUrlPreview,
-            style,
-            entityForm,
-            sliderProps,
-          }).map((prop, idx) => (
-            <div key={idx}>{prop}</div>
-          ))}
-        </GenericPanel>
-      </div>
-    ) : null;
-  }
+  useEffect(() => {
+    const imageUrl = contentForm?.imageUrl;
+    imageUrl && onSetProperties(properties, imageUrl, opts.contentKey);
+  }, [contentForm?.imageUrl]);
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { pictureModel, onSetProperties } = this.props;
-    const _isChanged =
-      JSON.stringify(prevProps.pictureModel) !== JSON.stringify(pictureModel);
+  const properties = props => {
+    const { style, selectedFilters, sliderProps } = pictureModel;
 
-    if (_isChanged) {
-      onSetProperties(this.properties());
-    }
-  }
-
-  componentDidMount() {
-    const { onSetProperties } = this.props;
-    onSetProperties(this.properties());
-  }
-
-  render() {
-    const { pictureModel } = this.props;
-
-    const { entityForm } = pictureModel;
-    const { pictureImageUrlPreview } = fromForm(entityForm);
+    const [previewUrl, setUpdatePreview] = useState(contentForm?.imageUrl);
 
     return (
-      <Image width={'100%'} height={'100%'} src={pictureImageUrlPreview} />
+        <div>
+          <GenericPanel header={t('panel:contentProperties')}
+                        name={'widget-content-properties'}
+                        defaultActiveKey={['widget-content-properties']}>
+            {pictureProperties(setUpdatePreview).map((prop, idx) => (
+                <div key={idx}>{prop}</div>
+            ))}
+          </GenericPanel>
+          <GenericPanel className={styles.pictureProperties}
+                        header={t('panel:contentPropertiesFilter')}
+                        name={'widget-content-properties-filter'}
+                        defaultActiveKey={['widget-content-properties-filter']}>
+            {pictureFilterProperties({
+              onUpdateFilterSlider,
+              onUpdateFilter,
+              onUpdateTransform,
+              onRemoveFilter,
+              onUpdateContentForm,
+              selectedFilters,
+              previewUrl,
+              style,
+              sliderProps
+            }).map((prop, idx) => (
+                <div key={idx}>{prop}</div>
+            ))}
+          </GenericPanel>
+        </div>
     );
-  }
-}
+  };
+
+  return (
+      <Image width={'100%'} height={'100%'} src={imageUrl} />
+  );
+};
 
 export default connect(
-  ({ pictureModel, loading }) => {
-    return {
+    ({ pictureModel, contentModel, loading }) => ({
       pictureModel,
-      loading,
-    };
-  },
-  (dispatch) => ({
-    dispatch,
-    onUpdatePreview({ target }) {
-      dispatch({
-        type: 'pictureModel/updatePreview',
-        payload: { pictureImageUrlPreview: target.value },
-      });
-    },
-    onUpdateFilter(filter, value, unit = '') {
-      dispatch({
-        type: 'pictureModel/updateFilter',
-        payload: {
-          filter,
-          value,
-          unit,
-        },
-      });
-    },
-    onRemoveFilter(filter) {
-      dispatch({
-        type: 'pictureModel/removeFilter',
-        payload: { filter },
-      });
-    },
-    onUpdateTransform(filter, value, unit = '') {
-      dispatch({
-        type: 'pictureModel/updateTransform',
-        payload: {
-          filter,
-          value,
-          unit,
-        },
-      });
-    },
-    onSetProperties(properties) {
-      dispatch({
-        type: 'pictureModel/setProperties',
-        payload: { properties },
-      });
-    },
-    onUpdateFilterSlider(props) {
-      dispatch({
-        type: 'pictureModel/updateFilterSlider',
-        payload: { props },
-      });
-    },
-    onUpdateContentForm(props) {
-      dispatch({
-        type: 'contentModel/updateContentForm',
-        payload: { props },
-      });
-    },
-  }),
+      contentModel,
+      loading
+    }),
+    (dispatch) => ({
+      dispatch,
+      onUpdateFilter(filter, value, unit = '') {
+        dispatch({
+          type: 'pictureModel/updateFilter',
+          payload: { filter, value, unit }
+        });
+      },
+      onRemoveFilter(filter) {
+        dispatch({
+          type: 'pictureModel/removeFilter',
+          payload: { filter }
+        });
+      },
+      onUpdateTransform(filter, value, unit = '') {
+        dispatch({
+          type: 'pictureModel/updateTransform',
+          payload: { filter, value, unit }
+        });
+      },
+      onSetProperties(properties, imageUrl, contentKey) {
+        dispatch({
+          type: 'pictureModel/setProperties',
+          payload: { properties, imageUrl, contentKey }
+        });
+      },
+      onUpdateFilterSlider(props) {
+        dispatch({
+          type: 'pictureModel/updateFilterSlider',
+          payload: { props }
+        });
+      },
+      onUpdateContentForm(props) {
+        dispatch({
+          type: 'contentModel/updateContentForm',
+          payload: { props }
+        });
+      }
+    })
 )(withTranslation()(Picture));
