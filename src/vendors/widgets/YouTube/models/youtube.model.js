@@ -17,8 +17,7 @@ const DEFAULTS = {
 export default dvaModelExtend(commonModel, {
   namespace: 'youtubeModel',
   state: {
-    defaults: {},
-    previewUrl: false
+    defaults: {}
   },
   effects: {
 

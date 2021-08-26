@@ -179,8 +179,10 @@ export const pictureFilterProperties = ({
               style={{ width: '100%' }}>
         {Object.keys(sliders).sort().map((slider) => {
           const _filter = sliders[slider];
+          const disabled = draft?.selectedFilters?.find(selected => selected.key === _filter.name[1]);
           return (
-              <Option key={_filter.name[1]}
+              <Option disabled={disabled}
+                      key={_filter.name[1]}
                       value={_filter.name[1]}>
                 {_filter.label}
               </Option>
@@ -213,11 +215,14 @@ export const pictureFilterProperties = ({
                    color={'success'}
                    closable
                    key={selected.key}>
-                <Tooltip title={`${selected.value || selected.min}${selected.unit}`}>
-                <span style={{ cursor: 'pointer' }}
-                      onClick={() => onChangeFilter(selected.key)}>
-                  {selected.label}
-                </span>
+                <Tooltip title={`${selected.value || selected.min}${selected.unit || ''}`}>
+                  <span style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          onChangeFilter(selected.key);
+                          setComplexValue(form, 'picture', { selectedFilter: selected.key });
+                        }}>
+                    {selected.label}
+                  </span>
                 </Tooltip>
               </Tag>
           );

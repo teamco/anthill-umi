@@ -26,7 +26,6 @@ const DEFAULTS = {
 
 const DRAFT = {
   style: {},
-  defaults: {},
   sliderProps: {
     visible: false,
     filter: {},
@@ -40,9 +39,7 @@ const DRAFT = {
  */
 export default dvaModelExtend(commonModel, {
   namespace: 'pictureModel',
-  state: {
-    draft: { ...DRAFT }
-  },
+  state: { draft: { ...DRAFT } },
   effects: {
 
     * setProperties({ payload }, { put }) {
@@ -78,29 +75,9 @@ export default dvaModelExtend(commonModel, {
       });
     },
 
-    * updateSelectedFilters({ payload }, { put, select }) {
-      // const { selectedFilters } = yield select((state) => state.pictureModel);
-      // const filter = payload.filter;
-      //
-      // if (!selectedFilters.find((selected) => selected.filter === filter)) {
-      //   selectedFilters.push(payload);
-      // }
-      //
-      // yield put({ type: 'updateState', payload: { selectedFilters } });
-    },
-
-    * selectFilter({ payload }, { put, select }) {
-      // const { selectedFilters } = yield select((state) => state.pictureModel);
-      // const filter = payload.filter;
-      //
-      // if (selectedFilters.find((selected) => selected.filter === filter)) {
-      //   yield put({ type: 'updateState', payload: {} });
-      // }
-    },
-
     * removeFilter({ payload }, { put, select }) {
       let { draft } = yield select((state) => state.pictureModel);
-      const { selectedFilters, sliderProps } = draft;
+      const { selectedFilters, sliderProps, style } = draft;
       const { filter } = payload;
       let _sliderProps = { ...sliderProps };
 
@@ -108,79 +85,63 @@ export default dvaModelExtend(commonModel, {
         _sliderProps = { ...DRAFT.sliderProps };
       }
 
+      let _filter = style.filter.split(' ');
+      const idx = findFilterIdx(style, payload);
+
+      if (idx > -1) {
+        _filter.splice(idx, 1);
+      }
+
       yield put({
         type: 'updateState',
         payload: {
           draft: {
+            style: { filter: _filter.join(' ') },
             selectedFilters: selectedFilters.filter(selected => selected.key !== filter),
             sliderProps: { ..._sliderProps }
           }
         }
       });
-
-      // let _filter = style.filter.split(' ');
-      // const idx = findFilterIdx(style, payload);
-
-      // if (idx > -1) {
-      //   _filter.splice(idx, 1);
-      //   style.filter = _filter.join(' ');
-      //   selectedFilters = selectedFilters.filter(
-      //       (selected) => selected.filter !== payload.filter
-      //   );
-      //
-      //   yield put({
-      //     type: 'cleanEntityForm',
-      //     payload: {
-      //       key: payload.filter,
-      //       model: 'contentModel',
-      //       namespace: 'picture'
-      //     }
-      //   });
-      // }
-      //
-      // yield put({
-      //   type: 'updateState',
-      //   payload: {
-      //     style,
-      //     selectedFilters
-      //   }
-      // });
     },
 
     * updateFilterValues({ payload }, { put, select, call }) {
-      // const { style } = yield select((state) => state.pictureModel);
-      //
-      // let _selectedFilters = yield call(handleMultipleFilters, {
-      //   filterType: 'cssFilter',
-      //   style,
-      //   payload
-      // });
-      //
-      // yield put({ type: 'updateSelectedFilters', payload });
-      //
-      // yield put({
-      //   type: 'updateState',
-      //   payload: { style: { filter: _selectedFilters } }
-      // });
+      const { draft } = yield select((state) => state.pictureModel);
+
+      let _selectedFilters = yield call(handleMultipleFilters, {
+        filterType: 'cssFilter',
+        style: draft.style,
+        payload
+      });
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          draft: {
+            ...draft,
+            style: { filter: _selectedFilters }
+          }
+        }
+      });
     },
 
     * updateTransformValues({ payload }, { call, put, select }) {
-      // const { style } = yield select((state) => state.pictureModel);
-      //
-      // let _selectedFilters = yield call(handleMultipleFilters, {
-      //   style,
-      //   filterType: 'cssTransform',
-      //   payload
-      // });
-      //
-      // yield put({ type: 'updateSelectedFilters', payload });
-      //
-      // yield put({
-      //   type: 'updateState',
-      //   payload: {
-      //     style: { transform: _selectedFilters }
-      //   }
-      // });
+      const { draft } = yield select((state) => state.pictureModel);
+
+      let _selectedFilters = yield call(handleMultipleFilters, {
+        style: draft.style,
+        filterType: 'cssTransform',
+        payload
+      });
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          draft: {
+            ...draft,
+            style: { filter: _selectedFilters }
+          }
+        }
+      });
     },
 
     * updateFilterSlider({ payload }, { put, select }) {
@@ -190,18 +151,25 @@ export default dvaModelExtend(commonModel, {
       props.key = props.name[1];
       props.marks = {
         [props.min]: {
-          label: `${props.min}${props?.unit || ''}`
+          label: `${props.min}${props.unit || ''}`
         },
         [props.max]: {
-          label: `${props.max}${props?.unit || ''}`
+          label: `${props.max}${props.unit || ''}`
         }
       };
+
+      let selectedFilters = [...draft.selectedFilters];
+
+      if (!draft.selectedFilters.find(selected => selected.key === props.key)) {
+        selectedFilters = [...selectedFilters, props];
+      }
 
       yield put({
         type: 'updateState',
         payload: {
           draft: {
-            selectedFilters: [...draft.selectedFilters, props],
+            ...draft,
+            selectedFilters,
             sliderProps: {
               defaultValue: DEFAULTS[props.key],
               filter: { ...props },
