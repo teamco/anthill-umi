@@ -48,7 +48,7 @@ const FormProperties = props => {
   const contentKey = getFormValue(entityForm, 'entityKey');
   const widgetProps = widgetsForm[contentKey];
 
-  const { targetModel, main, ContentPropsModal, source } = widgetProps || {};
+  const { targetModel, main, ContentPropsModal, source, contentProps } = widgetProps || {};
 
   useEffect(() => {
     if (propertiesModalVisible && widgetProps) {
@@ -154,7 +154,8 @@ const FormProperties = props => {
               </GenericPanel>
             </div>
             <div>
-              <ContentPropsModal />
+              <ContentPropsModal contentProps={contentProps}
+                                 form={form} />
             </div>
           </GenericTabs>
         </Form>
@@ -183,10 +184,7 @@ export default connect(({ contentModel, loading }) => ({
       onPropertiesModalVisibility(visible, widgetProps) {
         dispatch({
           type: 'contentModel/propertiesModalVisibility',
-          payload: {
-            visible,
-            widgetProps
-          }
+          payload: { visible, widgetProps }
         });
       }
     })

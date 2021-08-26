@@ -172,10 +172,7 @@ export default connect(({
       onPropertiesModalVisibility(visible, contentKey) {
         dispatch({
           type: 'contentModel/propertiesModalVisibility',
-          payload: {
-            contentKey,
-            visible
-          }
+          payload: { contentKey, visible }
         });
       },
       onInitFormDraft(model) {

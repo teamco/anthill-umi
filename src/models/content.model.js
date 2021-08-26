@@ -44,6 +44,13 @@ export default dvaModelExtend(commonModel, {
   },
   effects: {
 
+    * resetDraft({ payload = { DRAFT: {}, model: '' } }, { put }) {
+      yield put({
+        type: `${payload?.model}/updateState`,
+        payload: { draft: { ...payload?.DRAFT } }
+      });
+    },
+
     * setWidgetProps({ payload }, { put }) {
       const { visible = false, widgetProps, updateForm = false } = payload;
 
@@ -111,7 +118,8 @@ export default dvaModelExtend(commonModel, {
         source,
         contentKey,
         contentForm,
-        propsModal,
+        ContentPropsModal,
+        contentProps,
         model
       } = payload;
 
@@ -128,7 +136,8 @@ export default dvaModelExtend(commonModel, {
               targetModel: model,
               contentForm,
               source,
-              ContentPropsModal: propsModal
+              ContentPropsModal,
+              contentProps
             }
           }
         }
