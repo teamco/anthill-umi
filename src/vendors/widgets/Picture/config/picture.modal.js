@@ -3,7 +3,7 @@ import { Image, Input, Select, Slider, Tag, Tooltip } from 'antd';
 import { Html5Outlined } from '@ant-design/icons';
 
 import i18n from '@/utils/i18n';
-import { setFieldValue } from '@/utils/form';
+import { setComplexValue } from '@/utils/form';
 
 import styles from '@/vendors/widgets/Picture/picture.module.less';
 
@@ -205,7 +205,7 @@ export const pictureFilterProperties = ({
               <Tag onClose={() => {
                 onRemoveFilter(selected.key);
                 if (selected.key === form.getFieldValue('picture').selectedFilter) {
-                  setFieldValue(form, 'picture', { selectedFilter: null });
+                  setComplexValue(form, 'picture', { selectedFilter: null });
                 }
               }}
                    className={styles.filterTag}
