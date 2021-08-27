@@ -10,14 +10,15 @@ import filter from '@/vendors/widgets/Picture/config/picture.filter';
 export const handleMultipleFilters = ({ style, filterType, payload }) => {
   let _selectedFilters = [];
   const newFilter = filter[filterType](
-      payload.filter,
+      payload[filterType],
       payload.value,
       payload.unit
   );
 
-  if (style.filter) {
-    const _filter = style.filter;
-    const idx = findFilterIdx(style, payload);
+  const _filter = style[filterType];
+
+  if (_filter) {
+    const idx = findFilterIdx(style, payload, filterType);
 
     _selectedFilters = _filter.split(' ');
 
@@ -35,13 +36,14 @@ export const handleMultipleFilters = ({ style, filterType, payload }) => {
  * @export
  * @param style
  * @param payload
+ * @param filterType
  * @return {number}
  */
-export const findFilterIdx = (style, payload) => {
-  let _filter = style.filter.split(' ');
+export const findFilterIdx = (style, payload, filterType) => {
+  const _filter = style[filterType]?.split(' ');
   let idx = -1;
-  _filter.forEach((filter, key) => {
-    if (filter.match(payload.filter)) {
+  _filter && _filter.forEach((filter, key) => {
+    if (filter.match(payload[filterType])) {
       idx = key;
     }
   });

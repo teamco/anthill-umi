@@ -69,22 +69,22 @@ export default connect(
     }),
     (dispatch) => ({
       dispatch,
-      onRemoveFilter(filter) {
-        dispatch({ type: 'pictureModel/removeFilter', payload: { filter } });
+      onRemoveFilter(form, filter) {
+        dispatch({ type: 'pictureModel/removeFilter', payload: { form, filter } });
       },
-      onUpdateFilterSlider(props) {
-        dispatch({ type: 'pictureModel/updateFilterSlider', payload: { props } });
+      onUpdateFilterSlider(form, props) {
+        dispatch({ type: 'pictureModel/updateFilterSlider', payload: { props, form } });
       },
-      onUpdateFilterValues(filter, value, unit = '') {
+      onUpdateFilterValues(form, filter, value, unit = '') {
         dispatch({
           type: 'pictureModel/updateFilterValues',
-          payload: { filter, value, unit }
+          payload: { form, filter, value, unit }
         });
       },
-      onUpdateTransformValues(filter, value, unit = '') {
+      onUpdateTransformValues(form, transform, value, unit = '') {
         dispatch({
           type: 'pictureModel/updateTransformValues',
-          payload: { filter, value, unit }
+          payload: { form, transform, value, unit }
         });
       }
     })

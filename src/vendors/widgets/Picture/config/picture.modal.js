@@ -22,7 +22,9 @@ export const pictureModal = (setUpdatePreview) => {
       <TextArea label={i18n.t('form:imgUrl')}
                 name={['picture', 'imageUrl']}
                 key={'pictureImageUrl'}
-                onChange={e => setUpdatePreview(e.target.value)}
+                onChange={e => {
+                  setUpdatePreview(e.target.value)
+                }}
                 autoSize={{
                   minRows: 4,
                   maxRows: 10
@@ -60,15 +62,16 @@ export const pictureFilterProperties = ({
     const props = sliders[filter];
     props.className = styles.filterSlider;
 
-    onUpdateFilterSlider(props);
+    onUpdateFilterSlider(form, props);
   };
 
   const sliders = {
     blur: {
       label: i18n.t('filter:blur'),
       name: ['picture', 'blur'],
+      type: 'filter',
       tipFormatter: (value) => `${i18n.t('filter:blurRadius')}: ${value}px`,
-      onAfterChange: (value) => onUpdateFilterValues('blur', value, 'px'),
+      onAfterChange: (value) => onUpdateFilterValues(form, 'blur', value, 'px'),
       unit: 'px',
       min: 0,
       max: 100,
@@ -77,7 +80,8 @@ export const pictureFilterProperties = ({
     scaleX: {
       label: i18n.t('filter:scaleHorizontal'),
       name: ['picture', 'scaleX'],
-      onAfterChange: (value) => onUpdateTransformValues('scaleX', value),
+      type: 'transform',
+      onAfterChange: (value) => onUpdateTransformValues(form, 'scaleX', value),
       min: -10,
       max: 10,
       step: 0.1
@@ -85,7 +89,8 @@ export const pictureFilterProperties = ({
     scaleY: {
       label: i18n.t('filter:scaleVertical'),
       name: ['picture', 'scaleY'],
-      onAfterChange: (value) => onUpdateTransformValues('scaleY', value),
+      type: 'transform',
+      onAfterChange: (value) => onUpdateTransformValues(form, 'scaleY', value),
       min: -10,
       max: 10,
       step: 0.1
@@ -93,7 +98,8 @@ export const pictureFilterProperties = ({
     brightness: {
       label: i18n.t('filter:brightness'),
       name: ['picture', 'brightness'],
-      onAfterChange: (value) => onUpdateFilterValues('brightness', value),
+      type: 'filter',
+      onAfterChange: (value) => onUpdateFilterValues(form, 'brightness', value),
       min: 0.1,
       max: 10,
       step: 0.1
@@ -101,7 +107,8 @@ export const pictureFilterProperties = ({
     contrast: {
       label: i18n.t('filter:contrast'),
       name: ['picture', 'contrast'],
-      onAfterChange: (value) => onUpdateFilterValues('contrast', value),
+      type: 'filter',
+      onAfterChange: (value) => onUpdateFilterValues(form, 'contrast', value),
       min: 0.1,
       max: 10,
       step: 0.1
@@ -109,7 +116,8 @@ export const pictureFilterProperties = ({
     grayscale: {
       label: i18n.t('filter:grayscale'),
       name: ['picture', 'grayscale'],
-      onAfterChange: (value) => onUpdateFilterValues('grayscale', value),
+      type: 'filter',
+      onAfterChange: (value) => onUpdateFilterValues(form, 'grayscale', value),
       min: 0.1,
       max: 1,
       step: 0.01
@@ -117,8 +125,9 @@ export const pictureFilterProperties = ({
     'hue-rotate': {
       label: i18n.t('filter:hueRotate'),
       name: ['picture', 'hue-rotate'],
+      type: 'filter',
       tipFormatter: (value) => `${i18n.t('filter:angle')}: ${value}deg`,
-      onAfterChange: (value) => onUpdateFilterValues('hue-rotate', value, 'deg'),
+      onAfterChange: (value) => onUpdateFilterValues(form, 'hue-rotate', value, 'deg'),
       unit: 'deg',
       min: 0,
       max: 360,
@@ -127,7 +136,8 @@ export const pictureFilterProperties = ({
     scale: {
       label: i18n.t('filter:scale'),
       name: ['picture', 'zoom'],
-      onAfterChange: (value) => onUpdateTransformValues('scale', value, 'deg'),
+      type: 'transform',
+      onAfterChange: (value) => onUpdateTransformValues(form, 'scale', value, 'deg'),
       unit: 'deg',
       min: -10,
       max: 10,
@@ -136,7 +146,8 @@ export const pictureFilterProperties = ({
     invert: {
       label: i18n.t('filter:invert'),
       name: ['picture', 'invert'],
-      onAfterChange: (value) => onUpdateFilterValues('invert', value),
+      type: 'filter',
+      onAfterChange: (value) => onUpdateFilterValues(form, 'invert', value),
       min: 0.1,
       max: 1,
       step: 0.01
@@ -144,7 +155,8 @@ export const pictureFilterProperties = ({
     saturate: {
       label: i18n.t('filter:saturate'),
       name: ['picture', 'saturate'],
-      onAfterChange: (value) => onUpdateFilterValues('saturate', value),
+      type: 'filter',
+      onAfterChange: (value) => onUpdateFilterValues(form, 'saturate', value),
       min: 0.1,
       max: 10,
       step: 0.1
@@ -152,7 +164,8 @@ export const pictureFilterProperties = ({
     sepia: {
       label: i18n.t('filter:sepia'),
       name: ['picture', 'sepia'],
-      onAfterChange: (value) => onUpdateFilterValues('sepia', value),
+      type: 'filter',
+      onAfterChange: (value) => onUpdateFilterValues(form, 'sepia', value),
       min: 0.1,
       max: 1,
       step: 0.01
@@ -160,13 +173,29 @@ export const pictureFilterProperties = ({
     opacity: {
       label: i18n.t('filter:opacity'),
       name: ['picture', 'opacity'],
+      type: 'filter',
       tipFormatter: (value) => `${value}%`,
-      onAfterChange: (value) => onUpdateFilterValues('opacity', value, '%'),
+      onAfterChange: (value) => onUpdateFilterValues(form, 'opacity', value, '%'),
       unit: '%',
       min: 0,
       max: 100,
       step: 1
     }
+  };
+
+  const filterValueProps = {
+    ...draft?.sliderProps.filter,
+    name: ['picture', 'filterValue']
+  };
+
+  /**
+   * @constant
+   * @param filter
+   * @return {string}
+   */
+  const filterValueTitle = filter => {
+    const value = form.getFieldValue('picture').filterValue || filter.min;
+    return `${value}${filter.unit || ''}`;
   };
 
   return [
@@ -199,13 +228,13 @@ export const pictureFilterProperties = ({
     [
       <Slider disabled={!draft?.sliderProps.visible}
               key={'active-filter'}
-              {...draft?.sliderProps.filter} />,
+              {...filterValueProps} />,
       <div label={i18n.t('filter:selectedFilters')}
            key={'selected-filters'}>
         {draft?.selectedFilters?.map((selected) => {
           return (
               <Tag onClose={() => {
-                onRemoveFilter(selected.key);
+                onRemoveFilter(form, selected.key);
                 if (selected.key === form.getFieldValue('picture').selectedFilter) {
                   setComplexValue(form, 'picture', { selectedFilter: null });
                 }
@@ -215,7 +244,7 @@ export const pictureFilterProperties = ({
                    color={'success'}
                    closable
                    key={selected.key}>
-                <Tooltip title={`${selected.value || selected.min}${selected.unit || ''}`}>
+                <Tooltip title={filterValueTitle(selected)}>
                   <span style={{ cursor: 'pointer' }}
                         onClick={() => {
                           onChangeFilter(selected.key);

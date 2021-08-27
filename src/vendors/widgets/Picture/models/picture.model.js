@@ -8,6 +8,7 @@ import {
   findFilterIdx,
   handleMultipleFilters
 } from '@/vendors/widgets/Picture/services/picture.service';
+import { setComplexValue } from '@/utils/form';
 
 const DEFAULTS = {
   'imageUrl': 'https://www.publicdomainpictures.net/pictures/320000/nahled/background-image.png',
@@ -66,10 +67,7 @@ export default dvaModelExtend(commonModel, {
           contentKey,
           ContentPropsModal,
           source: 'picture',
-          contentForm: {
-            ...DEFAULTS,
-            imageUrl
-          },
+          contentForm: { imageUrl },
           contentProps
         }
       });
@@ -78,17 +76,18 @@ export default dvaModelExtend(commonModel, {
     * removeFilter({ payload }, { put, select }) {
       let { draft } = yield select((state) => state.pictureModel);
       const { selectedFilters, sliderProps, style } = draft;
-      const { filter } = payload;
+      const { filter, form } = payload;
       let _sliderProps = { ...sliderProps };
 
       if (sliderProps.filter?.key === filter) {
         _sliderProps = { ...DRAFT.sliderProps };
+        setComplexValue(form, 'picture', { filterValue: null });
       }
 
-      let _filter = style.filter.split(' ');
-      const idx = findFilterIdx(style, payload);
+      let _filter = style.filter?.split(' ');
+      const idx = findFilterIdx(style, payload, sliderProps.filter?.type);
 
-      if (idx > -1) {
+      if (_filter && idx > -1) {
         _filter.splice(idx, 1);
       }
 
@@ -96,7 +95,7 @@ export default dvaModelExtend(commonModel, {
         type: 'updateState',
         payload: {
           draft: {
-            style: { filter: _filter.join(' ') },
+            style: { filter: _filter?.join(' ') || '' },
             selectedFilters: selectedFilters.filter(selected => selected.key !== filter),
             sliderProps: { ..._sliderProps }
           }
@@ -108,7 +107,7 @@ export default dvaModelExtend(commonModel, {
       const { draft } = yield select((state) => state.pictureModel);
 
       let _selectedFilters = yield call(handleMultipleFilters, {
-        filterType: 'cssFilter',
+        filterType: 'filter',
         style: draft.style,
         payload
       });
@@ -122,6 +121,8 @@ export default dvaModelExtend(commonModel, {
           }
         }
       });
+
+      setComplexValue(payload.form, 'picture', { filterValue: payload.value });
     },
 
     * updateTransformValues({ payload }, { call, put, select }) {
@@ -129,7 +130,7 @@ export default dvaModelExtend(commonModel, {
 
       let _selectedFilters = yield call(handleMultipleFilters, {
         style: draft.style,
-        filterType: 'cssTransform',
+        filterType: 'transform',
         payload
       });
 
@@ -138,15 +139,17 @@ export default dvaModelExtend(commonModel, {
         payload: {
           draft: {
             ...draft,
-            style: { filter: _selectedFilters }
+            style: { transform: _selectedFilters }
           }
         }
       });
+
+      setComplexValue(payload.form, 'picture', { filterValue: payload.value });
     },
 
     * updateFilterSlider({ payload }, { put, select }) {
       const { draft } = yield select(state => state.pictureModel);
-      const { props } = payload;
+      const { props, form } = payload;
 
       props.key = props.name[1];
       props.marks = {
@@ -171,13 +174,14 @@ export default dvaModelExtend(commonModel, {
             ...draft,
             selectedFilters,
             sliderProps: {
-              defaultValue: DEFAULTS[props.key],
               filter: { ...props },
               visible: true
             }
           }
         }
       });
+
+      setComplexValue(form, 'picture', { filterValue: DEFAULTS[props.key] });
     }
   },
   reducers: {}
