@@ -28,9 +28,9 @@ const pictureProperties = props => {
     onRemoveFilter
   } = props;
 
-  const { draft, contentForm } = contentProps;
+  const { draft, contentForm, imageUrl } = contentProps;
 
-  const [previewUrl, setUpdatePreview] = useState(contentForm?.imageUrl);
+  const [previewUrl, setUpdatePreview] = useState(contentForm?.imageUrl || imageUrl);
 
   return (
       <div>
@@ -69,8 +69,8 @@ export default connect(
     }),
     (dispatch) => ({
       dispatch,
-      onRemoveFilter(form, filter) {
-        dispatch({ type: 'pictureModel/removeFilter', payload: { form, filter } });
+      onRemoveFilter(form, filter, type) {
+        dispatch({ type: 'pictureModel/removeFilter', payload: { form, filter, type } });
       },
       onUpdateFilterSlider(form, props) {
         dispatch({ type: 'pictureModel/updateFilterSlider', payload: { props, form } });

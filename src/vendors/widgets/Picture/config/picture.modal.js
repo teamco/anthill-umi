@@ -40,7 +40,7 @@ export const pictureModal = (setUpdatePreview) => {
  * @param onUpdateFilterSlider
  * @param onUpdateTransformValues
  * @param onRemoveFilter
- * @param previewUrl
+ * @param {string} previewUrl
  * @param form
  * @param draft
  * @return {JSX.Element[][]}
@@ -194,8 +194,7 @@ export const pictureFilterProperties = ({
    * @return {string}
    */
   const filterValueTitle = filter => {
-    const value = form.getFieldValue('picture').filterValue || filter.min;
-    return `${value}${filter.unit || ''}`;
+    return `${filter.filterValue}${filter.unit || ''}`;
   };
 
   return [
@@ -234,7 +233,7 @@ export const pictureFilterProperties = ({
         {draft?.selectedFilters?.map((selected) => {
           return (
               <Tag onClose={() => {
-                onRemoveFilter(form, selected.key);
+                onRemoveFilter(form, selected.key, selected.type);
                 if (selected.key === form.getFieldValue('picture').selectedFilter) {
                   setComplexValue(form, 'picture', { selectedFilter: null });
                 }
@@ -248,7 +247,10 @@ export const pictureFilterProperties = ({
                   <span style={{ cursor: 'pointer' }}
                         onClick={() => {
                           onChangeFilter(selected.key);
-                          setComplexValue(form, 'picture', { selectedFilter: selected.key });
+                          setComplexValue(form, 'picture', {
+                            selectedFilter: selected.key,
+                            filterValue: selected.filterValue
+                          });
                         }}>
                     {selected.label}
                   </span>

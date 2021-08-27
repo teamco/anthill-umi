@@ -25,6 +25,23 @@ const DEFAULTS = {
   'invert': 0.1
 };
 
+/**
+ * @constant
+ * @param selectedFilters
+ * @param payload
+ * @param type
+ * @return {*}
+ */
+const updateFilterValue = (selectedFilters, payload, type) => {
+  return [...selectedFilters].map(selected => {
+    const _selected = {...selected};
+    if (selected.key === payload[type]) {
+      _selected.filterValue = payload.value;
+    }
+    return _selected;
+  });
+};
+
 const DRAFT = {
   style: {},
   sliderProps: {
@@ -76,16 +93,16 @@ export default dvaModelExtend(commonModel, {
     * removeFilter({ payload }, { put, select }) {
       let { draft } = yield select((state) => state.pictureModel);
       const { selectedFilters, sliderProps, style } = draft;
-      const { filter, form } = payload;
+      const { filter, form, type } = payload;
       let _sliderProps = { ...sliderProps };
 
-      if (sliderProps.filter?.key === filter) {
+      if (sliderProps[type]?.key === filter) {
         _sliderProps = { ...DRAFT.sliderProps };
         setComplexValue(form, 'picture', { filterValue: null });
       }
 
-      let _filter = style.filter?.split(' ');
-      const idx = findFilterIdx(style, payload, sliderProps.filter?.type);
+      let _filter = style[type]?.split(' ');
+      const idx = findFilterIdx(style, payload, type);
 
       if (_filter && idx > -1) {
         _filter.splice(idx, 1);
@@ -95,7 +112,10 @@ export default dvaModelExtend(commonModel, {
         type: 'updateState',
         payload: {
           draft: {
-            style: { filter: _filter?.join(' ') || '' },
+            style: {
+              ...draft.style,
+              [type]: _filter?.join(' ') || ''
+            },
             selectedFilters: selectedFilters.filter(selected => selected.key !== filter),
             sliderProps: { ..._sliderProps }
           }
@@ -117,7 +137,11 @@ export default dvaModelExtend(commonModel, {
         payload: {
           draft: {
             ...draft,
-            style: { filter: _selectedFilters }
+            selectedFilters: updateFilterValue(draft.selectedFilters, payload, 'filter'),
+            style: {
+              ...draft.style,
+              filter: _selectedFilters
+            }
           }
         }
       });
@@ -139,7 +163,11 @@ export default dvaModelExtend(commonModel, {
         payload: {
           draft: {
             ...draft,
-            style: { transform: _selectedFilters }
+            selectedFilters: updateFilterValue(draft.selectedFilters, payload, 'transform'),
+            style: {
+              ...draft.style,
+              transform: _selectedFilters
+            }
           }
         }
       });
@@ -151,6 +179,7 @@ export default dvaModelExtend(commonModel, {
       const { draft } = yield select(state => state.pictureModel);
       const { props, form } = payload;
 
+      props.filterValue = DEFAULTS[props.key];
       props.key = props.name[1];
       props.marks = {
         [props.min]: {
