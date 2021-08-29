@@ -10,7 +10,7 @@ import {
 } from '@/vendors/widgets/Picture/services/picture.service';
 import { setComplexValue } from '@/utils/form';
 
-const DEFAULTS = {
+const FILTER = {
   'imageUrl': 'https://www.publicdomainpictures.net/pictures/320000/nahled/background-image.png',
   'blur': 0,
   'brightness': 1,
@@ -34,7 +34,7 @@ const DEFAULTS = {
  */
 const updateFilterValue = (selectedFilters, payload, type) => {
   return [...selectedFilters].map(selected => {
-    const _selected = {...selected};
+    const _selected = { ...selected };
     if (selected.key === payload[type]) {
       _selected.filterValue = payload.value;
     }
@@ -43,13 +43,18 @@ const updateFilterValue = (selectedFilters, payload, type) => {
 };
 
 const DRAFT = {
-  style: {},
+  style: {}
+};
+
+const DEFAULTS = {
+  contentStore: {},
+  draft: { ...DRAFT },
+  selectedFilters: [],
   sliderProps: {
     visible: false,
     filter: {},
     transform: {}
-  },
-  selectedFilters: []
+  }
 };
 
 /**
@@ -57,7 +62,7 @@ const DRAFT = {
  */
 export default dvaModelExtend(commonModel, {
   namespace: 'pictureModel',
-  state: { draft: { ...DRAFT } },
+  state: { ...DEFAULTS },
   effects: {
 
     * setProperties({ payload }, { put }) {
@@ -68,7 +73,7 @@ export default dvaModelExtend(commonModel, {
         reset = false
       } = payload;
 
-      const { imageUrl = DEFAULTS['imageUrl'] } = contentProps;
+      const { imageUrl = FILTER['imageUrl'] } = contentProps;
 
       if (reset) {
         yield put({
@@ -91,14 +96,14 @@ export default dvaModelExtend(commonModel, {
     },
 
     * removeFilter({ payload }, { put, select }) {
-      let { draft } = yield select((state) => state.pictureModel);
-      const { selectedFilters, sliderProps, style } = draft;
+      let { draft, sliderProps, selectedFilters } = yield select((state) => state.pictureModel);
+      const { style } = draft;
       const { filter, form, type } = payload;
       let _sliderProps = { ...sliderProps };
 
       if (sliderProps[type]?.key === filter) {
-        _sliderProps = { ...DRAFT.sliderProps };
-        setComplexValue(form, 'picture', { filterValue: null });
+        _sliderProps = { ...DEFAULTS.sliderProps };
+        setComplexValue(form, 'pictureDraft', { filterValue: null });
       }
 
       let _filter = style[type]?.split(' ');
@@ -115,18 +120,18 @@ export default dvaModelExtend(commonModel, {
             style: {
               ...draft.style,
               [type]: _filter?.join(' ') || ''
-            },
-            selectedFilters: selectedFilters.filter(selected => selected.key !== filter),
-            sliderProps: { ..._sliderProps }
-          }
+            }
+          },
+          selectedFilters: selectedFilters.filter(selected => selected.key !== filter),
+          sliderProps: { ..._sliderProps }
         }
       });
     },
 
     * updateFilterValues({ payload }, { put, select, call }) {
-      const { draft } = yield select((state) => state.pictureModel);
+      const { draft, selectedFilters } = yield select((state) => state.pictureModel);
 
-      let _selectedFilters = yield call(handleMultipleFilters, {
+      let _filterStyle = yield call(handleMultipleFilters, {
         filterType: 'filter',
         style: draft.style,
         payload
@@ -137,20 +142,20 @@ export default dvaModelExtend(commonModel, {
         payload: {
           draft: {
             ...draft,
-            selectedFilters: updateFilterValue(draft.selectedFilters, payload, 'filter'),
             style: {
               ...draft.style,
-              filter: _selectedFilters
+              filter: _filterStyle
             }
-          }
+          },
+          selectedFilters: updateFilterValue(selectedFilters, payload, 'filter')
         }
       });
 
-      setComplexValue(payload.form, 'picture', { filterValue: payload.value });
+      setComplexValue(payload.form, 'pictureDraft', { filterValue: payload.value });
     },
 
     * updateTransformValues({ payload }, { call, put, select }) {
-      const { draft } = yield select((state) => state.pictureModel);
+      const { draft, selectedFilters } = yield select((state) => state.pictureModel);
 
       let _selectedFilters = yield call(handleMultipleFilters, {
         style: draft.style,
@@ -163,23 +168,23 @@ export default dvaModelExtend(commonModel, {
         payload: {
           draft: {
             ...draft,
-            selectedFilters: updateFilterValue(draft.selectedFilters, payload, 'transform'),
             style: {
               ...draft.style,
               transform: _selectedFilters
             }
-          }
+          },
+          selectedFilters: updateFilterValue(selectedFilters, payload, 'transform')
         }
       });
 
-      setComplexValue(payload.form, 'picture', { filterValue: payload.value });
+      setComplexValue(payload.form, 'pictureDraft', { filterValue: payload.value });
     },
 
     * updateFilterSlider({ payload }, { put, select }) {
-      const { draft } = yield select(state => state.pictureModel);
+      const { draft, selectedFilters } = yield select(state => state.pictureModel);
       const { props, form } = payload;
 
-      props.filterValue = DEFAULTS[props.key];
+      props.filterValue = FILTER[props.key];
       props.key = props.name[1];
       props.marks = {
         [props.min]: {
@@ -190,27 +195,25 @@ export default dvaModelExtend(commonModel, {
         }
       };
 
-      let selectedFilters = [...draft.selectedFilters];
+      let _selectedFilters = [...selectedFilters];
 
-      if (!draft.selectedFilters.find(selected => selected.key === props.key)) {
-        selectedFilters = [...selectedFilters, props];
+      if (!_selectedFilters.find(selected => selected.key === props.key)) {
+        _selectedFilters = [..._selectedFilters, props];
       }
 
       yield put({
         type: 'updateState',
         payload: {
-          draft: {
-            ...draft,
-            selectedFilters,
-            sliderProps: {
-              filter: { ...props },
-              visible: true
-            }
+          draft: { ...draft },
+          selectedFilters: [..._selectedFilters],
+          sliderProps: {
+            filter: { ...props },
+            visible: true
           }
         }
       });
 
-      setComplexValue(form, 'picture', { filterValue: DEFAULTS[props.key] });
+      setComplexValue(form, 'pictureDraft', { filterValue: FILTER[props.key] });
     }
   },
   reducers: {}

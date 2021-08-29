@@ -19,12 +19,18 @@ const Picture = props => {
   const isMounted = useRef(true);
 
   const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
-  const { draft } = pictureModel;
+  const { draft, sliderProps, selectedFilters } = pictureModel;
 
   const deps = [contentForm?.imageUrl, draft];
 
   useEffect(() => {
-    onSetProperties(properties, opts.contentKey, { contentForm, draft, imageUrl }, true);
+    onSetProperties(properties, opts.contentKey, {
+      contentForm,
+      sliderProps,
+      selectedFilters,
+      draft,
+      imageUrl
+    }, true);
   }, []);
 
   useEffect(() => {
@@ -32,7 +38,13 @@ const Picture = props => {
     asyncFn().then(() => {
       if (isMounted.current) {
         const imageUrl = contentForm?.imageUrl;
-        imageUrl && onSetProperties(properties, opts.contentKey, { contentForm, draft, imageUrl });
+        imageUrl && onSetProperties(properties, opts.contentKey, {
+          contentForm,
+          sliderProps,
+          selectedFilters,
+          draft,
+          imageUrl
+        });
       }
     });
     return () => {

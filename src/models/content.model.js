@@ -146,8 +146,8 @@ export default dvaModelExtend(commonModel, {
 
     * updateProps({ payload }, { put, select }) {
       const { widgetsForm, contentKey } = yield select((state) => state.contentModel);
-      const { values } = payload;
-
+      const { values, contentProps } = payload;
+      debugger
       const _widgetsForm = { ...widgetsForm };
       const widgetForm = _widgetsForm[contentKey];
 

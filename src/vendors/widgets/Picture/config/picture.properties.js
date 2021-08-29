@@ -28,7 +28,13 @@ const pictureProperties = props => {
     onRemoveFilter
   } = props;
 
-  const { draft, contentForm, imageUrl } = contentProps;
+  const {
+    draft,
+    contentForm,
+    imageUrl,
+    sliderProps,
+    selectedFilters
+  } = contentProps;
 
   const [previewUrl, setUpdatePreview] = useState(contentForm?.imageUrl || imageUrl);
 
@@ -51,6 +57,8 @@ const pictureProperties = props => {
             onUpdateFilterSlider,
             onRemoveFilter,
             previewUrl,
+            sliderProps,
+            selectedFilters,
             form,
             draft
           }).map((prop, idx) => (

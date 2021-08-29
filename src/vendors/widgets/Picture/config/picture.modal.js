@@ -10,6 +10,11 @@ import styles from '@/vendors/widgets/Picture/picture.module.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
+/**
+ * @export
+ * @param setUpdatePreview
+ * @return {JSX.Element[][]}
+ */
 export const pictureModal = (setUpdatePreview) => {
   return [
     [
@@ -23,7 +28,7 @@ export const pictureModal = (setUpdatePreview) => {
                 name={['picture', 'imageUrl']}
                 key={'pictureImageUrl'}
                 onChange={e => {
-                  setUpdatePreview(e.target.value)
+                  setUpdatePreview(e.target.value);
                 }}
                 autoSize={{
                   minRows: 4,
@@ -41,6 +46,8 @@ export const pictureModal = (setUpdatePreview) => {
  * @param onUpdateTransformValues
  * @param onRemoveFilter
  * @param {string} previewUrl
+ * @param sliderProps
+ * @param selectedFilters
  * @param form
  * @param draft
  * @return {JSX.Element[][]}
@@ -51,9 +58,12 @@ export const pictureFilterProperties = ({
   onUpdateTransformValues,
   onRemoveFilter,
   previewUrl,
+  sliderProps,
+  selectedFilters,
   form,
   draft
 }) => {
+
   /**
    * @constant
    * @param filter
@@ -184,8 +194,8 @@ export const pictureFilterProperties = ({
   };
 
   const filterValueProps = {
-    ...draft?.sliderProps.filter,
-    name: ['picture', 'filterValue']
+    ...sliderProps.filter,
+    name: ['pictureDraft', 'filterValue']
   };
 
   /**
@@ -201,13 +211,13 @@ export const pictureFilterProperties = ({
     [
       <Select label={i18n.t('filter:filter')}
               key={'selectedFilter'}
-              name={['picture', 'selectedFilter']}
+              name={['pictureDraft', 'selectedFilter']}
               placeholder={i18n.t('form:placeholder', { field: '$t(filter:filter)' })}
               onChange={onChangeFilter}
               style={{ width: '100%' }}>
         {Object.keys(sliders).sort().map((slider) => {
           const _filter = sliders[slider];
-          const disabled = draft?.selectedFilters?.find(selected => selected.key === _filter.name[1]);
+          const disabled = selectedFilters?.find(selected => selected.key === _filter.name[1]);
           return (
               <Option disabled={disabled}
                       key={_filter.name[1]}
@@ -225,29 +235,33 @@ export const pictureFilterProperties = ({
              src={previewUrl} />
     ],
     [
-      <Slider disabled={!draft?.sliderProps.visible}
+      <Slider disabled={!sliderProps.visible}
               key={'active-filter'}
               {...filterValueProps} />,
       <div label={i18n.t('filter:selectedFilters')}
            key={'selected-filters'}>
-        {draft?.selectedFilters?.map((selected) => {
+        {selectedFilters?.map((selected) => {
+          let color = 'success';
+          if (selected.key === form.getFieldValue('pictureDraft').selectedFilter) {
+            color = 'processing';
+          }
           return (
               <Tag onClose={() => {
                 onRemoveFilter(form, selected.key, selected.type);
-                if (selected.key === form.getFieldValue('picture').selectedFilter) {
-                  setComplexValue(form, 'picture', { selectedFilter: null });
+                if (selected.key === form.getFieldValue('pictureDraft').selectedFilter) {
+                  setComplexValue(form, 'pictureDraft', { selectedFilter: null });
                 }
               }}
                    className={styles.filterTag}
                    icon={<Html5Outlined />}
-                   color={'success'}
+                   color={color}
                    closable
                    key={selected.key}>
                 <Tooltip title={filterValueTitle(selected)}>
                   <span style={{ cursor: 'pointer' }}
                         onClick={() => {
                           onChangeFilter(selected.key);
-                          setComplexValue(form, 'picture', {
+                          setComplexValue(form, 'pictureDraft', {
                             selectedFilter: selected.key,
                             filterValue: selected.filterValue
                           });

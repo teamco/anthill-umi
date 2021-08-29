@@ -98,7 +98,7 @@ const FormProperties = props => {
     setSaving(true);
     form.validateFields().then(values => {
       setSaving(false);
-      onFinish(values);
+      onFinish(values, contentProps);
       onPropertiesModalVisibility(false);
     }).catch(e => {
       setSaving(false);
@@ -178,8 +178,8 @@ export default connect(({ contentModel, loading }) => ({
       onResetWidget(model) {
         dispatch({ type: 'contentModel/revertFormValues', payload: { model } });
       },
-      onFinish(values) {
-        dispatch({ type: 'contentModel/updateProps', payload: { values } });
+      onFinish(values, contentProps) {
+        dispatch({ type: 'contentModel/updateProps', payload: { values, contentProps } });
       },
       onPropertiesModalVisibility(visible, widgetProps) {
         dispatch({
