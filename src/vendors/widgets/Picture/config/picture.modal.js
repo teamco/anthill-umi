@@ -12,10 +12,10 @@ const { Option } = Select;
 
 /**
  * @export
- * @param setUpdatePreview
+ * @param onUpdatePreview
  * @return {JSX.Element[][]}
  */
-export const pictureModal = (setUpdatePreview) => {
+export const pictureModal = (onUpdatePreview) => {
   return [
     [
       <Input type={'text'}
@@ -28,7 +28,7 @@ export const pictureModal = (setUpdatePreview) => {
                 name={['picture', 'imageUrl']}
                 key={'pictureImageUrl'}
                 onChange={e => {
-                  setUpdatePreview(e.target.value);
+                  onUpdatePreview(e.target.value);
                 }}
                 autoSize={{
                   minRows: 4,
@@ -57,7 +57,6 @@ export const pictureFilterProperties = ({
   onUpdateFilterValues,
   onUpdateTransformValues,
   onRemoveFilter,
-  previewUrl,
   sliderProps,
   selectedFilters,
   form,
@@ -232,7 +231,7 @@ export const pictureFilterProperties = ({
              width={'100%'}
              height={'100%'}
              style={draft?.style}
-             src={previewUrl} />
+             src={draft?.previewUrl} />
     ],
     [
       <Slider disabled={!sliderProps.visible}

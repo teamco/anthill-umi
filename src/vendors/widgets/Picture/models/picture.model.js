@@ -43,7 +43,8 @@ const updateFilterValue = (selectedFilters, payload, type) => {
 };
 
 const DRAFT = {
-  style: {}
+  style: {},
+  previewUrl: null
 };
 
 const DEFAULTS = {
@@ -65,7 +66,9 @@ export default dvaModelExtend(commonModel, {
   state: { ...DEFAULTS },
   effects: {
 
-    * setProperties({ payload }, { put }) {
+    * setProperties({ payload }, { put, select }) {
+      const { draft } = yield select((state) => state.pictureModel);
+
       const {
         ContentPropsModal,
         contentKey,
@@ -74,6 +77,8 @@ export default dvaModelExtend(commonModel, {
       } = payload;
 
       const { imageUrl = FILTER['imageUrl'] } = contentProps;
+
+      yield put({ type: 'updatePreview', payload: { previewUrl: imageUrl } });
 
       if (reset) {
         yield put({
@@ -124,6 +129,19 @@ export default dvaModelExtend(commonModel, {
           },
           selectedFilters: selectedFilters.filter(selected => selected.key !== filter),
           sliderProps: { ..._sliderProps }
+        }
+      });
+    },
+
+    * updatePreview({ payload }, { put, select }) {
+      const { draft } = yield select((state) => state.pictureModel);
+      yield put({
+        type: 'updateState',
+        payload: {
+          draft: {
+            ...draft,
+            imageUrl: payload.previewUrl
+          }
         }
       });
     },

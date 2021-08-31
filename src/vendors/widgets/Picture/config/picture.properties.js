@@ -25,25 +25,22 @@ const pictureProperties = props => {
     onUpdateFilterValues,
     onUpdateTransformValues,
     onUpdateFilterSlider,
-    onRemoveFilter
+    onRemoveFilter,
+    onUpdatePreview
   } = props;
 
   const {
     draft,
-    contentForm,
-    imageUrl,
     sliderProps,
     selectedFilters
   } = contentProps;
-
-  const [previewUrl, setUpdatePreview] = useState(contentForm?.imageUrl || imageUrl);
 
   return (
       <div>
         <GenericPanel header={t('panel:contentProperties')}
                       name={'widget-content-properties'}
                       defaultActiveKey={['widget-content-properties']}>
-          {pictureModal(setUpdatePreview).map((prop, idx) => (
+          {pictureModal(onUpdatePreview).map((prop, idx) => (
               <div key={idx}>{prop}</div>
           ))}
         </GenericPanel>
@@ -56,7 +53,6 @@ const pictureProperties = props => {
             onUpdateTransformValues,
             onUpdateFilterSlider,
             onRemoveFilter,
-            previewUrl,
             sliderProps,
             selectedFilters,
             form,
@@ -77,6 +73,9 @@ export default connect(
     }),
     (dispatch) => ({
       dispatch,
+      onUpdatePreview(previewUrl) {
+        dispatch({ type: 'pictureModel/updatePreview', payload: { previewUrl } });
+      },
       onRemoveFilter(form, filter, type) {
         dispatch({ type: 'pictureModel/removeFilter', payload: { form, filter, type } });
       },

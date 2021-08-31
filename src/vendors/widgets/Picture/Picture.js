@@ -23,14 +23,22 @@ const Picture = props => {
 
   const deps = [contentForm?.imageUrl, draft];
 
-  useEffect(() => {
+  /**
+   * @constant
+   * @param {boolean} [reset]
+   */
+  const updateProps = (reset = false) => {
     onSetProperties(properties, opts.contentKey, {
       contentForm,
       sliderProps,
       selectedFilters,
       draft,
       imageUrl
-    }, true);
+    }, reset);
+  }
+
+  useEffect(() => {
+    updateProps(true);
   }, []);
 
   useEffect(() => {
@@ -38,13 +46,7 @@ const Picture = props => {
     asyncFn().then(() => {
       if (isMounted.current) {
         const imageUrl = contentForm?.imageUrl;
-        imageUrl && onSetProperties(properties, opts.contentKey, {
-          contentForm,
-          sliderProps,
-          selectedFilters,
-          draft,
-          imageUrl
-        });
+        imageUrl && updateProps();
       }
     });
     return () => {
