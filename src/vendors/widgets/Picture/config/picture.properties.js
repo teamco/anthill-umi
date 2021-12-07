@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'dva';
 import { withTranslation } from 'react-i18next';
 import Form from '@/components/Form';
@@ -40,7 +40,7 @@ const pictureProperties = props => {
         <GenericPanel header={t('panel:contentProperties')}
                       name={'widget-content-properties'}
                       defaultActiveKey={['widget-content-properties']}>
-          {pictureModal(onUpdatePreview).map((prop, idx) => (
+          {pictureModal(form, onUpdatePreview).map((prop, idx) => (
               <div key={idx}>{prop}</div>
           ))}
         </GenericPanel>

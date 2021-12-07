@@ -3,25 +3,26 @@ import { connect } from 'dva';
 import { Image } from 'antd';
 import { withTranslation } from 'react-i18next';
 
-import { asyncFn } from '@/utils/promise';
 import properties from '@/vendors/widgets/Picture/config/picture.properties';
+import { setComplexValue } from '@/utils/form';
 
+/**
+ * @export
+ * @constant
+ * @param props
+ * @return {JSX.Element}
+ * @constructor
+ */
 const Picture = props => {
   const {
     t,
     opts,
     imageUrl,
-    contentModel,
     pictureModel,
     onSetProperties
   } = props;
 
-  const isMounted = useRef(true);
-
-  const { contentForm = {} } = contentModel.widgetsForm[opts.contentKey];
   const { draft, sliderProps, selectedFilters } = pictureModel;
-
-  const deps = [contentForm?.imageUrl, draft];
 
   /**
    * @constant
@@ -29,11 +30,9 @@ const Picture = props => {
    */
   const updateProps = (reset = false) => {
     onSetProperties(properties, opts.contentKey, {
-      contentForm,
-      sliderProps,
-      selectedFilters,
       draft,
-      imageUrl
+      sliderProps,
+      selectedFilters
     }, reset);
   }
 
@@ -42,20 +41,14 @@ const Picture = props => {
   }, []);
 
   useEffect(() => {
-    isMounted.current = true;
-    asyncFn().then(() => {
-      if (isMounted.current) {
-        const imageUrl = contentForm?.imageUrl;
-        imageUrl && updateProps();
-      }
-    });
-    return () => {
-      isMounted.current = false;
-    };
-  }, deps);
+    const imageUrl = draft?.imageUrl;
+    imageUrl && updateProps();
+  }, [draft]);
 
   return (
-      <Image width={'100%'} height={'100%'} src={imageUrl} />
+      <Image width={'100%'}
+             height={'100%'}
+             src={imageUrl} />
   );
 };
 

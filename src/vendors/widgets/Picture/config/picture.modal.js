@@ -12,10 +12,11 @@ const { Option } = Select;
 
 /**
  * @export
+ * @param form
  * @param onUpdatePreview
  * @return {JSX.Element[][]}
  */
-export const pictureModal = (onUpdatePreview) => {
+export const pictureModal = (form, onUpdatePreview) => {
   return [
     [
       <Input type={'text'}
@@ -45,7 +46,6 @@ export const pictureModal = (onUpdatePreview) => {
  * @param onUpdateFilterSlider
  * @param onUpdateTransformValues
  * @param onRemoveFilter
- * @param {string} previewUrl
  * @param sliderProps
  * @param selectedFilters
  * @param form
@@ -231,7 +231,7 @@ export const pictureFilterProperties = ({
              width={'100%'}
              height={'100%'}
              style={draft?.style}
-             src={draft?.previewUrl} />
+             src={draft?.imageUrl} />
     ],
     [
       <Slider disabled={!sliderProps.visible}
